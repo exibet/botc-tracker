@@ -2,15 +2,24 @@
   "id": "supabase-seed_20260406",
   "title": "Supabase Schema & Role Seed",
   "type": "feature",
-  "status": "pending",
+  "status": "complete",
   "created": "2026-04-06T00:00:00Z",
   "updated": "2026-04-06T00:00:00Z",
+  "current_phase": 4,
+  "current_task": "4.4",
   "phases": {
     "total": 4,
-    "completed": 0
+    "completed": 4
   },
   "tasks": {
     "total": 18,
-    "completed": 0
-  }
+    "completed": 18
+  },
+  "commits": [
+    "aef2315: feat(db): add SQL migrations for roles, profiles, games, game_players",
+    "1725e71: feat(db): add RLS policies for all tables",
+    "8557e87: feat(seed): add roles seed script with Ukrainian translations",
+    "66265a2: fix(seed): add missing 9 Ukrainian translations",
+    "cd381dd: feat(seed): add Ukrainian descriptions for all 160 roles"
+  ]
 }

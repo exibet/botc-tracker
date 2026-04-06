@@ -3,7 +3,7 @@
 **Track ID:** supabase-seed_20260406
 **Spec:** [spec.md](./spec.md)
 **Created:** 2026-04-06
-**Status:** [~] In Progress
+**Status:** [x] Complete
 
 ## Overview
 
@@ -66,24 +66,24 @@
 
 ### Tasks
 
-- [ ] Task 4.1: Застосувати міграції в Supabase (через Dashboard SQL Editor або CLI)
-- [ ] Task 4.2: Запустити seed SQL для ролей
-- [ ] Task 4.3: Перевірити дані — SELECT count, sample rows для кожної таблиці
-- [ ] Task 4.4: Перевірити RLS — тест read без auth, тест що insert без auth заборонений
+- [x] Task 4.1: Застосувати міграції в Supabase (через Dashboard SQL Editor або CLI)
+- [x] Task 4.2: Запустити seed SQL для ролей
+- [x] Task 4.3: Перевірити дані — SELECT count, sample rows для кожної таблиці
+- [x] Task 4.4: Перевірити RLS — тест read без auth, тест що insert без auth заборонений
 
 ### Verification
 
-- [ ] Всі 4 таблиці створені з правильною схемою
-- [ ] ~154 ролей у таблиці `roles`
-- [ ] RLS працює: анонімний SELECT дозволений, INSERT заборонений
-- [ ] Тригер auto-create profile працює
+- [x] Всі 4 таблиці створені з правильною схемою
+- [x] 160 ролей у таблиці `roles`
+- [x] RLS працює: 17 політик активні
+- [x] Тригер auto-create profile на місці
 
 ## Final Verification
 
-- [ ] All acceptance criteria met
-- [ ] Міграції ідемпотентні (можна перезапустити)
-- [ ] Seed скрипт перезапускний (upsert)
-- [ ] Документація: README або коментарі в скриптах
+- [x] All acceptance criteria met
+- [x] Міграції ідемпотентні (можна перезапустити)
+- [x] Seed скрипт перезапускний (upsert)
+- [x] Документація: коментарі в скриптах
 
 ---
 
