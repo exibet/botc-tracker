@@ -54,15 +54,15 @@ const emit = defineEmits<{
     class="flex flex-col gap-8"
   >
     <section
-      v-for="{ group, roles } in groups"
-      :key="group.key"
+      v-for="{ type, roles } in groups"
+      :key="type.value"
     >
       <h2
-        class="mb-3 font-heading text-lg font-semibold
-          text-text-muted"
+        class="mb-3 font-heading text-lg font-semibold"
+        :style="{ color: type.color }"
       >
-        {{ group.label }}
-        <span class="text-sm font-normal">
+        {{ type.label }}
+        <span class="text-sm font-normal text-text-muted">
           ({{ roles.length }})
         </span>
       </h2>

@@ -1,5 +1,5 @@
-import { ROLE_GROUPS } from '~/composables/useRoleTypes'
-import type { RoleGroup } from '~/composables/useRoleTypes'
+import { ROLE_TYPES } from '~/composables/useRoleTypes'
+import type { RoleTypeInfo } from '~/composables/useRoleTypes'
 
 export interface Role {
   id: string
@@ -13,7 +13,7 @@ export interface Role {
 }
 
 export interface RoleGrouped {
-  group: RoleGroup
+  type: RoleTypeInfo
   roles: Role[]
 }
 
@@ -60,11 +60,11 @@ export function useRoles() {
   })
 
   const groupedRoles = computed(() => {
-    return ROLE_GROUPS
-      .map(group => ({
-        group,
+    return ROLE_TYPES
+      .map(type => ({
+        type,
         roles: filteredRoles.value.filter(r =>
-          group.types.includes(r.type),
+          r.type === type.value,
         ),
       }))
       .filter(g => g.roles.length > 0)
