@@ -1,0 +1,39 @@
+{
+  "status": "complete",
+  "project_type": "greenfield",
+  "current_section": "complete",
+  "current_question": 0,
+  "completed_sections": ["product", "guidelines", "tech_stack", "workflow", "styleguides"],
+  "answers": {
+    "project_name": "Blood on the Clocktower Tracker",
+    "description": "Ком'юніті сайт для трекінгу ігор Blood on the Clocktower, статистики гравців та каталогу ролей",
+    "problem": "Немає зручного інструменту для відстеження результатів ігор BotC та статистики гравців, особливо українською мовою. Ком'юніті втрачає історію ігор та не може порівнювати результати гравців між сесіями",
+    "target_users": "Невелике ком'юніті друзів (~8-15 людей), які грають в BotC щонеділі",
+    "goals": ["Зберігати історію всіх ігор з ролями та результатами", "Надати гравцям персональну статистику", "Створити повний каталог ролей українською"],
+    "voice_tone": "Тематичний та атмосферний — в дусі BotC (містичний, з гумором про гру)",
+    "design_principles": "Dark gothic BotC aesthetic, night sky surfaces, blood-red accents, candlelight gold, Cinzel headings, mobile-first responsive",
+    "tech_stack": {
+      "language": "TypeScript",
+      "frontend": "Nuxt 4 + PrimeVue 4 (Aura) + Tailwind CSS 4",
+      "backend": "Supabase (PostgreSQL + Auth + RLS)",
+      "linting": "@nuxt/eslint (flat config)",
+      "testing": "Vitest + @nuxt/test-utils + Playwright",
+      "deploy": "Vercel or Cloudflare Pages"
+    },
+    "tdd_strictness": "moderate",
+    "commit_strategy": "conventional_commits",
+    "verification": "after_each_phase",
+    "styleguides": ["typescript_vue"]
+  },
+  "files_created": [
+    "conductor/index.md",
+    "conductor/product.md",
+    "conductor/product-guidelines.md",
+    "conductor/tech-stack.md",
+    "conductor/workflow.md",
+    "conductor/tracks.md",
+    "conductor/code_styleguides/typescript-vue.md"
+  ],
+  "started_at": "2026-04-06T00:00:00Z",
+  "last_updated": "2026-04-06T00:00:00Z"
+}
