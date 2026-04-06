@@ -14,8 +14,8 @@ const emit = defineEmits<{
 <template>
   <div
     v-if="loading"
-    class="grid grid-cols-2 gap-3 sm:grid-cols-3
-      lg:grid-cols-4 xl:grid-cols-5"
+    class="grid grid-cols-1 gap-3 sm:grid-cols-2
+      lg:grid-cols-3 xl:grid-cols-4"
   >
     <div
       v-for="i in 12"
