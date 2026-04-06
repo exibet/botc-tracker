@@ -71,8 +71,9 @@ const editionLabel = computed(() =>
           sm:flex-row sm:items-center sm:gap-4"
       >
         <p
-          class="shrink-0 truncate text-base
-            font-semibold text-text sm:w-48"
+          class="shrink-0 text-base
+            font-semibold text-text
+            sm:w-56 sm:truncate"
         >
           {{ role.name_ua }}
         </p>
@@ -104,10 +105,6 @@ const editionLabel = computed(() =>
           class="border-t border-white/[0.04]
             px-4 pb-4 pt-3 sm:ml-[52px] sm:px-6"
         >
-          <p class="mb-3 text-sm leading-relaxed text-text/90">
-            {{ role.description_ua }}
-          </p>
-
           <p
             class="mb-1 text-sm font-medium text-text-muted"
           >
