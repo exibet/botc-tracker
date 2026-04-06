@@ -2,8 +2,8 @@
 import type { Role } from '~/composables/useRoles'
 import {
   EDITIONS,
-  getRoleTypeColor,
   getRoleTypeInfo,
+  getRoleTypeTagClass,
 } from '~/composables/useRoleTypes'
 
 const visible = defineModel<boolean>('visible')
@@ -14,8 +14,8 @@ const props = defineProps<{
 const typeInfo = computed(() =>
   props.role ? getRoleTypeInfo(props.role.type) : undefined,
 )
-const typeColor = computed(() =>
-  props.role ? getRoleTypeColor(props.role.type) : '',
+const tagClass = computed(() =>
+  props.role ? getRoleTypeTagClass(props.role.type) : '',
 )
 const editionLabel = computed(() =>
   EDITIONS.find(e => e.value === props.role?.edition)?.label
@@ -36,17 +36,20 @@ const editionLabel = computed(() =>
       class="flex flex-col gap-4"
     >
       <div class="flex items-start gap-4">
-        <div class="size-24 shrink-0">
+        <div
+          class="size-24 shrink-0 overflow-hidden
+            rounded-full ring-2 ring-surface-border"
+        >
           <img
             v-if="role.image_url"
             :src="role.image_url"
             :alt="role.name_en"
-            class="size-full rounded-full object-cover"
+            class="size-full object-cover"
           >
           <div
             v-else
             class="flex size-full items-center justify-center
-              rounded-full bg-surface-hover text-3xl text-text-muted"
+              bg-surface-hover text-3xl text-text-muted"
           >
             ?
           </div>
@@ -59,23 +62,16 @@ const editionLabel = computed(() =>
             {{ role.name_en }}
           </p>
           <div class="mt-2 flex gap-2">
-            <span
-              class="inline-block rounded-full px-2 py-0.5
-                text-xs font-semibold uppercase tracking-wider"
-              :style="{
-                backgroundColor:
-                  `oklch(from ${typeColor} l c h / 0.15)`,
-                color: typeColor,
-              }"
-            >
-              {{ typeInfo?.label ?? role.type }}
-            </span>
-            <span
-              class="inline-block rounded-full bg-surface-hover
-                px-2 py-0.5 text-xs text-text-muted"
-            >
-              {{ editionLabel }}
-            </span>
+            <Tag
+              :value="typeInfo?.label ?? role.type"
+              :class="tagClass"
+              rounded
+            />
+            <Tag
+              :value="editionLabel"
+              severity="secondary"
+              rounded
+            />
           </div>
         </div>
       </div>

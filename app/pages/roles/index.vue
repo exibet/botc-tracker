@@ -3,6 +3,7 @@ import type { Role } from '~/composables/useRoles'
 
 const {
   filteredRoles,
+  groupedRoles,
   filterType,
   filterEdition,
   searchQuery,
@@ -43,7 +44,7 @@ const isLoading = computed(() => status.value === 'pending')
     />
 
     <RolesRoleGrid
-      :roles="filteredRoles"
+      :groups="groupedRoles"
       :loading="isLoading"
       @select="onSelectRole"
     />
