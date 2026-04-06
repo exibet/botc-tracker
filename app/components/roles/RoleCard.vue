@@ -12,37 +12,45 @@ const emit = defineEmits<{
 
 <template>
   <div
-    class="group flex cursor-pointer flex-col items-center
-      rounded-lg bg-surface-card p-4 text-center
-      transition-all hover:-translate-y-0.5
-      hover:shadow-lg"
+    class="group flex cursor-pointer flex-col gap-3
+      rounded-xl bg-surface-card p-3
+      transition-colors duration-150
+      hover:bg-white/[0.06]"
     @click="emit('select', role)"
   >
-    <div
-      class="mx-auto mb-3 size-16 overflow-hidden
-        rounded-full ring-2 ring-surface-border
-        transition-all sm:size-20"
-    >
+    <div class="flex justify-center">
       <img
         v-if="role.image_url"
         :src="role.image_url"
         :alt="role.name_en"
-        class="size-full object-cover"
+        class="size-14 rounded-full object-cover
+          ring-1 ring-white/10"
         loading="lazy"
       >
       <div
         v-else
-        class="flex size-full items-center justify-center
-          bg-surface-hover text-2xl text-text-muted"
+        class="flex size-14 items-center justify-center
+          rounded-full bg-surface-hover
+          text-xl text-text-muted
+          ring-1 ring-white/10"
       >
         ?
       </div>
     </div>
 
-    <p
-      class="text-sm font-semibold leading-tight text-text"
-    >
-      {{ role.name_ua }}
-    </p>
+    <div class="flex min-w-0 flex-col gap-1">
+      <p
+        class="truncate text-sm font-semibold
+          leading-tight text-text"
+      >
+        {{ role.name_ua }}
+      </p>
+      <p
+        class="line-clamp-2 text-xs leading-snug
+          text-white/50"
+      >
+        {{ role.description_ua }}
+      </p>
+    </div>
   </div>
 </template>
