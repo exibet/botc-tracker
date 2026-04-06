@@ -52,20 +52,20 @@
 
 ### Tasks
 
-- [ ] Task 3.1: Створити `app/types/index.ts` — базові TypeScript interfaces (Role, Game, Player, GamePlayer)
-- [ ] Task 3.2: Створити `app/layouts/default.vue` — header + main content area + footer, max-w-7xl container
-- [ ] Task 3.3: Створити `app/components/layout/AppHeader.vue` — PrimeVue `Menubar` з навігацією (Головна, Ролі, Ігри, Гравці, Лідерборд), mobile hamburger → `Drawer`
-- [ ] Task 3.4: Створити `app/components/layout/AppFooter.vue` — простий footer з назвою ком'юніті
-- [ ] Task 3.5: Створити `app/app.vue` — NuxtLayout wrapper, підключення CSS
-- [ ] Task 3.6: Створити `app/pages/index.vue` — placeholder home page з BotC hero section ("Хроніки Годинникової Вежі")
-- [ ] Task 3.7: Створити placeholder pages: `app/pages/roles/index.vue`, `app/pages/games/index.vue`, `app/pages/players/index.vue`, `app/pages/leaderboard.vue` — кожна з заголовком та "Coming soon"
+- [x] Task 3.1: Створити `app/types/index.ts` — базові TypeScript interfaces (Role, Game, Player, GamePlayer)
+- [x] Task 3.2: Створити `app/layouts/default.vue` — header + main content area + footer, max-w-7xl container
+- [x] Task 3.3: Створити `app/components/layout/AppHeader.vue` — PrimeVue `Menubar` з навігацією (Головна, Ролі, Ігри, Гравці, Лідерборд), mobile hamburger → `Drawer`
+- [x] Task 3.4: Створити `app/components/layout/AppFooter.vue` — простий footer з назвою ком'юніті
+- [x] Task 3.5: Створити `app/app.vue` — NuxtLayout wrapper, підключення CSS
+- [x] Task 3.6: Створити `app/pages/index.vue` — placeholder home page з BotC hero section ("Хроніки Годинникової Вежі")
+- [x] Task 3.7: Створити placeholder pages: `app/pages/roles/index.vue`, `app/pages/games/index.vue`, `app/pages/players/index.vue`, `app/pages/leaderboard.vue` — кожна з заголовком та "Coming soon"
 
 ### Verification
 
-- [ ] Layout рендериться з header, content, footer
-- [ ] Навігація працює між placeholder сторінками
-- [ ] BotC кольори та шрифти застосовані
-- [ ] Mobile: hamburger меню відкриває Drawer
+- [x] Layout рендериться з header, content, footer
+- [x] Навігація працює між placeholder сторінками
+- [x] BotC кольори та шрифти застосовані
+- [x] Mobile: hamburger меню відкриває Drawer
 
 ## Phase 4: Smoke Tests
 
