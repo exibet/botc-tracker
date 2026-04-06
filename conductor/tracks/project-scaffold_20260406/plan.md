@@ -32,19 +32,19 @@
 
 ### Tasks
 
-- [ ] Task 2.1: Налаштувати `nuxt.config.ts` — модулі (PrimeVue, Supabase, ESLint), runtime config, app head (Google Fonts: Cinzel, Inter)
-- [ ] Task 2.2: Створити PrimeVue preset з BotC темою — `definePreset(Aura, {...})` з blood-red primary, night-sky surfaces, dark mode
-- [ ] Task 2.3: Створити `assets/css/main.css` з Tailwind imports та BotC CSS tokens (`@theme inline` з кольорами, шрифтами, radius з UI_DESIGN.md)
-- [ ] Task 2.4: Створити `eslint.config.mjs` — flat config з `@nuxt/eslint-config`, stylistic (no semi, single quotes), no-console: error
-- [ ] Task 2.5: Створити `vitest.config.ts` — environment nuxt, test paths `tests/unit/**`, `tests/components/**`
-- [ ] Task 2.6: Створити `playwright.config.ts` — baseURL localhost:3000, projects chromium/firefox/webkit
-- [ ] Task 2.7: Додати npm scripts в package.json: `lint`, `lint:check`, `test`, `test:run`, `test:e2e`, `test:e2e:ui`, `typecheck`
+- [x] Task 2.1: Налаштувати `nuxt.config.ts` — модулі (PrimeVue, Supabase, ESLint), runtime config, app head (Google Fonts: Cinzel, Inter)
+- [x] Task 2.2: Створити PrimeVue preset з BotC темою — `definePreset(Aura, {...})` з blood-red primary, night-sky surfaces, dark mode
+- [x] Task 2.3: Створити `assets/css/main.css` з Tailwind imports та BotC CSS tokens (`@theme inline` з кольорами, шрифтами, radius з UI_DESIGN.md)
+- [x] Task 2.4: Створити `eslint.config.mjs` — flat config з `@nuxt/eslint-config`, stylistic (no semi, single quotes), no-console: error
+- [x] Task 2.5: Створити `vitest.config.ts` — environment nuxt, test paths `tests/unit/**`, `tests/components/**`
+- [x] Task 2.6: Створити `playwright.config.ts` — baseURL localhost:3000, projects chromium/firefox/webkit
+- [x] Task 2.7: Додати npm scripts в package.json: `lint`, `lint:check`, `test`, `test:run`, `test:e2e`, `test:e2e:ui`, `typecheck`
 
 ### Verification
 
-- [ ] `npm run dev` запускається (порожня сторінка ок)
-- [ ] `npm run lint:check` проходить
-- [ ] `npm run typecheck` проходить
+- [x] `npm run dev` запускається (порожня сторінка ок)
+- [x] `npm run lint:check` проходить
+- [x] `npm run typecheck` проходить
 
 ## Phase 3: Layout + Base Components
 

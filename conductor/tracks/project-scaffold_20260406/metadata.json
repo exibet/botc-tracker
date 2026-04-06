@@ -2,15 +2,20 @@
   "id": "project-scaffold_20260406",
   "title": "Project Scaffold",
   "type": "feature",
-  "status": "pending",
+  "status": "in_progress",
   "created": "2026-04-06T00:00:00Z",
   "updated": "2026-04-06T00:00:00Z",
+  "current_phase": 1,
+  "current_task": "1.5",
   "phases": {
     "total": 4,
-    "completed": 0
+    "completed": 1
   },
   "tasks": {
     "total": 22,
-    "completed": 0
-  }
+    "completed": 5
+  },
+  "commits": [
+    "48fc1b7: chore: scaffold nuxt 4 project with all dependencies (project-scaffold_20260406)"
+  ]
 }

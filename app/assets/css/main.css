@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+:root {
+  /* Blood Red scale -- primary */
+  --botc-red-50: oklch(0.971 0.013 17.38);
+  --botc-red-100: oklch(0.936 0.032 17.717);
+  --botc-red-200: oklch(0.885 0.062 18.334);
+  --botc-red-300: oklch(0.808 0.114 19.571);
+  --botc-red-400: oklch(0.704 0.191 22.216);
+  --botc-red-500: oklch(0.637 0.237 25.331);
+  --botc-red-600: oklch(0.577 0.245 27.325);
+  --botc-red-700: oklch(0.505 0.213 27.518);
+  --botc-red-800: oklch(0.444 0.177 26.899);
+  --botc-red-900: oklch(0.396 0.141 25.723);
+  --botc-red-950: oklch(0.258 0.092 26.042);
+
+  /* Night Sky surface scale */
+  --botc-night-0: oklch(1.0 0.0 0);
+  --botc-night-50: oklch(0.965 0.004 264.542);
+  --botc-night-100: oklch(0.928 0.006 264.531);
+  --botc-night-200: oklch(0.87 0.012 264.531);
+  --botc-night-300: oklch(0.77 0.022 264.531);
+  --botc-night-400: oklch(0.63 0.03 264.531);
+  --botc-night-500: oklch(0.51 0.026 264.531);
+  --botc-night-600: oklch(0.44 0.022 264.531);
+  --botc-night-700: oklch(0.37 0.018 264.531);
+  --botc-night-800: oklch(0.27 0.014 264.531);
+  --botc-night-900: oklch(0.21 0.034 264.665);
+  --botc-night-950: oklch(0.145 0.028 269.61);
+
+  /* Accent: Candlelight Gold */
+  --botc-gold-400: oklch(0.828 0.12 81.2);
+  --botc-gold-500: oklch(0.769 0.145 70.08);
+  --botc-gold-600: oklch(0.666 0.16 52.98);
+
+  /* Role type colors */
+  --botc-townsfolk: oklch(0.623 0.214 259.815);
+  --botc-outsider: oklch(0.637 0.16 195.956);
+  --botc-minion: oklch(0.702 0.183 54.116);
+  --botc-demon: oklch(0.637 0.237 25.331);
+  --botc-traveller: oklch(0.627 0.192 292.788);
+  --botc-fabled: oklch(0.769 0.145 70.08);
+
+  /* Typography */
+  --font-heading: 'Cinzel', 'Georgia', serif;
+  --font-body: 'Inter', 'system-ui', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+@theme inline {
+  --color-primary: var(--botc-red-500);
+  --color-primary-hover: var(--botc-red-400);
+  --color-primary-active: var(--botc-red-600);
+
+  --color-surface: var(--botc-night-900);
+  --color-surface-card: var(--botc-night-800);
+  --color-surface-overlay: var(--botc-night-950);
+  --color-surface-hover: var(--botc-night-700);
+  --color-surface-border: var(--botc-night-600);
+  --color-surface-ground: var(--botc-night-950);
+
+  --color-accent: var(--botc-gold-500);
+  --color-accent-hover: var(--botc-gold-400);
+
+  --color-text: var(--botc-night-50);
+  --color-text-muted: var(--botc-night-400);
+  --color-text-subtle: var(--botc-night-500);
+
+  --color-townsfolk: var(--botc-townsfolk);
+  --color-outsider: var(--botc-outsider);
+  --color-minion: var(--botc-minion);
+  --color-demon: var(--botc-demon);
+  --color-traveller: var(--botc-traveller);
+  --color-fabled: var(--botc-fabled);
+
+  --color-good: oklch(0.723 0.219 149.579);
+  --color-evil: var(--botc-red-500);
+  --color-dead: var(--botc-night-500);
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
+  --font-family-heading: var(--font-heading);
+  --font-family-body: var(--font-body);
+  --font-family-mono: var(--font-mono);
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--botc-night-950);
+  color: var(--botc-night-50);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+}
