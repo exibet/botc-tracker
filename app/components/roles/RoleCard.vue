@@ -1,20 +1,13 @@
 <script setup lang="ts">
 import type { Role } from '~/composables/useRoles'
-import {
-  getRoleTypeInfo,
-  getRoleTypeTagClass,
-} from '~/composables/useRoleTypes'
 
-const props = defineProps<{
+defineProps<{
   role: Role
 }>()
 
 const emit = defineEmits<{
   select: [role: Role]
 }>()
-
-const typeInfo = computed(() => getRoleTypeInfo(props.role.type))
-const tagClass = computed(() => getRoleTypeTagClass(props.role.type))
 </script>
 
 <template>
@@ -51,15 +44,5 @@ const tagClass = computed(() => getRoleTypeTagClass(props.role.type))
     >
       {{ role.name_ua }}
     </p>
-    <p class="text-xs text-text-muted">
-      {{ role.name_en }}
-    </p>
-
-    <Tag
-      :value="typeInfo?.label ?? role.type"
-      :class="tagClass"
-      class="mt-2"
-      rounded
-    />
   </div>
 </template>
