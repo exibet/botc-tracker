@@ -5,15 +5,15 @@ const filterType = defineModel<string | null>('filterType')
 const filterEdition = defineModel<string | null>('filterEdition')
 const searchQuery = defineModel<string>('searchQuery')
 
-const typeOptions = computed(() => [
+const typeOptions = [
   { value: null, label: 'Усі типи' },
   ...ROLE_TYPES.map(t => ({ value: t.value, label: t.label })),
-])
+]
 
-const editionOptions = computed(() => [
+const editionOptions = [
   { value: null, label: 'Усі видання' },
   ...EDITIONS.map(e => ({ value: e.value, label: e.label })),
-])
+]
 </script>
 
 <template>
@@ -21,20 +21,22 @@ const editionOptions = computed(() => [
     class="flex flex-col gap-3 sm:flex-row sm:items-center"
   >
     <Select
-      v-model="filterType"
+      :model-value="filterType"
       :options="typeOptions"
       option-label="label"
       option-value="value"
       placeholder="Тип ролі"
       class="w-full sm:w-48"
+      @update:model-value="filterType = $event"
     />
     <Select
-      v-model="filterEdition"
+      :model-value="filterEdition"
       :options="editionOptions"
       option-label="label"
       option-value="value"
       placeholder="Видання"
       class="w-full sm:w-48"
+      @update:model-value="filterEdition = $event"
     />
     <InputText
       v-model="searchQuery"
