@@ -67,8 +67,8 @@ const emit = defineEmits<{
         </span>
       </h2>
       <div
-        class="grid grid-cols-2 gap-3 sm:grid-cols-3
-          md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
+        class="grid grid-cols-1 gap-3 sm:grid-cols-2
+          lg:grid-cols-3 xl:grid-cols-4"
       >
         <RolesRoleCard
           v-for="role in roles"
