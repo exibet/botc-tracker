@@ -56,7 +56,9 @@ export function useRoles() {
       )
     }
 
-    return result
+    return result.toSorted((a, b) =>
+      a.name_ua.localeCompare(b.name_ua, 'uk'),
+    )
   })
 
   const groupedRoles = computed(() => {
