@@ -31,15 +31,15 @@
 
 ### Tasks
 
-- [ ] Task 2.1: Створити `supabase/migrations/005_rls_policies.sql` — RLS для `roles` (everyone reads, admin manages)
-- [ ] Task 2.2: Додати RLS для `profiles` (everyone reads, user updates own)
-- [ ] Task 2.3: Додати RLS для `games` (everyone reads, admin CRUD)
-- [ ] Task 2.4: Додати RLS для `game_players` (everyone reads, player self-service insert/update/delete, admin all)
+- [x] Task 2.1: Створити `supabase/migrations/005_rls_policies.sql` — RLS для `roles` (everyone reads, admin manages)
+- [x] Task 2.2: Додати RLS для `profiles` (everyone reads, user updates own)
+- [x] Task 2.3: Додати RLS для `games` (everyone reads, admin CRUD)
+- [x] Task 2.4: Додати RLS для `game_players` (everyone reads, player self-service insert/update/delete, admin all)
 
 ### Verification
 
-- [ ] Всі RLS-політики в одному файлі міграції
-- [ ] Покриті всі ролі: guest (read), player (self-service), admin (full)
+- [x] Всі RLS-політики в одному файлі міграції
+- [x] Покриті всі ролі: guest (read), player (self-service), admin (full)
 
 ## Phase 3: Seed Script
 
