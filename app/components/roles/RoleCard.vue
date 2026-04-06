@@ -37,8 +37,9 @@ const editionLabel = computed(() =>
       : undefined"
   >
     <button
-      class="flex w-full cursor-pointer items-start
-        gap-3 px-4 py-3.5 text-left sm:px-6"
+      class="flex w-full cursor-pointer gap-3
+        px-4 py-3.5 text-left sm:px-6"
+      :class="expanded ? 'items-start' : 'items-center'"
       :aria-expanded="expanded"
       @click="expanded = !expanded"
     >
@@ -46,7 +47,7 @@ const editionLabel = computed(() =>
         v-if="role.image_url"
         :src="role.image_url"
         :alt="role.name_en"
-        class="mt-0.5 size-10 shrink-0 rounded-full
+        class="size-10 shrink-0 rounded-full
           object-cover ring-2"
         :style="{
           '--tw-ring-color':
@@ -56,7 +57,7 @@ const editionLabel = computed(() =>
       >
       <div
         v-else
-        class="mt-0.5 flex size-10 shrink-0 items-center
+        class="flex size-10 shrink-0 items-center
           justify-center rounded-full text-sm
           font-bold text-white/90 ring-2"
         :style="{
@@ -117,7 +118,7 @@ const editionLabel = computed(() =>
       </div>
 
       <i
-        class="mt-1.5 shrink-0 text-xs text-text-subtle
+        class="shrink-0 text-xs text-text-subtle
           transition-transform duration-200
           pi pi-chevron-down"
         :class="{ 'rotate-180': expanded }"
