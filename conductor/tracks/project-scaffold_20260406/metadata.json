@@ -2,20 +2,22 @@
   "id": "project-scaffold_20260406",
   "title": "Project Scaffold",
   "type": "feature",
-  "status": "in_progress",
+  "status": "complete",
   "created": "2026-04-06T00:00:00Z",
   "updated": "2026-04-06T00:00:00Z",
-  "current_phase": 1,
-  "current_task": "1.5",
+  "current_phase": 4,
+  "current_task": "4.3",
   "phases": {
     "total": 4,
-    "completed": 1
+    "completed": 4
   },
   "tasks": {
     "total": 22,
-    "completed": 5
+    "completed": 22
   },
   "commits": [
-    "48fc1b7: chore: scaffold nuxt 4 project with all dependencies (project-scaffold_20260406)"
+    "48fc1b7: chore: scaffold nuxt 4 project with all dependencies",
+    "0e5d799: feat(config): configure PrimeVue, Tailwind CSS 4, ESLint, Vitest, Playwright",
+    "c242bc6: feat(layout): add default layout, header, footer, placeholder pages"
   ]
 }

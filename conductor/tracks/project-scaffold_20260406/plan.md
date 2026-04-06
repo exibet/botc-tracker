@@ -3,7 +3,7 @@
 **Track ID:** project-scaffold_20260406
 **Spec:** [spec.md](./spec.md)
 **Created:** 2026-04-06
-**Status:** [~] In Progress
+**Status:** [x] Complete
 
 ## Overview
 
@@ -73,26 +73,26 @@
 
 ### Tasks
 
-- [ ] Task 4.1: Створити `tests/unit/smoke.test.ts` — базовий smoke test (assert true, перевірка що тестовий фреймворк працює)
-- [ ] Task 4.2: Створити `tests/components/layout/AppHeader.test.ts` — рендер AppHeader, перевірка навігаційних лінків
-- [ ] Task 4.3: Створити `tests/e2e/smoke.spec.ts` — Playwright: відкрити головну, перевірити title, перевірити навігацію на /roles
+- [x] Task 4.1: Створити `tests/unit/smoke.test.ts` — базовий smoke test (assert true, перевірка що тестовий фреймворк працює)
+- [x] Task 4.2: Створити `tests/components/layout/AppHeader.test.ts` — рендер AppHeader, перевірка навігаційних лінків
+- [x] Task 4.3: Створити `tests/e2e/smoke.spec.ts` — Playwright: відкрити головну, перевірити title, перевірити навігацію на /roles
 
 ### Verification
 
-- [ ] `npm run test:run` — всі тести проходять
-- [ ] `npm run test:e2e` — E2E smoke test проходить
+- [x] `npm run test:run` — всі тести проходять
+- [x] `npm run test:e2e` — E2E smoke test проходить
 
 ## Final Verification
 
-- [ ] All acceptance criteria met
-- [ ] `npm run dev` — без помилок
-- [ ] `npm run lint:check` — проходить
-- [ ] `npm run typecheck` — проходить
-- [ ] `npm run test:run` — проходить
-- [ ] `npm run test:e2e` — проходить
-- [ ] BotC тема (dark, blood-red, Cinzel) візуально працює
-- [ ] Layout responsive (desktop + mobile)
-- [ ] Ready for next track (roles catalog)
+- [x] All acceptance criteria met
+- [x] `npm run dev` — без помилок
+- [x] `npm run lint:check` — проходить
+- [x] `npm run typecheck` — проходить
+- [x] `npm run test:run` — проходить
+- [x] `npm run test:e2e` — проходить
+- [x] BotC тема (dark, blood-red, Cinzel) візуально працює
+- [x] Layout responsive (desktop + mobile)
+- [x] Ready for next track (roles catalog)
 
 ---
 
