@@ -47,18 +47,18 @@
 
 ### Tasks
 
-- [ ] Task 3.1: Створити `scripts/seed-roles.ts` — fetch JSON з `json-on-the-clocktower` GitHub, парсинг `character_by_id`
-- [ ] Task 3.2: Додати маппінг полів — name→name_en, ability→description_en, team→type, edition→edition, remote_image→image_url, night/setup/reminders→meta JSONB
-- [ ] Task 3.3: Додати фільтрацію мета-записів (DAWN, DUSK, DEMON, MINION)
-- [ ] Task 3.4: Додати генерацію українських перекладів (name_ua, description_ua) — AI-assisted batch або статичний маппінг
-- [ ] Task 3.5: Генерувати `supabase/seed/roles.sql` з INSERT ON CONFLICT (upsert) для перезапуску
-- [ ] Task 3.6: Додати npm script `seed:roles` в package.json
+- [x] Task 3.1: Створити `scripts/seed-roles.ts` — fetch JSON з `json-on-the-clocktower` GitHub, парсинг `character_by_id`
+- [x] Task 3.2: Додати маппінг полів — name→name_en, ability→description_en, team→type, edition→edition, remote_image→image_url, night/setup/reminders→meta JSONB
+- [x] Task 3.3: Додати фільтрацію мета-записів (DAWN, DUSK, DEMON, MINION)
+- [x] Task 3.4: Додати генерацію українських перекладів (name_ua, description_ua) — AI-assisted batch або статичний маппінг
+- [x] Task 3.5: Генерувати `supabase/seed/roles.sql` з INSERT ON CONFLICT (upsert) для перезапуску
+- [x] Task 3.6: Додати npm script `seed:roles` в package.json
 
 ### Verification
 
-- [ ] Скрипт запускається без помилок (`npm run seed:roles`)
-- [ ] `supabase/seed/roles.sql` генерується з ~154 ролями
-- [ ] Кожна роль має name_en, name_ua, description_en, description_ua
+- [x] Скрипт запускається без помилок (`npm run seed:roles`)
+- [x] `supabase/seed/roles.sql` генерується з ~160 ролями
+- [x] Кожна роль має name_en, name_ua, description_en, description_ua
 
 ## Phase 4: Apply & Verify
 
