@@ -16,12 +16,17 @@ const expanded = ref(false)
 const rowRef = ref<HTMLElement>()
 
 function toggle() {
+  const el = rowRef.value
+  const offsetBefore = el?.getBoundingClientRect().top ?? 0
   expanded.value = !expanded.value
-  if (expanded.value) {
-    nextTick(() => {
-      rowRef.value?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
-    })
-  }
+  nextTick(() => {
+    if (!el) return
+    const offsetAfter = el.getBoundingClientRect().top
+    const delta = offsetAfter - offsetBefore
+    if (delta !== 0) {
+      window.scrollBy({ top: delta })
+    }
+  })
 }
 
 const typeInfo = computed(() => getRoleTypeInfo(props.role.type))
