@@ -13,6 +13,16 @@ const props = defineProps<{
 }>()
 
 const expanded = ref(false)
+const rowRef = ref<HTMLElement>()
+
+function toggle() {
+  expanded.value = !expanded.value
+  if (expanded.value) {
+    nextTick(() => {
+      rowRef.value?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+    })
+  }
+}
 
 const typeInfo = computed(() => getRoleTypeInfo(props.role.type))
 const typeColor = computed(() => getRoleTypeColor(props.role.type))
@@ -25,6 +35,7 @@ const editionLabel = computed(() =>
 
 <template>
   <div
+    ref="rowRef"
     class="transition-colors duration-150"
     :class="[
       expanded
@@ -41,7 +52,7 @@ const editionLabel = computed(() =>
         px-4 py-3.5 text-left sm:px-6"
       :class="expanded ? 'items-start' : 'items-center'"
       :aria-expanded="expanded"
-      @click="expanded = !expanded"
+      @click="toggle"
     >
       <img
         v-if="role.image_url"
