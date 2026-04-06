@@ -30,15 +30,14 @@ const editionLabel = computed(() =>
       expanded
         ? 'border-l-2'
         : 'border-l-2 border-l-transparent hover:bg-white/[0.03]',
-      !isLast && !expanded ? 'border-b border-white/[0.06]' : '',
-      expanded && !isLast ? 'border-b border-white/[0.06]' : '',
+      !isLast ? 'border-b border-white/[0.06]' : '',
     ]"
     :style="expanded
       ? { borderLeftColor: typeColor }
       : undefined"
   >
     <button
-      class="flex w-full cursor-pointer items-center
+      class="flex w-full cursor-pointer items-start
         gap-3 px-4 py-3.5 text-left sm:px-6"
       :aria-expanded="expanded"
       @click="expanded = !expanded"
@@ -47,77 +46,61 @@ const editionLabel = computed(() =>
         v-if="role.image_url"
         :src="role.image_url"
         :alt="role.name_en"
-        class="size-10 shrink-0 rounded-full object-cover ring-2"
+        class="mt-0.5 size-10 shrink-0 rounded-full
+          object-cover ring-2"
         :style="{
-          '--tw-ring-color': `color-mix(in srgb, ${typeColor} 40%, transparent)`,
+          '--tw-ring-color':
+            `color-mix(in srgb, ${typeColor} 40%, transparent)`,
         }"
         loading="lazy"
       >
       <div
         v-else
-        class="flex size-10 shrink-0 items-center
+        class="mt-0.5 flex size-10 shrink-0 items-center
           justify-center rounded-full text-sm
           font-bold text-white/90 ring-2"
         :style="{
-          'background-color': `color-mix(in srgb, ${typeColor} 20%, transparent)`,
-          '--tw-ring-color': `color-mix(in srgb, ${typeColor} 40%, transparent)`,
+          'background-color':
+            `color-mix(in srgb, ${typeColor} 20%, transparent)`,
+          '--tw-ring-color':
+            `color-mix(in srgb, ${typeColor} 40%, transparent)`,
         }"
       >
         {{ role.name_ua.charAt(0) }}
       </div>
 
-      <div
-        class="flex min-w-0 flex-1 flex-col
-          sm:flex-row sm:items-center sm:gap-4"
-      >
-        <p
-          class="shrink-0 text-base
-            font-semibold text-text
-            sm:w-56 sm:truncate"
-        >
-          {{ role.name_ua }}
-        </p>
-        <p
-          class="mt-0.5 truncate text-sm
-            text-text-muted sm:mt-0 sm:flex-1"
-        >
-          {{ role.description_ua }}
-        </p>
-      </div>
-
-      <i
-        class="pi pi-chevron-down shrink-0
-          text-xs text-text-subtle transition-transform
-          duration-200"
-        :class="{ 'rotate-180': expanded }"
-      />
-    </button>
-
-    <div
-      class="grid transition-[grid-template-rows]
-        duration-200 ease-out"
-      :class="expanded
-        ? 'grid-rows-[1fr]'
-        : 'grid-rows-[0fr]'"
-    >
-      <div class="min-h-0 overflow-hidden">
+      <div class="min-w-0 flex-1">
         <div
-          class="border-t border-white/[0.04]
-            px-4 pb-4 pt-3 sm:ml-[52px] sm:px-6"
+          class="flex flex-col gap-1
+            sm:flex-row sm:items-baseline sm:gap-4"
         >
           <p
-            class="mb-1 text-sm font-medium text-text-muted"
+            class="shrink-0 text-base font-semibold
+              text-text sm:w-56 sm:truncate"
           >
+            {{ role.name_ua }}
+          </p>
+          <p
+            class="text-sm text-text-muted sm:flex-1"
+            :class="expanded
+              ? 'whitespace-normal'
+              : 'truncate'"
+          >
+            {{ role.description_ua }}
+          </p>
+        </div>
+
+        <div
+          v-if="expanded"
+          class="mt-3 space-y-1 text-sm"
+        >
+          <p class="font-medium text-white/80">
             {{ role.name_en }}
           </p>
-          <p
-            class="mb-4 text-sm leading-relaxed
-              text-text-subtle"
-          >
+          <p class="leading-relaxed text-text-subtle">
             {{ role.description_en }}
           </p>
-
-          <div class="flex flex-wrap gap-2">
+          <div class="flex flex-wrap gap-2 pt-2">
             <Tag
               :value="typeInfo?.label ?? role.type"
               :class="tagClass"
@@ -131,6 +114,13 @@ const editionLabel = computed(() =>
           </div>
         </div>
       </div>
-    </div>
+
+      <i
+        class="mt-1.5 shrink-0 text-xs text-text-subtle
+          transition-transform duration-200
+          pi pi-chevron-down"
+        :class="{ 'rotate-180': expanded }"
+      />
+    </button>
   </div>
 </template>
