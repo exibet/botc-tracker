@@ -1,35 +1,31 @@
 <script setup lang="ts">
-import type { Role, RoleGrouped } from '~/composables/useRoles'
+import type { RoleGrouped } from '~/composables/useRoles'
 
 defineProps<{
   groups: RoleGrouped[]
   loading: boolean
-}>()
-
-const emit = defineEmits<{
-  select: [role: Role]
 }>()
 </script>
 
 <template>
   <div
     v-if="loading"
-    class="grid grid-cols-1 gap-3 sm:grid-cols-2
-      lg:grid-cols-3 xl:grid-cols-4"
+    class="flex flex-col gap-2"
   >
     <div
-      v-for="i in 12"
+      v-for="i in 8"
       :key="i"
-      class="flex animate-pulse flex-col items-center
-        rounded-lg bg-surface-card p-3"
+      class="flex animate-pulse items-center gap-3
+        rounded-lg bg-surface-card px-4 py-3"
     >
       <div
-        class="mb-2 size-16 rounded-full bg-surface-hover
-          sm:size-20"
+        class="size-10 shrink-0 rounded-full
+          bg-surface-hover"
       />
-      <div class="mb-1 h-4 w-20 rounded bg-surface-hover" />
-      <div class="h-3 w-16 rounded bg-surface-hover" />
-      <div class="mt-2 h-4 w-14 rounded-full bg-surface-hover" />
+      <div class="flex flex-1 flex-col gap-1">
+        <div class="h-4 w-32 rounded bg-surface-hover" />
+        <div class="h-3 w-full rounded bg-surface-hover" />
+      </div>
     </div>
   </div>
 
@@ -38,9 +34,7 @@ const emit = defineEmits<{
     class="flex flex-col items-center justify-center
       py-16 text-text-muted"
   >
-    <span class="mb-2 text-4xl">
-      ~
-    </span>
+    <span class="mb-2 text-4xl">~</span>
     <p class="text-lg">
       Ролей не знайдено
     </p>
@@ -51,30 +45,38 @@ const emit = defineEmits<{
 
   <div
     v-else
-    class="flex flex-col gap-8"
+    class="flex flex-col gap-6"
   >
     <section
       v-for="{ type, roles } in groups"
       :key="type.value"
     >
-      <h2
-        class="mb-3 font-heading text-lg font-semibold"
-        :style="{ color: type.color }"
+      <div
+        class="sticky top-0 z-10 flex items-center
+          gap-2 border-b border-surface-card
+          bg-surface-ground/95 px-4 py-2
+          backdrop-blur-sm sm:px-6"
       >
-        {{ type.label }}
-        <span class="text-sm font-normal text-text-muted">
+        <span
+          class="inline-block size-2.5 rounded-full"
+          :style="{ backgroundColor: type.color }"
+        />
+        <h2
+          class="font-heading text-sm font-semibold
+            uppercase tracking-widest"
+          :style="{ color: type.color }"
+        >
+          {{ type.label }}
+        </h2>
+        <span class="text-xs text-text-muted">
           ({{ roles.length }})
         </span>
-      </h2>
-      <div
-        class="grid grid-cols-1 gap-3 sm:grid-cols-2
-          lg:grid-cols-3 xl:grid-cols-4"
-      >
+      </div>
+      <div class="flex flex-col">
         <RolesRoleCard
           v-for="role in roles"
           :key="role.id"
           :role="role"
-          @select="emit('select', role)"
         />
       </div>
     </section>

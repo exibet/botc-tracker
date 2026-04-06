@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { Role } from '~/composables/useRoles'
-
 const {
   filteredRoles,
   groupedRoles,
@@ -9,14 +7,6 @@ const {
   searchQuery,
   status,
 } = useRoles()
-
-const selectedRole = ref<Role | null>(null)
-const dialogVisible = ref(false)
-
-function onSelectRole(role: Role) {
-  selectedRole.value = role
-  dialogVisible.value = true
-}
 
 const isLoading = computed(() => status.value === 'pending')
 </script>
@@ -46,12 +36,6 @@ const isLoading = computed(() => status.value === 'pending')
     <RolesRoleGrid
       :groups="groupedRoles"
       :loading="isLoading"
-      @select="onSelectRole"
-    />
-
-    <RolesRoleDetailDialog
-      v-model:visible="dialogVisible"
-      :role="selectedRole"
     />
   </div>
 </template>
