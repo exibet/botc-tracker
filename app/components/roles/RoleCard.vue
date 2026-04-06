@@ -82,7 +82,7 @@ const editionLabel = computed(() =>
             {{ role.name_ua }}
           </p>
           <p
-            class="text-sm text-text sm:flex-1"
+            class="text-sm text-text-muted sm:flex-1"
             :class="expanded
               ? 'whitespace-normal'
               : 'truncate'"
