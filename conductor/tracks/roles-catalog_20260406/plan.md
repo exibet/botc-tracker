@@ -3,7 +3,7 @@
 **Track ID:** roles-catalog_20260406
 **Spec:** [spec.md](./spec.md)
 **Created:** 2026-04-06
-**Status:** [~] In Progress
+**Status:** [x] Complete
 
 ## Overview
 
@@ -66,9 +66,9 @@ Unit тести для composable та component тести.
 
 ### Tasks
 
-- [ ] Task 4.1: Створити `tests/unit/composables/useRoleTypes.test.ts` — перевірка констант, кольорів, label
-- [ ] Task 4.2: Створити `tests/components/roles/RoleCard.test.ts` — рендер з props, type badge колір, click event
-- [ ] Task 4.3: Створити `tests/components/roles/RoleFilter.test.ts` — рендер фільтрів, emit events при зміні
+- [x] Task 4.1: Створити `tests/unit/composables/useRoleTypes.test.ts` — перевірка констант, кольорів, label
+- [x] Task 4.2: Створити `tests/components/roles/RoleCard.test.ts` — рендер з props, type badge колір, click event
+- [x] Task 4.3: Створити `tests/components/roles/RoleFilter.test.ts` — рендер фільтрів, emit events при зміні
 
 ### Verification
 

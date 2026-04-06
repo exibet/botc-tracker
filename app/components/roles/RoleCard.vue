@@ -77,7 +77,7 @@ const editionLabel = computed(() =>
         >
           <p
             class="shrink-0 text-base font-semibold
-              text-text sm:w-56 sm:truncate"
+              text-text sm:w-40"
           >
             {{ role.name_ua }}
           </p>
@@ -94,7 +94,7 @@ const editionLabel = computed(() =>
         <div
           v-if="expanded"
           class="mt-3 space-y-1 text-sm
-            sm:ml-56 sm:pl-4"
+            sm:ml-40 sm:pl-4"
         >
           <p class="font-medium text-white/80">
             {{ role.name_en }}
