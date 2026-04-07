@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { Role, RoleType, Alignment } from '~/types'
+import type { Role, Alignment } from '~/types'
 import type { GamePlayerWithDetails }
   from '~/composables/useGamePlayers'
 import {
-  getRoleTypeInfo,
+  getRoleTypeLabel,
   getRoleTypeTagClass,
   getAlignmentForRoleType,
 } from '~/composables/useRoleTypes'
@@ -30,8 +30,6 @@ const emit = defineEmits<{
   }]
 }>()
 
-const alignmentFromType = getAlignmentForRoleType
-
 // --- State ---
 const selectedRole = ref<Role | null>(null)
 const alignmentValue = ref<Alignment>('good')
@@ -51,7 +49,7 @@ const activeRole = computed(() =>
 
 const derivedAlignment = computed<Alignment | null>(() =>
   activeRole.value
-    ? alignmentFromType(activeRole.value.type)
+    ? getAlignmentForRoleType(activeRole.value.type)
     : null,
 )
 
@@ -73,45 +71,49 @@ const canSubmit = computed(() =>
 
 // --- Helpers ---
 function setAlignmentFromRole(role: Role) {
-  const derived = alignmentFromType(role.type)
+  const derived = getAlignmentForRoleType(role.type)
   if (derived) {
     alignmentValue.value = derived
     alignmentManual.value = false
   }
 }
 
-function roleTypeLabel(type: string): string {
-  return getRoleTypeInfo(type)?.label ?? type
-}
+const roleTypeLabel = getRoleTypeLabel
 
 // --- Init from entry ---
 watch(() => props.entry, (entry) => {
   if (!entry) return
 
-  selectedRole.value = props.roles.find(
-    r => r.id === entry.starting_role.id,
-  ) ?? null
+  selectedRole.value = entry.starting_role
+    ? props.roles.find(r => r.id === entry.starting_role!.id) ?? null
+    : null
 
   const effectiveAlignment = entry.alignment_end
     ?? entry.alignment_start
+    ?? 'good'
   alignmentValue.value = effectiveAlignment
 
   const finalRole = (
     entry.ending_role
+    && entry.starting_role
     && entry.ending_role.id !== entry.starting_role.id
   )
     ? entry.ending_role
     : entry.starting_role
-  const derived = alignmentFromType(
-    finalRole.type as RoleType,
-  )
-  alignmentManual.value = derived !== null
-    && effectiveAlignment !== derived
+  if (finalRole) {
+    const derived = getAlignmentForRoleType(finalRole.type)
+    alignmentManual.value = derived !== null
+      && effectiveAlignment !== derived
+  }
+  else {
+    alignmentManual.value = false
+  }
 
   isAlive.value = entry.is_alive
 
   if (
-    entry.ending_role
+    entry.starting_role
+    && entry.ending_role
     && entry.ending_role.id !== entry.starting_role.id
   ) {
     showEndingRole.value = true
@@ -136,11 +138,11 @@ watch(() => props.visible, (val) => {
 
 // --- Handlers ---
 function handlePickerSelect(role: Role) {
-  if (activePicker.value === 'starting') {
-    selectedRole.value = role
-  }
-  else if (activePicker.value === 'ending') {
+  if (activePicker.value === 'ending') {
     endingRole.value = role
+  }
+  else {
+    selectedRole.value = role
   }
   setAlignmentFromRole(role)
   activePicker.value = null
@@ -171,7 +173,7 @@ function handleSubmit() {
   if (!selectedRole.value || !props.entry) return
   saving.value = true
 
-  const startAlign = alignmentFromType(selectedRole.value.type)
+  const startAlign = getAlignmentForRoleType(selectedRole.value.type)
     ?? alignmentValue.value
   const alignmentChanged = alignment.value !== startAlign
 
@@ -224,8 +226,8 @@ function handleHide() {
           Роль
         </label>
 
-        <!-- Picker (replaces rows when open) -->
-        <template v-if="activePicker !== null">
+        <!-- Picker (when open or no role set) -->
+        <template v-if="activePicker !== null || !selectedRole">
           <div class="flex flex-col gap-2">
             <div
               class="flex items-center justify-between
@@ -235,12 +237,13 @@ function handleHide() {
                 class="text-sm font-medium text-text-muted"
               >
                 {{
-                  activePicker === 'starting'
-                    ? 'Оберіть початкову роль'
-                    : 'Оберіть кінцеву роль'
+                  activePicker === 'ending'
+                    ? 'Оберіть кінцеву роль'
+                    : 'Оберіть роль'
                 }}
               </span>
               <Button
+                v-if="selectedRole"
                 label="Готово"
                 severity="secondary"
                 text
@@ -251,9 +254,9 @@ function handleHide() {
             <RolePickerPanel
               :roles="roles"
               :selected-id="
-                activePicker === 'starting'
-                  ? (selectedRole?.id ?? null)
-                  : (endingRole?.id ?? null)
+                activePicker === 'ending'
+                  ? (endingRole?.id ?? null)
+                  : (selectedRole?.id ?? null)
               "
               compact
               @select="handlePickerSelect"
@@ -454,6 +457,7 @@ function handleHide() {
         <Button
           label="Зберегти"
           icon="pi pi-check"
+          severity="success"
           :disabled="!canSubmit"
           :loading="saving"
           @click="handleSubmit"

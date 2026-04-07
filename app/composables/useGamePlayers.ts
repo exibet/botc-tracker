@@ -14,7 +14,7 @@ export interface GamePlayerWithDetails extends GamePlayer {
     nickname: string
     avatar_url: string | null
   }
-  starting_role: RoleRef
+  starting_role: RoleRef | null
   ending_role: RoleRef | null
 }
 
@@ -44,9 +44,9 @@ export function useGamePlayers(gameId: Ref<string> | string) {
 
   async function add(entry: {
     player_id: string
-    starting_role_id: string
+    starting_role_id?: string | null
     ending_role_id?: string | null
-    alignment_start: string
+    alignment_start?: string | null
     alignment_end?: string | null
     is_alive?: boolean
     is_mvp?: boolean

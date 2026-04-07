@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import type { PlayerEntry } from '~/types'
 import GameForm from '~/components/games/GameForm.vue'
-import PlayerRoleSelector
-  from '~/components/games/PlayerRoleSelector.vue'
 
 definePageMeta({ middleware: ['admin'] })
 
@@ -10,11 +7,8 @@ const router = useRouter()
 const toast = useToast()
 const { create } = useGames()
 const { players } = usePlayers()
-const { roles } = useRoles()
-const { profile } = useAuth()
 
 const gameFormRef = ref()
-const playerEntries = ref<PlayerEntry[]>([])
 const saving = ref(false)
 
 function triggerSubmit() {
@@ -31,16 +25,10 @@ async function handleSubmit(data: {
 }) {
   saving.value = true
   try {
-    const game = await create({
+    await create({
       ...data,
-      player_count: playerEntries.value.length || null,
+      player_count: 0,
     })
-
-    const { syncFromEntries } = useGamePlayers(game.id)
-    await syncFromEntries(
-      playerEntries.value,
-      profile.value!.id,
-    )
 
     clearNuxtData('games')
 
@@ -49,7 +37,7 @@ async function handleSubmit(data: {
       summary: 'Гру створено',
       life: 3000,
     })
-    router.push(`/games/${game.id}`)
+    router.push('/games')
   }
   catch (err) {
     toast.add({
@@ -86,14 +74,6 @@ async function handleSubmit(data: {
       :loading="saving"
       @submit="handleSubmit"
     />
-
-    <div class="mt-8">
-      <PlayerRoleSelector
-        v-model="playerEntries"
-        :players="players ?? []"
-        :roles="roles ?? []"
-      />
-    </div>
 
     <!-- Action bar -->
     <div

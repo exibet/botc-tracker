@@ -57,7 +57,6 @@ const grouped = computed(() => {
 
 function handleSelect(role: Role) {
   emit('select', role)
-  search.value = ''
 }
 </script>
 

@@ -8,6 +8,8 @@ import JoinGameDialog
   from '~/components/games/JoinGameDialog.vue'
 import EditEntryDialog
   from '~/components/games/EditEntryDialog.vue'
+import AddPlayerDialog
+  from '~/components/games/AddPlayerDialog.vue'
 import {
   getScriptLabel,
   getWinnerInfo,
@@ -23,8 +25,10 @@ const {
   status: playersStatus,
   add: addPlayer,
   update: updatePlayer,
+  remove: removePlayer,
 } = useGamePlayers(gameId)
 const { roles } = useRoles()
+const { players: allPlayers } = usePlayers()
 const {
   isAuthenticated,
   isAdmin,
@@ -38,9 +42,8 @@ const { data: game, status: gameStatus } = useAsyncData(
 
 function formatDate(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString('uk-UA', {
-    weekday: 'long',
     day: 'numeric',
-    month: 'long',
+    month: 'short',
     year: 'numeric',
   })
 }
@@ -58,17 +61,12 @@ const isPlayerInGame = computed(() => {
 
 const showJoinDialog = ref(false)
 
-async function handleJoin(data: {
-  starting_role_id: string
-  alignment_start: Alignment
-}) {
+async function handleJoin() {
   if (!profile.value) return
   showJoinDialog.value = false
   try {
     await addPlayer({
       player_id: profile.value.id,
-      starting_role_id: data.starting_role_id,
-      alignment_start: data.alignment_start,
       added_by: profile.value.id,
     })
     toast.add({
@@ -125,6 +123,74 @@ async function handleUpdated(data: {
       severity: 'error',
       summary: 'Помилка',
       detail: 'Не вдалося оновити запис',
+      life: 5000,
+    })
+  }
+}
+
+// --- Admin: add player ---
+const showAddPlayerDialog = ref(false)
+
+const existingPlayerIds = computed(() =>
+  players.value?.map(p => p.player.id) ?? [],
+)
+
+async function handleAddPlayer(playerId: string) {
+  if (!profile.value) return
+  showAddPlayerDialog.value = false
+  try {
+    await addPlayer({
+      player_id: playerId,
+      added_by: profile.value.id,
+    })
+    toast.add({
+      severity: 'success',
+      summary: 'Успішно',
+      detail: 'Гравця додано',
+      life: 3000,
+    })
+  }
+  catch {
+    toast.add({
+      severity: 'error',
+      summary: 'Помилка',
+      detail: 'Не вдалося додати гравця',
+      life: 5000,
+    })
+  }
+}
+
+// --- Admin: delete player ---
+const confirm = useConfirm()
+
+function handleDeleteEntry(entry: GamePlayerWithDetails) {
+  confirm.require({
+    message: `Видалити ${entry.player.nickname} з гри?`,
+    header: 'Підтвердження',
+    icon: 'pi pi-exclamation-triangle',
+    acceptLabel: 'Видалити',
+    rejectLabel: 'Скасувати',
+    acceptProps: { severity: 'danger' },
+    rejectProps: { severity: 'secondary', text: true },
+    accept: () => doDelete(entry.id),
+  })
+}
+
+async function doDelete(entryId: string) {
+  try {
+    await removePlayer(entryId)
+    toast.add({
+      severity: 'success',
+      summary: 'Успішно',
+      detail: 'Гравця видалено',
+      life: 3000,
+    })
+  }
+  catch {
+    toast.add({
+      severity: 'error',
+      summary: 'Помилка',
+      detail: 'Не вдалося видалити гравця',
       life: 5000,
     })
   }
@@ -274,30 +340,32 @@ async function handleUpdated(data: {
                 : 'bg-[color-mix(in_srgb,var(--color-evil)_15%,transparent)]',
             ]"
           >
-            <i
-              class="text-2xl sm:text-3xl"
-              :class="[
-                winnerInfo?.icon,
-                game.winner === 'good'
-                  ? 'text-good'
-                  : 'text-evil',
-              ]"
-            />
             <div>
               <p class="text-xs uppercase tracking-wider text-text-muted">
                 Переможець
               </p>
-              <p
-                class="font-heading text-lg font-bold
-                  sm:text-xl"
-                :class="[
-                  game.winner === 'good'
-                    ? 'text-good'
-                    : 'text-evil',
-                ]"
-              >
-                {{ winnerInfo?.labelUa ?? game.winner }}
-              </p>
+              <div class="flex items-center gap-2">
+                <i
+                  class="text-lg sm:text-xl"
+                  :class="[
+                    winnerInfo?.icon,
+                    game.winner === 'good'
+                      ? 'text-good'
+                      : 'text-evil',
+                  ]"
+                />
+                <p
+                  class="font-heading text-lg font-bold
+                    sm:text-xl"
+                  :class="[
+                    game.winner === 'good'
+                      ? 'text-good'
+                      : 'text-evil',
+                  ]"
+                >
+                  {{ winnerInfo?.labelUa ?? game.winner }}
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -315,12 +383,36 @@ async function handleUpdated(data: {
 
       <!-- Players section -->
       <div>
-        <h2
-          class="mb-4 font-heading text-xl font-semibold
-            tracking-wide sm:text-2xl"
-        >
-          Гравці
-        </h2>
+        <div class="mb-4 flex items-center justify-between">
+          <h2
+            class="font-heading text-xl font-semibold
+              tracking-wide sm:text-2xl"
+          >
+            Гравці
+          </h2>
+          <div
+            v-if="isAuthenticated"
+            class="flex gap-2"
+          >
+            <Button
+              v-if="!isPlayerInGame"
+              label="Приєднатися"
+              icon="pi pi-plus"
+              severity="success"
+              size="small"
+              @click="showJoinDialog = true"
+            />
+            <Button
+              v-if="isAdmin"
+              label="Додати гравця"
+              icon="pi pi-user-plus"
+              severity="secondary"
+              outlined
+              size="small"
+              @click="showAddPlayerDialog = true"
+            />
+          </div>
+        </div>
 
         <div v-if="playersStatus === 'pending'">
           <Skeleton
@@ -332,27 +424,16 @@ async function handleUpdated(data: {
           v-else-if="players"
           :players="players"
           :current-user-id="profile?.id ?? null"
+          :is-admin="isAdmin"
           @edit-entry="handleEditEntry"
+          @delete-entry="handleDeleteEntry"
         />
-
-        <!-- Join game button -->
-        <div
-          v-if="isAuthenticated && !isPlayerInGame"
-          class="mt-4"
-        >
-          <Button
-            label="Приєднатися до гри"
-            icon="pi pi-plus"
-            @click="showJoinDialog = true"
-          />
-        </div>
       </div>
     </template>
 
     <!-- Dialogs outside v-if/else chain -->
     <JoinGameDialog
       v-model:visible="showJoinDialog"
-      :roles="roles ?? []"
       @join="handleJoin"
     />
 
@@ -362,5 +443,14 @@ async function handleUpdated(data: {
       :roles="roles ?? []"
       @updated="handleUpdated"
     />
+
+    <AddPlayerDialog
+      v-model:visible="showAddPlayerDialog"
+      :players="allPlayers ?? []"
+      :existing-player-ids="existingPlayerIds"
+      @add="handleAddPlayer"
+    />
+
+    <ConfirmDialog />
   </div>
 </template>

@@ -62,9 +62,9 @@ export interface GamePlayer {
   id: string
   game_id: string
   player_id: string
-  starting_role_id: string
+  starting_role_id: string | null
   ending_role_id: string | null
-  alignment_start: Alignment
+  alignment_start: Alignment | null
   alignment_end: Alignment | null
   is_alive: boolean
   is_mvp: boolean

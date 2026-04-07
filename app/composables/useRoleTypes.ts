@@ -39,6 +39,10 @@ export function getRoleTypeTagClass(type: string): string {
   return `p-tag-${type.toLowerCase()}`
 }
 
+export function getRoleTypeLabel(type: string): string {
+  return getRoleTypeInfo(type)?.label ?? type
+}
+
 export function getAlignmentForRoleType(
   type: string,
 ): 'good' | 'evil' | null {

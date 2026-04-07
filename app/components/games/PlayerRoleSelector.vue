@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Alignment, PlayerEntry, Profile, Role } from '~/types'
 import {
-  getRoleTypeInfo,
+  getRoleTypeLabel,
   getRoleTypeTagClass,
   getAlignmentForRoleType,
 } from '~/composables/useRoleTypes'
@@ -19,25 +19,11 @@ const emit = defineEmits<{
   'update:modelValue': [entries: PlayerEntry[]]
 }>()
 
-const selectedPlayer = ref<string | null>(null)
-const selectedRole = ref<string | null>(null)
-const showRolePicker = ref(false)
-
 // Track which players have the change section expanded
 const expandedChanges = ref<Set<string>>(new Set())
 
 // Track ending role picker visibility per player
 const showEndingRolePicker = ref<Map<string, boolean>>(new Map())
-
-const availablePlayers = computed(() =>
-  (props.players ?? []).filter(
-    p => !props.modelValue.some(e => e.player_id === p.id),
-  ),
-)
-
-const selectedRoleObj = computed(() =>
-  props.roles?.find(r => r.id === selectedRole.value) ?? null,
-)
 
 function getRoleImage(roleId: string): string | null {
   return props.roles?.find(r => r.id === roleId)?.image_url
@@ -68,48 +54,8 @@ function getFinalRoleType(entry: PlayerEntry): string {
   return getRoleType(getFinalRoleId(entry))
 }
 
-function getFinalAlignment(entry: PlayerEntry): Alignment {
+function getFinalAlignment(entry: PlayerEntry): Alignment | null {
   return entry.alignment_end ?? entry.alignment_start
-}
-
-function selectRole(role: Role) {
-  selectedRole.value = role.id
-  showRolePicker.value = false
-}
-
-function addPlayer() {
-  if (!selectedPlayer.value || !selectedRole.value) return
-
-  const player = props.players.find(
-    p => p.id === selectedPlayer.value,
-  )
-  const role = props.roles.find(
-    r => r.id === selectedRole.value,
-  )
-  if (!player || !role) return
-
-  const isGood = ['townsfolk', 'outsider']
-    .includes(role.type)
-  const alignment = isGood ? 'good' : 'evil'
-
-  emit('update:modelValue', [
-    ...props.modelValue,
-    {
-      player_id: player.id,
-      nickname: player.nickname,
-      starting_role_id: role.id,
-      role_name: role.name_ua,
-      alignment_start: alignment as 'good' | 'evil',
-      is_alive: true,
-      is_mvp: false,
-      ending_role_id: null,
-      ending_role_name: null,
-      alignment_end: null,
-    },
-  ])
-
-  selectedPlayer.value = null
-  selectedRole.value = null
 }
 
 function removePlayer(playerId: string) {
@@ -229,117 +175,6 @@ function isEndingRolePickerOpen(playerId: string): boolean {
       Гравці
     </h3>
 
-    <!-- Add player controls -->
-    <div
-      class="mb-6 rounded-xl border border-white/[0.08]
-        bg-white/[0.02] p-4 sm:p-6"
-    >
-      <div
-        class="grid gap-4 sm:grid-cols-2
-          lg:grid-cols-[1fr_1fr_auto]"
-      >
-        <!-- Player select -->
-        <div class="flex flex-col gap-2">
-          <label
-            class="text-sm font-semibold tracking-wide
-              text-text-muted"
-          >
-            <i class="pi pi-user mr-1.5 text-xs" />
-            Гравець
-          </label>
-          <Select
-            v-model="selectedPlayer"
-            :options="availablePlayers.map(p => ({
-              label: p.nickname,
-              value: p.id,
-            }))"
-            option-label="label"
-            option-value="value"
-            placeholder="Оберіть гравця"
-            fluid
-            data-testid="player-select"
-          />
-        </div>
-
-        <!-- Role selector -->
-        <div class="flex flex-col gap-2">
-          <label
-            class="text-sm font-semibold tracking-wide
-              text-text-muted"
-          >
-            <i class="pi pi-star mr-1.5 text-xs" />
-            Роль
-          </label>
-
-          <!-- Role display / trigger button -->
-          <button
-            type="button"
-            class="flex min-h-[2.75rem] w-full cursor-pointer
-              items-center gap-3 rounded-lg border
-              border-white/[0.12] bg-white/[0.04] px-3
-              py-2 text-left transition-colors
-              hover:border-white/[0.2] hover:bg-white/[0.06]"
-            data-testid="role-select"
-            @click="showRolePicker = !showRolePicker"
-          >
-            <template v-if="selectedRoleObj">
-              <RoleAvatar
-                :image-url="selectedRoleObj.image_url"
-                :name="selectedRoleObj.name_en"
-                :type="selectedRoleObj.type"
-                size="sm"
-              />
-              <span class="flex-1 text-sm font-medium">
-                {{ selectedRoleObj.name_ua }}
-              </span>
-              <Tag
-                :value="getRoleTypeInfo(selectedRoleObj.type)?.label
-                  ?? selectedRoleObj.type"
-                :class="getRoleTypeTagClass(selectedRoleObj.type)"
-                rounded
-                class="!px-1.5 !py-0 !text-[10px]"
-              />
-            </template>
-            <template v-else>
-              <span class="flex-1 text-sm text-text-subtle">
-                Оберіть роль
-              </span>
-            </template>
-            <i
-              class="pi pi-chevron-down text-xs text-text-subtle
-                transition-transform duration-200"
-              :class="{ 'rotate-180': showRolePicker }"
-            />
-          </button>
-        </div>
-
-        <!-- Add button -->
-        <div class="flex items-end">
-          <Button
-            icon="pi pi-plus"
-            label="Додати"
-            severity="secondary"
-            :disabled="!selectedPlayer || !selectedRole"
-            class="w-full lg:w-auto"
-            data-testid="add-player-btn"
-            @click="addPlayer"
-          />
-        </div>
-      </div>
-
-      <!-- Role picker panel -->
-      <div
-        v-if="showRolePicker"
-        class="mt-4"
-      >
-        <RolePickerPanel
-          :roles="roles"
-          :selected-id="selectedRole"
-          @select="selectRole"
-        />
-      </div>
-    </div>
-
     <!-- Players list -->
     <div
       v-if="modelValue.length"
@@ -427,10 +262,10 @@ function isEndingRolePickerOpen(playerId: string): boolean {
                         {{ entry.role_name }}
                       </span>
                       <Tag
-                        :value="getRoleTypeInfo(
+                        :value="getRoleTypeLabel(
                           getRoleType(
                             entry.starting_role_id),
-                        )?.label ?? ''"
+                        )"
                         :class="getRoleTypeTagClass(
                           getRoleType(
                             entry.starting_role_id),
@@ -490,10 +325,10 @@ function isEndingRolePickerOpen(playerId: string): boolean {
                           {{ entry.ending_role_name }}
                         </span>
                         <Tag
-                          :value="getRoleTypeInfo(
+                          :value="getRoleTypeLabel(
                             getRoleType(
                               entry.ending_role_id!),
-                          )?.label ?? ''"
+                          )"
                           :class="getRoleTypeTagClass(
                             getRoleType(
                               entry.ending_role_id!),
@@ -622,9 +457,12 @@ function isEndingRolePickerOpen(playerId: string): boolean {
                             {{ entry.ending_role_name }}
                           </span>
                           <Tag
-                            :value="getRoleTypeInfo(getRoleType(entry.ending_role_id))?.label
-                              ?? getRoleType(entry.ending_role_id)"
-                            :class="getRoleTypeTagClass(getRoleType(entry.ending_role_id))"
+                            :value="getRoleTypeLabel(
+                              getRoleType(entry.ending_role_id),
+                            )"
+                            :class="getRoleTypeTagClass(
+                              getRoleType(entry.ending_role_id),
+                            )"
                             rounded
                             class="!px-1.5 !py-0 !text-[10px]"
                           />
@@ -722,7 +560,8 @@ function isEndingRolePickerOpen(playerId: string): boolean {
                   {{ getFinalRoleName(entry) }}
                 </span>
                 <AlignmentTag
-                  :alignment="getFinalAlignment(entry)"
+                  v-if="getFinalAlignment(entry)"
+                  :alignment="getFinalAlignment(entry)!"
                   size="xs"
                 />
               </div>

@@ -1,0 +1,95 @@
+<script setup lang="ts">
+import type { Profile } from '~/types'
+
+const props = defineProps<{
+  visible: boolean
+  players: Profile[]
+  existingPlayerIds: string[]
+}>()
+
+const emit = defineEmits<{
+  'update:visible': [value: boolean]
+  'add': [playerId: string]
+}>()
+
+const selectedPlayerId = ref<string | null>(null)
+const saving = ref(false)
+
+const availablePlayers = computed(() =>
+  props.players.filter(
+    p => !props.existingPlayerIds.includes(p.id),
+  ),
+)
+
+const canSubmit = computed(() =>
+  !!selectedPlayerId.value && !saving.value,
+)
+
+function handleSubmit() {
+  if (!selectedPlayerId.value) return
+  saving.value = true
+  emit('add', selectedPlayerId.value)
+}
+
+function resetState() {
+  selectedPlayerId.value = null
+  saving.value = false
+}
+
+function handleHide() {
+  emit('update:visible', false)
+  resetState()
+}
+
+watch(() => props.visible, (val) => {
+  if (!val) resetState()
+})
+</script>
+
+<template>
+  <Dialog
+    :visible="visible"
+    modal
+    :dismissable-mask="true"
+    header="Додати гравця"
+    class="w-full max-w-sm"
+    :breakpoints="{ '640px': '100vw' }"
+    @update:visible="handleHide"
+  >
+    <div class="flex flex-col gap-2">
+      <label class="text-sm font-medium">
+        Гравець
+      </label>
+      <Select
+        v-model="selectedPlayerId"
+        :options="availablePlayers.map(p => ({
+          label: p.nickname,
+          value: p.id,
+        }))"
+        option-label="label"
+        option-value="value"
+        placeholder="Оберіть гравця"
+        fluid
+      />
+    </div>
+
+    <template #footer>
+      <div class="flex justify-end gap-2">
+        <Button
+          label="Скасувати"
+          severity="secondary"
+          text
+          @click="handleHide"
+        />
+        <Button
+          label="Додати"
+          icon="pi pi-plus"
+          severity="success"
+          :disabled="!canSubmit"
+          :loading="saving"
+          @click="handleSubmit"
+        />
+      </div>
+    </template>
+  </Dialog>
+</template>
