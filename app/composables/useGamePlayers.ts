@@ -1,0 +1,100 @@
+import type { GamePlayer } from '~/types'
+
+interface RoleRef {
+  id: string
+  name_ua: string
+  name_en: string
+  image_url: string | null
+  type: string
+}
+
+export interface GamePlayerWithDetails extends GamePlayer {
+  player: {
+    id: string
+    nickname: string
+    avatar_url: string | null
+  }
+  starting_role: RoleRef
+  ending_role: RoleRef | null
+}
+
+export function useGamePlayers(gameId: Ref<string> | string) {
+  const client = useSupabaseClient()
+  const id = toRef(gameId)
+
+  const SELECT_WITH_DETAILS = `
+    *,
+    player:profiles!player_id(id, nickname, avatar_url),
+    starting_role:roles!starting_role_id(id, name_ua, name_en, image_url, type),
+    ending_role:roles!ending_role_id(id, name_ua, name_en, image_url, type)
+  `
+
+  const { data: players, status, refresh } = useAsyncData(
+    `game-players-${id.value}`,
+    async () => {
+      const { data, error } = await client
+        .from('game_players')
+        .select(SELECT_WITH_DETAILS)
+        .eq('game_id', id.value)
+
+      if (error) throw error
+      return data as GamePlayerWithDetails[]
+    },
+  )
+
+  async function add(entry: {
+    player_id: string
+    starting_role_id: string
+    ending_role_id?: string | null
+    alignment_start: string
+    alignment_end?: string | null
+    is_alive?: boolean
+    is_mvp?: boolean
+  }) {
+    const { data, error } = await client
+      .from('game_players')
+      .insert({ ...entry, game_id: id.value })
+      .select(SELECT_WITH_DETAILS)
+      .single()
+
+    if (error) throw error
+    await refresh()
+    return data as GamePlayerWithDetails
+  }
+
+  async function update(entryId: string, updates: Partial<{
+    starting_role_id: string
+    ending_role_id: string | null
+    alignment_start: string
+    alignment_end: string | null
+    is_alive: boolean
+    is_mvp: boolean
+  }>) {
+    const { error } = await client
+      .from('game_players')
+      .update(updates)
+      .eq('id', entryId)
+
+    if (error) throw error
+    await refresh()
+  }
+
+  async function remove(entryId: string) {
+    const { error } = await client
+      .from('game_players')
+      .delete()
+      .eq('id', entryId)
+
+    if (error) throw error
+    await refresh()
+  }
+
+  return {
+    players,
+    status,
+    refresh,
+    add,
+    update,
+    remove,
+  }
+}

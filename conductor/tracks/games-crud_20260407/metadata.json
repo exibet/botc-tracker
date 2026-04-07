@@ -1,0 +1,16 @@
+{
+  "id": "games-crud_20260407",
+  "title": "Games CRUD",
+  "type": "feature",
+  "status": "pending",
+  "created": "2026-04-07",
+  "updated": "2026-04-07",
+  "phases": {
+    "total": 3,
+    "completed": 0
+  },
+  "tasks": {
+    "total": 14,
+    "completed": 0
+  }
+}
