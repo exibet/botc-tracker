@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Role } from '~/composables/useRoles'
+import type { Role } from '~/types'
 import {
   EDITIONS,
   getRoleTypeColor,

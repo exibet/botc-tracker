@@ -1,16 +1,6 @@
+import type { Role } from '~/types'
 import { ROLE_TYPES } from '~/composables/useRoleTypes'
 import type { RoleTypeInfo } from '~/composables/useRoleTypes'
-
-export interface Role {
-  id: string
-  name_en: string
-  name_ua: string
-  description_en: string
-  description_ua: string
-  type: string
-  edition: string
-  image_url: string | null
-}
 
 export interface RoleGrouped {
   type: RoleTypeInfo
