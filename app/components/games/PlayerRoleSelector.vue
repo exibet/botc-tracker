@@ -3,6 +3,7 @@ import type { Alignment, PlayerEntry, Profile, Role } from '~/types'
 import {
   getRoleTypeInfo,
   getRoleTypeTagClass,
+  getAlignmentForRoleType,
 } from '~/composables/useRoleTypes'
 import RoleAvatar from '~/components/games/RoleAvatar.vue'
 import AlignmentTag from '~/components/games/AlignmentTag.vue'
@@ -48,7 +49,7 @@ function getRoleType(roleId: string): string {
 }
 
 function getAlignmentFromRoleType(type: string): 'good' | 'evil' {
-  return ['townsfolk', 'outsider'].includes(type) ? 'good' : 'evil'
+  return getAlignmentForRoleType(type) ?? 'evil'
 }
 
 function getFinalRoleId(entry: PlayerEntry): string {

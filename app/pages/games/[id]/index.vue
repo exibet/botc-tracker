@@ -1,6 +1,13 @@
 <script setup lang="ts">
+import type { Alignment } from '~/types'
+import type { GamePlayerWithDetails }
+  from '~/composables/useGamePlayers'
 import GamePlayersTable
   from '~/components/games/GamePlayersTable.vue'
+import JoinGameDialog
+  from '~/components/games/JoinGameDialog.vue'
+import EditEntryDialog
+  from '~/components/games/EditEntryDialog.vue'
 import {
   getScriptLabel,
   getWinnerInfo,
@@ -8,10 +15,21 @@ import {
 
 const route = useRoute()
 const gameId = route.params.id as string
+const toast = useToast()
 
 const { getById } = useGames()
-const { players, status: playersStatus } = useGamePlayers(gameId)
-const { isAdmin } = useAuth()
+const {
+  players,
+  status: playersStatus,
+  add: addPlayer,
+  update: updatePlayer,
+} = useGamePlayers(gameId)
+const { roles } = useRoles()
+const {
+  isAuthenticated,
+  isAdmin,
+  profile,
+} = useAuth()
 
 const { data: game, status: gameStatus } = useAsyncData(
   `game-${gameId}`,
@@ -30,6 +48,87 @@ function formatDate(dateStr: string): string {
 const winnerInfo = computed(() =>
   game.value ? getWinnerInfo(game.value.winner) : null,
 )
+
+const isPlayerInGame = computed(() => {
+  if (!profile.value || !players.value) return true
+  return players.value.some(
+    p => p.player.id === profile.value!.id,
+  )
+})
+
+const showJoinDialog = ref(false)
+
+async function handleJoin(data: {
+  starting_role_id: string
+  alignment_start: Alignment
+}) {
+  if (!profile.value) return
+  showJoinDialog.value = false
+  try {
+    await addPlayer({
+      player_id: profile.value.id,
+      starting_role_id: data.starting_role_id,
+      alignment_start: data.alignment_start,
+      added_by: profile.value.id,
+    })
+    toast.add({
+      severity: 'success',
+      summary: 'Успішно',
+      detail: 'Ви приєдналися до гри',
+      life: 3000,
+    })
+  }
+  catch {
+    toast.add({
+      severity: 'error',
+      summary: 'Помилка',
+      detail: 'Не вдалося приєднатися до гри',
+      life: 5000,
+    })
+  }
+}
+
+const showEditDialog = ref(false)
+const editingEntry = ref<GamePlayerWithDetails | null>(null)
+
+function handleEditEntry(entry: GamePlayerWithDetails) {
+  editingEntry.value = entry
+  showEditDialog.value = true
+}
+
+async function handleUpdated(data: {
+  id: string
+  starting_role_id: string
+  ending_role_id: string | null
+  alignment_start: Alignment
+  alignment_end: Alignment | null
+  is_alive: boolean
+}) {
+  showEditDialog.value = false
+  try {
+    await updatePlayer(data.id, {
+      starting_role_id: data.starting_role_id,
+      ending_role_id: data.ending_role_id,
+      alignment_start: data.alignment_start,
+      alignment_end: data.alignment_end,
+      is_alive: data.is_alive,
+    })
+    toast.add({
+      severity: 'success',
+      summary: 'Успішно',
+      detail: 'Запис оновлено',
+      life: 3000,
+    })
+  }
+  catch {
+    toast.add({
+      severity: 'error',
+      summary: 'Помилка',
+      detail: 'Не вдалося оновити запис',
+      life: 5000,
+    })
+  }
+}
 </script>
 
 <template>
@@ -232,8 +331,36 @@ const winnerInfo = computed(() =>
         <GamePlayersTable
           v-else-if="players"
           :players="players"
+          :current-user-id="profile?.id ?? null"
+          @edit-entry="handleEditEntry"
         />
+
+        <!-- Join game button -->
+        <div
+          v-if="isAuthenticated && !isPlayerInGame"
+          class="mt-4"
+        >
+          <Button
+            label="Приєднатися до гри"
+            icon="pi pi-plus"
+            @click="showJoinDialog = true"
+          />
+        </div>
       </div>
     </template>
+
+    <!-- Dialogs outside v-if/else chain -->
+    <JoinGameDialog
+      v-model:visible="showJoinDialog"
+      :roles="roles ?? []"
+      @join="handleJoin"
+    />
+
+    <EditEntryDialog
+      v-model:visible="showEditDialog"
+      :entry="editingEntry"
+      :roles="roles ?? []"
+      @updated="handleUpdated"
+    />
   </div>
 </template>

@@ -50,6 +50,7 @@ export function useGamePlayers(gameId: Ref<string> | string) {
     alignment_end?: string | null
     is_alive?: boolean
     is_mvp?: boolean
+    added_by: string
   }) {
     const { data, error } = await client
       .from('game_players')
@@ -58,8 +59,9 @@ export function useGamePlayers(gameId: Ref<string> | string) {
       .single()
 
     if (error) throw error
-    await refresh()
-    return data as GamePlayerWithDetails
+    const record = data as GamePlayerWithDetails
+    players.value = [...(players.value ?? []), record]
+    return record
   }
 
   async function update(entryId: string, updates: Partial<{
@@ -70,13 +72,22 @@ export function useGamePlayers(gameId: Ref<string> | string) {
     is_alive: boolean
     is_mvp: boolean
   }>) {
-    const { error } = await client
+    const { data, error } = await client
       .from('game_players')
       .update(updates)
       .eq('id', entryId)
+      .select(SELECT_WITH_DETAILS)
+      .single()
 
     if (error) throw error
-    await refresh()
+
+    if (data && players.value) {
+      players.value = players.value.map(p =>
+        p.id === entryId
+          ? data as GamePlayerWithDetails
+          : p,
+      )
+    }
   }
 
   async function remove(entryId: string) {
@@ -86,7 +97,11 @@ export function useGamePlayers(gameId: Ref<string> | string) {
       .eq('id', entryId)
 
     if (error) throw error
-    await refresh()
+    if (players.value) {
+      players.value = players.value.filter(
+        p => p.id !== entryId,
+      )
+    }
   }
 
   async function syncFromEntries(

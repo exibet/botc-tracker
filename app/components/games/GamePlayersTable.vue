@@ -9,6 +9,11 @@ import AlignmentTag from '~/components/games/AlignmentTag.vue'
 
 defineProps<{
   players: GamePlayerWithDetails[]
+  currentUserId?: string | null
+}>()
+
+const emit = defineEmits<{
+  'edit-entry': [entry: GamePlayerWithDetails]
 }>()
 
 function hasRoleChange(entry: GamePlayerWithDetails): boolean {
@@ -74,6 +79,10 @@ function finalAlignment(entry: GamePlayerWithDetails) {
           >
             Статус
           </th>
+          <th
+            v-if="currentUserId"
+            class="px-6 py-4"
+          />
         </tr>
       </thead>
       <tbody>
@@ -258,6 +267,23 @@ function finalAlignment(entry: GamePlayerWithDetails) {
               </span>
             </div>
           </td>
+
+          <!-- Edit (own row only) -->
+          <td
+            v-if="currentUserId"
+            class="px-6 py-4"
+          >
+            <Button
+              v-if="entry.player.id === currentUserId"
+              v-tooltip="'Редагувати'"
+              icon="pi pi-pencil"
+              severity="secondary"
+              text
+              rounded
+              size="small"
+              @click="emit('edit-entry', entry)"
+            />
+          </td>
         </tr>
       </tbody>
     </table>
@@ -320,6 +346,19 @@ function finalAlignment(entry: GamePlayerWithDetails) {
             ]"
             :title="entry.is_alive
               ? 'Живий' : 'Мертвий'"
+          />
+
+          <!-- Edit (own row only) -->
+          <Button
+            v-if="currentUserId
+              && entry.player.id === currentUserId"
+            icon="pi pi-pencil"
+            severity="secondary"
+            text
+            rounded
+            size="small"
+            class="shrink-0"
+            @click="emit('edit-entry', entry)"
           />
         </div>
 

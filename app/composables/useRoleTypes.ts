@@ -39,6 +39,14 @@ export function getRoleTypeTagClass(type: string): string {
   return `p-tag-${type.toLowerCase()}`
 }
 
+export function getAlignmentForRoleType(
+  type: string,
+): 'good' | 'evil' | null {
+  if (type === 'townsfolk' || type === 'outsider') return 'good'
+  if (type === 'minion' || type === 'demon') return 'evil'
+  return null
+}
+
 export function useRoleTypes() {
   return {
     roleTypes: ROLE_TYPES,

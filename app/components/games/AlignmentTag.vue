@@ -14,7 +14,7 @@ const tagClass = computed(() => [
   props.muted ? 'opacity-50' : '',
   props.size === 'xs'
     ? '!px-1 !py-0 !text-[9px]'
-    : '!px-2 !py-0.5 !text-xs',
+    : '!px-2 !py-0.5',
 ])
 </script>
 
