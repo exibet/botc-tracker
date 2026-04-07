@@ -71,3 +71,21 @@ export interface GamePlayer {
   added_by: string
   created_at: string
 }
+
+export interface GameWithDetails extends Game {
+  storyteller: { id: string, nickname: string } | null
+  created_by_profile: { id: string, nickname: string }
+}
+
+export interface PlayerEntry {
+  player_id: string
+  nickname: string
+  starting_role_id: string
+  role_name: string
+  alignment_start: Alignment
+  ending_role_id: string | null
+  ending_role_name: string | null
+  alignment_end: Alignment | null
+  is_alive: boolean
+  is_mvp: boolean
+}

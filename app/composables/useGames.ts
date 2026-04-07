@@ -1,4 +1,10 @@
-import type { Game } from '~/types'
+import type { Game, GameWithDetails } from '~/types'
+
+const GAME_SELECT = `
+  *,
+  storyteller:profiles!storyteller_id(id, nickname),
+  created_by_profile:profiles!created_by(id, nickname)
+`
 
 export function useGames() {
   const client = useSupabaseClient()
@@ -7,36 +13,22 @@ export function useGames() {
   const { data: games, status, refresh } = useAsyncData('games', async () => {
     const { data, error } = await client
       .from('games')
-      .select(`
-        *,
-        storyteller:profiles!storyteller_id(id, nickname),
-        created_by_profile:profiles!created_by(id, nickname)
-      `)
+      .select(GAME_SELECT)
       .order('date', { ascending: false })
 
     if (error) throw error
-    return data as (Game & {
-      storyteller: { id: string, nickname: string } | null
-      created_by_profile: { id: string, nickname: string }
-    })[]
+    return data as GameWithDetails[]
   })
 
   async function getById(id: string) {
     const { data, error } = await client
       .from('games')
-      .select(`
-        *,
-        storyteller:profiles!storyteller_id(id, nickname),
-        created_by_profile:profiles!created_by(id, nickname)
-      `)
+      .select(GAME_SELECT)
       .eq('id', id)
       .single()
 
     if (error) throw error
-    return data as Game & {
-      storyteller: { id: string, nickname: string } | null
-      created_by_profile: { id: string, nickname: string }
-    }
+    return data as GameWithDetails
   }
 
   async function create(game: {

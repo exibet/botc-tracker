@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import type { PlayerEntry } from '~/types'
 import GameForm from '~/components/games/GameForm.vue'
-import PlayerRoleSelector from '~/components/games/PlayerRoleSelector.vue'
-import type { PlayerEntry } from '~/components/games/PlayerRoleSelector.vue'
+import PlayerRoleSelector
+  from '~/components/games/PlayerRoleSelector.vue'
 
 definePageMeta({ middleware: ['admin'] })
 
@@ -9,10 +10,12 @@ const route = useRoute()
 const router = useRouter()
 const toast = useToast()
 const gameId = route.params.id as string
-const client = useSupabaseClient()
 
 const { getById, update } = useGames()
-const { players: gamePlayers } = useGamePlayers(gameId)
+const {
+  players: gamePlayers,
+  syncFromEntries,
+} = useGamePlayers(gameId)
 const { players: allPlayers } = usePlayers()
 const { roles } = useRoles()
 const { profile } = useAuth()
@@ -22,9 +25,14 @@ const { data: game, status: gameStatus } = useAsyncData(
   () => getById(gameId),
 )
 
+const gameFormRef = ref()
 const playerEntries = ref<PlayerEntry[]>([])
 const saving = ref(false)
 const initialized = ref(false)
+
+function triggerSubmit() {
+  gameFormRef.value?.$el?.requestSubmit()
+}
 
 // Populate playerEntries from existing game players
 watch(
@@ -36,7 +44,10 @@ watch(
       nickname: p.player.nickname,
       starting_role_id: p.starting_role_id,
       role_name: p.starting_role.name_ua,
-      alignment_start: p.alignment_start as 'good' | 'evil',
+      alignment_start: p.alignment_start,
+      ending_role_id: p.ending_role_id ?? null,
+      ending_role_name: p.ending_role?.name_ua ?? null,
+      alignment_end: p.alignment_end ?? null,
       is_alive: p.is_alive,
       is_mvp: p.is_mvp,
     }))
@@ -60,26 +71,13 @@ async function handleSubmit(data: {
       player_count: playerEntries.value.length || null,
     })
 
-    // Sync players: delete all existing, re-insert
-    await client
-      .from('game_players')
-      .delete()
-      .eq('game_id', gameId)
+    await syncFromEntries(
+      playerEntries.value,
+      profile.value!.id,
+    )
 
-    for (const entry of playerEntries.value) {
-      const { error } = await client
-        .from('game_players')
-        .insert({
-          game_id: gameId,
-          player_id: entry.player_id,
-          starting_role_id: entry.starting_role_id,
-          alignment_start: entry.alignment_start,
-          is_alive: entry.is_alive,
-          is_mvp: entry.is_mvp,
-          added_by: profile.value!.id,
-        })
-      if (error) throw error
-    }
+    clearNuxtData(`game-${gameId}`)
+    clearNuxtData(`game-players-${gameId}`)
 
     toast.add({
       severity: 'success',
@@ -133,6 +131,7 @@ async function handleSubmit(data: {
 
     <template v-else>
       <GameForm
+        ref="gameFormRef"
         :initial-data="{
           date: game.date,
           script: game.script,
@@ -154,5 +153,34 @@ async function handleSubmit(data: {
         />
       </div>
     </template>
+
+    <!-- Action bar -->
+    <div
+      class="sticky bottom-0 z-40 -mx-4 mt-8 border-t
+        border-white/[0.08]
+        bg-[var(--botc-night-950)]/95 backdrop-blur-sm
+        sm:-mx-6"
+    >
+      <div
+        class="flex items-center justify-end gap-3
+          px-4 py-3 sm:px-6"
+      >
+        <NuxtLink :to="`/games/${gameId}`">
+          <Button
+            label="Скасувати"
+            severity="secondary"
+            text
+            type="button"
+          />
+        </NuxtLink>
+        <Button
+          label="Зберегти"
+          icon="pi pi-check"
+          :loading="saving"
+          data-testid="game-submit"
+          @click="triggerSubmit"
+        />
+      </div>
+    </div>
   </div>
 </template>

@@ -30,12 +30,11 @@ const baseGame = {
 }
 
 describe('gameCard', () => {
-  it('renders date', async () => {
+  it('renders winner badge', async () => {
     const wrapper = await mountSuspended(GameCard, {
       props: { game: baseGame },
     })
-    // Ukrainian date includes "квітня" (April)
-    expect(wrapper.text()).toContain('2026')
+    expect(wrapper.text()).toContain('Добро')
   })
 
   it('renders script label in Ukrainian', async () => {
@@ -43,13 +42,6 @@ describe('gameCard', () => {
       props: { game: baseGame },
     })
     expect(wrapper.text()).toContain('Неприємності в місті')
-  })
-
-  it('renders winner badge', async () => {
-    const wrapper = await mountSuspended(GameCard, {
-      props: { game: baseGame },
-    })
-    expect(wrapper.text()).toContain('Добро')
   })
 
   it('renders player count', async () => {

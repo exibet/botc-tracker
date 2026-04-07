@@ -74,8 +74,9 @@
   --color-traveller: var(--botc-traveller);
   --color-fabled: var(--botc-fabled);
 
-  --color-good: oklch(0.723 0.219 149.579);
+  --color-good: oklch(0.65 0.2 255);
   --color-evil: var(--botc-red-500);
+  --color-alive: oklch(0.723 0.219 149.579);
   --color-dead: var(--botc-night-500);
 
   --radius-sm: 0.375rem;
@@ -159,4 +160,17 @@ h6 {
   background-color: color-mix(in srgb, var(--color-fabled) 15%, transparent);
   color: var(--color-fabled);
   border: 1px solid color-mix(in srgb, var(--color-fabled) 30%, transparent);
+}
+
+/* Alignment tag styles (good=blue, evil=red) */
+.p-tag-good {
+  background-color: color-mix(in srgb, var(--color-good) 15%, transparent);
+  color: var(--color-good);
+  border: 1px solid color-mix(in srgb, var(--color-good) 30%, transparent);
+}
+
+.p-tag-evil {
+  background-color: color-mix(in srgb, var(--color-evil) 15%, transparent);
+  color: var(--color-evil);
+  border: 1px solid color-mix(in srgb, var(--color-evil) 30%, transparent);
 }

@@ -1,4 +1,4 @@
-import type { GamePlayer } from '~/types'
+import type { GamePlayer, PlayerEntry } from '~/types'
 
 interface RoleRef {
   id: string
@@ -89,6 +89,39 @@ export function useGamePlayers(gameId: Ref<string> | string) {
     await refresh()
   }
 
+  async function syncFromEntries(
+    entries: PlayerEntry[],
+    addedBy: string,
+  ) {
+    // Delete all existing players for this game
+    const { error: deleteError } = await client
+      .from('game_players')
+      .delete()
+      .eq('game_id', id.value)
+    if (deleteError) throw deleteError
+
+    // Insert all entries
+    if (entries.length) {
+      const rows = entries.map(e => ({
+        game_id: id.value,
+        player_id: e.player_id,
+        starting_role_id: e.starting_role_id,
+        ending_role_id: e.ending_role_id,
+        alignment_start: e.alignment_start,
+        alignment_end: e.alignment_end,
+        is_alive: e.is_alive,
+        is_mvp: e.is_mvp,
+        added_by: addedBy,
+      }))
+      const { error: insertError } = await client
+        .from('game_players')
+        .insert(rows)
+      if (insertError) throw insertError
+    }
+
+    await refresh()
+  }
+
   return {
     players,
     status,
@@ -96,5 +129,6 @@ export function useGamePlayers(gameId: Ref<string> | string) {
     add,
     update,
     remove,
+    syncFromEntries,
   }
 }

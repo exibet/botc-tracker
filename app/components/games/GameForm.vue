@@ -43,11 +43,6 @@ const scriptOptions = SCRIPTS.map(s => ({
   value: s.value,
 }))
 
-const winnerOptions = WINNERS.map(w => ({
-  label: w.labelUa,
-  value: w.value,
-}))
-
 const storytellerOptions = computed(() =>
   (props.players ?? []).map(p => ({
     label: p.nickname,
@@ -78,16 +73,23 @@ function handleSubmit() {
 
 <template>
   <form
-    class="space-y-5"
+    class="space-y-8"
     data-testid="game-form"
     @submit.prevent="handleSubmit"
   >
-    <div class="grid gap-5 sm:grid-cols-2">
-      <div class="flex flex-col gap-1">
+    <!-- Main fields grid -->
+    <div
+      class="grid gap-6 sm:grid-cols-2
+        lg:grid-cols-3"
+    >
+      <!-- Date -->
+      <div class="flex flex-col gap-2">
         <label
           for="game-date"
-          class="text-sm font-medium text-text-muted"
+          class="text-sm font-semibold tracking-wide
+            text-text-muted"
         >
+          <i class="pi pi-calendar mr-1.5 text-xs" />
           Дата
         </label>
         <DatePicker
@@ -100,11 +102,14 @@ function handleSubmit() {
         />
       </div>
 
-      <div class="flex flex-col gap-1">
+      <!-- Script -->
+      <div class="flex flex-col gap-2">
         <label
           for="game-script"
-          class="text-sm font-medium text-text-muted"
+          class="text-sm font-semibold tracking-wide
+            text-text-muted"
         >
+          <i class="pi pi-book mr-1.5 text-xs" />
           Скрипт
         </label>
         <Select
@@ -118,13 +123,15 @@ function handleSubmit() {
         />
       </div>
 
+      <!-- Custom script name -->
       <div
         v-if="form.script === 'custom'"
-        class="flex flex-col gap-1"
+        class="flex flex-col gap-2"
       >
         <label
           for="game-custom-script"
-          class="text-sm font-medium text-text-muted"
+          class="text-sm font-semibold tracking-wide
+            text-text-muted"
         >
           Назва кастомного скрипту
         </label>
@@ -135,29 +142,14 @@ function handleSubmit() {
         />
       </div>
 
-      <div class="flex flex-col gap-1">
-        <label
-          for="game-winner"
-          class="text-sm font-medium text-text-muted"
-        >
-          Переможець
-        </label>
-        <Select
-          id="game-winner"
-          v-model="form.winner"
-          :options="winnerOptions"
-          option-label="label"
-          option-value="value"
-          fluid
-          data-testid="game-winner"
-        />
-      </div>
-
-      <div class="flex flex-col gap-1">
+      <!-- Storyteller -->
+      <div class="flex flex-col gap-2">
         <label
           for="game-storyteller"
-          class="text-sm font-medium text-text-muted"
+          class="text-sm font-semibold tracking-wide
+            text-text-muted"
         >
+          <i class="pi pi-user mr-1.5 text-xs" />
           Оповідач
         </label>
         <Select
@@ -174,36 +166,78 @@ function handleSubmit() {
       </div>
     </div>
 
-    <div class="flex flex-col gap-1">
+    <!-- Winner toggle -->
+    <div>
+      <label
+        class="mb-3 block text-sm font-semibold
+          tracking-wide text-text-muted"
+      >
+        <i class="pi pi-flag mr-1.5 text-xs" />
+        Переможець
+      </label>
+      <div class="flex gap-3">
+        <button
+          v-for="w in WINNERS"
+          :key="w.value"
+          type="button"
+          class="flex flex-1 cursor-pointer items-center
+            justify-center gap-3 rounded-xl
+            border-2 px-6 py-4
+            transition-all duration-200
+            sm:flex-none sm:min-w-48"
+          :class="[
+            form.winner === w.value
+              ? w.value === 'good'
+                ? 'border-good bg-[color-mix(in_srgb,var(--color-good)_12%,transparent)] shadow-[0_0_20px_-4px_var(--color-good)]'
+                : 'border-evil bg-[color-mix(in_srgb,var(--color-evil)_12%,transparent)] shadow-[0_0_20px_-4px_var(--color-evil)]'
+              : 'border-white/[0.08] bg-white/[0.02] hover:border-white/[0.15] hover:bg-white/[0.04]',
+          ]"
+          data-testid="game-winner"
+          @click="form.winner = w.value"
+        >
+          <i
+            :class="[
+              w.icon,
+              form.winner === w.value
+                ? w.value === 'good'
+                  ? 'text-good'
+                  : 'text-evil'
+                : 'text-text-muted',
+            ]"
+            class="text-2xl"
+          />
+          <span
+            class="font-heading text-lg font-bold"
+            :class="[
+              form.winner === w.value
+                ? w.value === 'good'
+                  ? 'text-good'
+                  : 'text-evil'
+                : 'text-text-muted',
+            ]"
+          >
+            {{ w.labelUa }}
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Notes -->
+    <div class="flex flex-col gap-2">
       <label
         for="game-notes"
-        class="text-sm font-medium text-text-muted"
+        class="text-sm font-semibold tracking-wide
+          text-text-muted"
       >
+        <i class="pi pi-pencil mr-1.5 text-xs" />
         Нотатки
       </label>
       <Textarea
         id="game-notes"
         v-model="form.notes"
-        rows="3"
+        rows="4"
         fluid
-      />
-    </div>
-
-    <div class="flex justify-end gap-2">
-      <NuxtLink to="/games">
-        <Button
-          label="Скасувати"
-          severity="secondary"
-          text
-          type="button"
-        />
-      </NuxtLink>
-      <Button
-        label="Зберегти"
-        icon="pi pi-check"
-        type="submit"
-        :loading="loading"
-        data-testid="game-submit"
+        auto-resize
       />
     </div>
   </form>

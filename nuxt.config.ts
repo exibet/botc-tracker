@@ -71,6 +71,7 @@ export default defineNuxtConfig({
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { name: 'description', content: 'Трекер ігор Blood on the Clocktower для ком\'юніті' },
+        { name: 'referrer', content: 'no-referrer' },
       ],
       link: [
         {

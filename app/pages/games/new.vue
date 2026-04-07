@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import type { PlayerEntry } from '~/types'
 import GameForm from '~/components/games/GameForm.vue'
-import PlayerRoleSelector from '~/components/games/PlayerRoleSelector.vue'
-import type { PlayerEntry } from '~/components/games/PlayerRoleSelector.vue'
+import PlayerRoleSelector
+  from '~/components/games/PlayerRoleSelector.vue'
 
 definePageMeta({ middleware: ['admin'] })
 
@@ -12,8 +13,13 @@ const { players } = usePlayers()
 const { roles } = useRoles()
 const { profile } = useAuth()
 
+const gameFormRef = ref()
 const playerEntries = ref<PlayerEntry[]>([])
 const saving = ref(false)
+
+function triggerSubmit() {
+  gameFormRef.value?.$el?.requestSubmit()
+}
 
 async function handleSubmit(data: {
   date: string
@@ -30,22 +36,13 @@ async function handleSubmit(data: {
       player_count: playerEntries.value.length || null,
     })
 
-    // Add players to the game
-    const client = useSupabaseClient()
-    for (const entry of playerEntries.value) {
-      const { error } = await client
-        .from('game_players')
-        .insert({
-          game_id: game.id,
-          player_id: entry.player_id,
-          starting_role_id: entry.starting_role_id,
-          alignment_start: entry.alignment_start,
-          is_alive: entry.is_alive,
-          is_mvp: entry.is_mvp,
-          added_by: profile.value!.id,
-        })
-      if (error) throw error
-    }
+    const { syncFromEntries } = useGamePlayers(game.id)
+    await syncFromEntries(
+      playerEntries.value,
+      profile.value!.id,
+    )
+
+    clearNuxtData('games')
 
     toast.add({
       severity: 'success',
@@ -84,6 +81,7 @@ async function handleSubmit(data: {
     </h1>
 
     <GameForm
+      ref="gameFormRef"
       :players="players ?? []"
       :loading="saving"
       @submit="handleSubmit"
@@ -95,6 +93,35 @@ async function handleSubmit(data: {
         :players="players ?? []"
         :roles="roles ?? []"
       />
+    </div>
+
+    <!-- Action bar -->
+    <div
+      class="sticky bottom-0 z-40 -mx-4 mt-8 border-t
+        border-white/[0.08]
+        bg-[var(--botc-night-950)]/95 backdrop-blur-sm
+        sm:-mx-6"
+    >
+      <div
+        class="flex items-center justify-end gap-3
+          px-4 py-3 sm:px-6"
+      >
+        <NuxtLink to="/games">
+          <Button
+            label="Скасувати"
+            severity="secondary"
+            text
+            type="button"
+          />
+        </NuxtLink>
+        <Button
+          label="Зберегти"
+          icon="pi pi-check"
+          :loading="saving"
+          data-testid="game-submit"
+          @click="triggerSubmit"
+        />
+      </div>
     </div>
   </div>
 </template>
