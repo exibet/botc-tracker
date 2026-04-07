@@ -13,5 +13,20 @@ export function usePlayers() {
     return data as Profile[]
   })
 
-  return { players, status }
+  async function createManual(nickname: string) {
+    const { data, error } = await client
+      .from('profiles')
+      .insert({
+        id: crypto.randomUUID(),
+        nickname,
+        is_manual: true,
+      })
+      .select('id')
+      .single()
+
+    if (error) throw error
+    return data
+  }
+
+  return { players, status, createManual }
 }

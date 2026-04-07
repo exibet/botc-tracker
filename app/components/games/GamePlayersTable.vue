@@ -181,7 +181,7 @@ function finalAlignment(entry: GamePlayerWithDetails) {
                     finalRole(entry)!.type,
                   )"
                   rounded
-                  class="!px-2 !py-0.5 !text-xs"
+                  class="!px-2 !py-0.25 !text-[10px]"
                 />
               </div>
             </div>
@@ -234,7 +234,7 @@ function finalAlignment(entry: GamePlayerWithDetails) {
                       finalRole(entry)!.type,
                     )"
                     rounded
-                    class="!px-2 !py-0.5 !text-xs"
+                    class="!px-2 !py-0.25 !text-[10px]"
                   />
                 </div>
               </div>

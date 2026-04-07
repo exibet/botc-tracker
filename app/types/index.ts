@@ -42,6 +42,7 @@ export interface Profile {
   nickname: string
   avatar_url: string | null
   role: UserRole
+  is_manual: boolean
   created_at: string
 }
 

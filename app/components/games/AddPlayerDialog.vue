@@ -10,9 +10,12 @@ const props = defineProps<{
 const emit = defineEmits<{
   'update:visible': [value: boolean]
   'add': [playerId: string]
+  'create': [nickname: string]
 }>()
 
+const mode = ref<'existing' | 'new'>('existing')
 const selectedPlayerId = ref<string | null>(null)
+const newPlayerName = ref('')
 const saving = ref(false)
 
 const availablePlayers = computed(() =>
@@ -21,18 +24,27 @@ const availablePlayers = computed(() =>
   ),
 )
 
-const canSubmit = computed(() =>
-  !!selectedPlayerId.value && !saving.value,
-)
+const canSubmit = computed(() => {
+  if (saving.value) return false
+  if (mode.value === 'existing') return !!selectedPlayerId.value
+  return newPlayerName.value.trim().length > 0
+})
 
 function handleSubmit() {
-  if (!selectedPlayerId.value) return
+  if (!canSubmit.value) return
   saving.value = true
-  emit('add', selectedPlayerId.value)
+  if (mode.value === 'existing') {
+    emit('add', selectedPlayerId.value!)
+  }
+  else {
+    emit('create', newPlayerName.value.trim())
+  }
 }
 
 function resetState() {
   selectedPlayerId.value = null
+  newPlayerName.value = ''
+  mode.value = 'existing'
   saving.value = false
 }
 
@@ -56,21 +68,53 @@ watch(() => props.visible, (val) => {
     :breakpoints="{ '640px': '100vw' }"
     @update:visible="handleHide"
   >
-    <div class="flex flex-col gap-2">
-      <label class="text-sm font-medium">
-        Гравець
-      </label>
-      <Select
-        v-model="selectedPlayerId"
-        :options="availablePlayers.map(p => ({
-          label: p.nickname,
-          value: p.id,
-        }))"
+    <div class="flex flex-col gap-4">
+      <!-- Mode tabs -->
+      <SelectButton
+        v-model="mode"
+        :options="[
+          { label: 'Існуючий', value: 'existing' },
+          { label: 'Новий', value: 'new' },
+        ]"
         option-label="label"
         option-value="value"
-        placeholder="Оберіть гравця"
-        fluid
       />
+
+      <!-- Existing player select -->
+      <div
+        v-if="mode === 'existing'"
+        class="flex flex-col gap-2"
+      >
+        <label class="text-sm font-medium">
+          Гравець
+        </label>
+        <Select
+          v-model="selectedPlayerId"
+          :options="availablePlayers.map(p => ({
+            label: p.nickname,
+            value: p.id,
+          }))"
+          option-label="label"
+          option-value="value"
+          placeholder="Оберіть гравця"
+          fluid
+        />
+      </div>
+
+      <!-- New player name -->
+      <div
+        v-else
+        class="flex flex-col gap-2"
+      >
+        <label class="text-sm font-medium">
+          Ім'я гравця
+        </label>
+        <InputText
+          v-model="newPlayerName"
+          placeholder="Введіть ім'я"
+          fluid
+        />
+      </div>
     </div>
 
     <template #footer>

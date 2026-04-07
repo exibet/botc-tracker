@@ -28,12 +28,33 @@ const {
   remove: removePlayer,
 } = useGamePlayers(gameId)
 const { roles } = useRoles()
-const { players: allPlayers } = usePlayers()
+const {
+  players: allPlayers,
+  createManual,
+} = usePlayers()
 const {
   isAuthenticated,
   isAdmin,
   profile,
 } = useAuth()
+
+function showSuccess(detail: string) {
+  toast.add({
+    severity: 'success',
+    summary: 'Успішно',
+    detail,
+    life: 3000,
+  })
+}
+
+function showError(detail: string) {
+  toast.add({
+    severity: 'error',
+    summary: 'Помилка',
+    detail,
+    life: 5000,
+  })
+}
 
 const { data: game, status: gameStatus } = useAsyncData(
   `game-${gameId}`,
@@ -59,6 +80,13 @@ const isPlayerInGame = computed(() => {
   )
 })
 
+watch(players, (p) => {
+  if (game.value && p) {
+    game.value.player_count = p.length || null
+    clearNuxtData('games')
+  }
+})
+
 const showJoinDialog = ref(false)
 
 async function handleJoin() {
@@ -69,20 +97,10 @@ async function handleJoin() {
       player_id: profile.value.id,
       added_by: profile.value.id,
     })
-    toast.add({
-      severity: 'success',
-      summary: 'Успішно',
-      detail: 'Ви приєдналися до гри',
-      life: 3000,
-    })
+    showSuccess('Ви приєдналися до гри')
   }
   catch {
-    toast.add({
-      severity: 'error',
-      summary: 'Помилка',
-      detail: 'Не вдалося приєднатися до гри',
-      life: 5000,
-    })
+    showError('Не вдалося приєднатися до гри')
   }
 }
 
@@ -111,20 +129,10 @@ async function handleUpdated(data: {
       alignment_end: data.alignment_end,
       is_alive: data.is_alive,
     })
-    toast.add({
-      severity: 'success',
-      summary: 'Успішно',
-      detail: 'Запис оновлено',
-      life: 3000,
-    })
+    showSuccess('Запис оновлено')
   }
   catch {
-    toast.add({
-      severity: 'error',
-      summary: 'Помилка',
-      detail: 'Не вдалося оновити запис',
-      life: 5000,
-    })
+    showError('Не вдалося оновити запис')
   }
 }
 
@@ -143,20 +151,27 @@ async function handleAddPlayer(playerId: string) {
       player_id: playerId,
       added_by: profile.value.id,
     })
-    toast.add({
-      severity: 'success',
-      summary: 'Успішно',
-      detail: 'Гравця додано',
-      life: 3000,
-    })
+    showSuccess('Гравця додано')
   }
   catch {
-    toast.add({
-      severity: 'error',
-      summary: 'Помилка',
-      detail: 'Не вдалося додати гравця',
-      life: 5000,
+    showError('Не вдалося додати гравця')
+  }
+}
+
+async function handleCreatePlayer(nickname: string) {
+  if (!profile.value) return
+  showAddPlayerDialog.value = false
+  try {
+    const { id } = await createManual(nickname)
+    await addPlayer({
+      player_id: id,
+      added_by: profile.value.id,
     })
+    clearNuxtData('players')
+    showSuccess(`Гравця "${nickname}" створено та додано`)
+  }
+  catch {
+    showError('Не вдалося створити гравця')
   }
 }
 
@@ -179,20 +194,10 @@ function handleDeleteEntry(entry: GamePlayerWithDetails) {
 async function doDelete(entryId: string) {
   try {
     await removePlayer(entryId)
-    toast.add({
-      severity: 'success',
-      summary: 'Успішно',
-      detail: 'Гравця видалено',
-      life: 3000,
-    })
+    showSuccess('Гравця видалено')
   }
   catch {
-    toast.add({
-      severity: 'error',
-      summary: 'Помилка',
-      detail: 'Не вдалося видалити гравця',
-      life: 5000,
-    })
+    showError('Не вдалося видалити гравця')
   }
 }
 </script>
@@ -321,7 +326,7 @@ async function doDelete(entryId: string) {
               </span>
               <span
                 v-if="game.storyteller"
-                class="flex items-center gap-1.5
+                class="hidden items-center gap-1.5 lg:flex
                   text-sm text-text-muted"
               >
                 <i class="pi pi-book" />
@@ -332,7 +337,7 @@ async function doDelete(entryId: string) {
 
           <!-- Winner badge -->
           <div
-            class="flex items-center gap-3
+            class="hidden items-center gap-3 lg:flex
               rounded-xl px-5 py-3"
             :class="[
               game.winner === 'good'
@@ -449,6 +454,7 @@ async function doDelete(entryId: string) {
       :players="allPlayers ?? []"
       :existing-player-ids="existingPlayerIds"
       @add="handleAddPlayer"
+      @create="handleCreatePlayer"
     />
 
     <ConfirmDialog />
