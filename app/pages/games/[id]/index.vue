@@ -38,7 +38,6 @@ watch(
   (p) => {
     if (game.value && p) {
       game.value.player_count = p.length || null
-      clearNuxtData(`game-${gameId}`)
     }
   },
 )
@@ -104,18 +103,20 @@ watch(
           <i class="pi pi-arrow-left text-xs" />
           Ігри
         </NuxtLink>
-        <NuxtLink
-          v-if="isAdmin"
-          :to="`/games/${game.id}/edit`"
-        >
-          <Button
-            label="Редагувати"
-            icon="pi pi-pencil"
-            severity="secondary"
-            text
-            size="small"
-          />
-        </NuxtLink>
+        <ClientOnly>
+          <NuxtLink
+            v-if="isAdmin"
+            :to="`/games/${game.id}/edit`"
+          >
+            <Button
+              label="Редагувати"
+              icon="pi pi-pencil"
+              severity="secondary"
+              text
+              size="small"
+            />
+          </NuxtLink>
+        </ClientOnly>
       </div>
 
       <!-- Winner banner -->

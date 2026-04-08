@@ -211,47 +211,49 @@ function showError(detail: string) {
       >
         Гравці
       </h2>
-      <div
-        v-if="isAuthenticated"
-        class="flex gap-4"
-      >
-        <Button
-          v-if="!isPlayerInGame"
-          icon="pi pi-plus"
-          severity="success"
-          size="small"
-          class="min-w-[50px] sm:!hidden"
-          @click="showJoinDialog = true"
-        />
-        <Button
-          v-if="!isPlayerInGame"
-          label="Приєднатися"
-          icon="pi pi-plus"
-          severity="success"
-          size="small"
-          class="!hidden sm:!inline-flex"
-          @click="showJoinDialog = true"
-        />
-        <Button
-          v-if="isAdmin"
-          icon="pi pi-user-plus"
-          severity="secondary"
-          outlined
-          size="small"
-          class="min-w-[50px] sm:!hidden"
-          @click="showAddPlayerDialog = true"
-        />
-        <Button
-          v-if="isAdmin"
-          label="Додати гравця"
-          icon="pi pi-user-plus"
-          severity="secondary"
-          outlined
-          size="small"
-          class="!hidden sm:!inline-flex"
-          @click="showAddPlayerDialog = true"
-        />
-      </div>
+      <ClientOnly>
+        <div
+          v-if="isAuthenticated"
+          class="flex gap-4"
+        >
+          <Button
+            v-if="!isPlayerInGame"
+            icon="pi pi-plus"
+            severity="success"
+            size="small"
+            class="min-w-[50px] sm:!hidden"
+            @click="showJoinDialog = true"
+          />
+          <Button
+            v-if="!isPlayerInGame"
+            label="Приєднатися"
+            icon="pi pi-plus"
+            severity="success"
+            size="small"
+            class="!hidden sm:!inline-flex"
+            @click="showJoinDialog = true"
+          />
+          <Button
+            v-if="isAdmin"
+            icon="pi pi-user-plus"
+            severity="secondary"
+            outlined
+            size="small"
+            class="min-w-[50px] sm:!hidden"
+            @click="showAddPlayerDialog = true"
+          />
+          <Button
+            v-if="isAdmin"
+            label="Додати гравця"
+            icon="pi pi-user-plus"
+            severity="secondary"
+            outlined
+            size="small"
+            class="!hidden sm:!inline-flex"
+            @click="showAddPlayerDialog = true"
+          />
+        </div>
+      </ClientOnly>
     </div>
 
     <!-- Loading -->
@@ -266,15 +268,16 @@ function showError(detail: string) {
     </div>
 
     <!-- Table -->
-    <GamePlayersTable
-      v-else-if="players"
-      :players="players"
-      :current-user-id="profile?.id ?? null"
-      :is-admin="isAdmin"
-      :winner="winner ?? null"
-      @edit-entry="handleEditEntry"
-      @delete-entry="handleDeleteEntry"
-    />
+    <ClientOnly v-else-if="players">
+      <GamePlayersTable
+        :players="players"
+        :current-user-id="profile?.id ?? null"
+        :is-admin="isAdmin"
+        :winner="winner ?? null"
+        @edit-entry="handleEditEntry"
+        @delete-entry="handleDeleteEntry"
+      />
+    </ClientOnly>
 
     <!-- Dialogs -->
     <JoinGameDialog

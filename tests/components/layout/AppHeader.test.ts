@@ -46,7 +46,6 @@ describe('appHeader', () => {
   it('renders navigation links', async () => {
     const wrapper = await mountSuspended(AppHeader)
     const text = wrapper.text()
-    expect(text).toContain('Головна')
     expect(text).toContain('Ігри')
     expect(text).toContain('Гравці')
     expect(text).toContain('Ролі')

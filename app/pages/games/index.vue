@@ -72,17 +72,19 @@ const evilPct = computed(() =>
       >
         Ігри
       </h1>
-      <NuxtLink
-        v-if="isAdmin"
-        to="/games/new"
-      >
-        <Button
-          label="Створити гру"
-          icon="pi pi-plus"
-          severity="contrast"
-          data-testid="create-game-btn"
-        />
-      </NuxtLink>
+      <ClientOnly>
+        <NuxtLink
+          v-if="isAdmin"
+          to="/games/new"
+        >
+          <Button
+            label="Створити гру"
+            icon="pi pi-plus"
+            severity="contrast"
+            data-testid="create-game-btn"
+          />
+        </NuxtLink>
+      </ClientOnly>
     </div>
 
     <!-- Loading -->
