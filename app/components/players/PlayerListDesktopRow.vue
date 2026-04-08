@@ -35,8 +35,8 @@ function rankDisplay(
       ? 'bg-white/[0.06]'
       : 'hover:bg-white/[0.04]'"
     style="grid-template-columns:
-      2.5rem 1fr 4.5rem 4.5rem 6rem 4.5rem
-      3.5rem 3.5rem; column-gap: 1rem"
+      2.5rem 1fr 4.5rem 4.5rem 4.5rem 6rem
+      4.5rem 3.5rem 3.5rem; column-gap: 1rem"
     @click="$emit('toggle')"
   >
     <!-- Rank -->
@@ -65,6 +65,20 @@ function rankDisplay(
       >
         {{ player.nickname }}
       </NuxtLink>
+    </div>
+
+    <!-- Points -->
+    <div class="py-4 text-center">
+      <span
+        v-if="player.points > 0"
+        class="text-base tabular-nums
+          font-semibold text-accent"
+      >
+        {{ player.points }}
+      </span>
+      <span v-else class="text-xs text-text-subtle">
+        &mdash;
+      </span>
     </div>
 
     <!-- Games -->

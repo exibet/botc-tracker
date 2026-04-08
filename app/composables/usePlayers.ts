@@ -53,6 +53,7 @@ export function usePlayersWithStats() {
           is_mvp,
           alignment_start,
           alignment_end,
+          starting_role:roles!starting_role_id(type),
           game:games!game_id(winner)
         `)
 
@@ -78,6 +79,7 @@ export function usePlayersWithStats() {
             mvpCount: s?.mvps ?? 0,
             goodGames: s?.good ?? 0,
             evilGames: s?.evil ?? 0,
+            points: s?.points ?? 0,
           }
         })
         .sort((a, b) =>

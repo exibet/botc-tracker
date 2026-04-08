@@ -154,4 +154,5 @@ export interface PlayerWithStats extends Profile {
   mvpCount: number
   goodGames: number
   evilGames: number
+  points: number
 }

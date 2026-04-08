@@ -8,6 +8,7 @@ export interface GamePlayerStatsRow {
   is_mvp: boolean
   alignment_start: string | null
   alignment_end: string | null
+  starting_role: { type: string } | null
   game: { winner: string }
 }
 
@@ -17,6 +18,17 @@ export interface AggregatedPlayerStats {
   mvps: number
   good: number
   evil: number
+  points: number
+}
+
+/**
+ * Points per win by role type:
+ * townsfolk/outsider = 1, minion = 1.5, demon = 2
+ */
+function winPoints(roleType: string | null): number {
+  if (roleType === 'demon') return 2
+  if (roleType === 'minion') return 1.5
+  return 1
 }
 
 export function aggregatePlayerStats(
@@ -26,11 +38,21 @@ export function aggregatePlayerStats(
 
   for (const row of rows) {
     const entry = statsMap.get(row.player_id)
-      ?? { games: 0, wins: 0, mvps: 0, good: 0, evil: 0 }
+      ?? {
+        games: 0, wins: 0, mvps: 0,
+        good: 0, evil: 0, points: 0,
+      }
     entry.games++
     if (row.is_mvp) entry.mvps++
-    const alignment = row.alignment_end ?? row.alignment_start
-    if (alignment === row.game.winner) entry.wins++
+    const alignment
+      = row.alignment_end ?? row.alignment_start
+    const won = alignment === row.game.winner
+    if (won) {
+      entry.wins++
+      entry.points += winPoints(
+        row.starting_role?.type ?? null,
+      )
+    }
     if (alignment === 'good') entry.good++
     else if (alignment === 'evil') entry.evil++
     statsMap.set(row.player_id, entry)

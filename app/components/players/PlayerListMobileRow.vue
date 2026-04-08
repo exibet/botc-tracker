@@ -76,10 +76,10 @@ function rankDisplay(
             {{ player.gamesPlayed > 0
               ? `${player.winRate}%` : '\u2014' }}
           </span>
-          <template v-if="player.mvpCount > 0">
+          <template v-if="player.points > 0">
             <span class="text-white/[0.15]">|</span>
             <span class="text-accent">
-              {{ player.mvpCount }} MVP
+              {{ player.points }} б.
             </span>
           </template>
         </div>

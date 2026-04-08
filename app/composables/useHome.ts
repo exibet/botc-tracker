@@ -33,6 +33,7 @@ export function useHome() {
               is_mvp,
               alignment_start,
               alignment_end,
+              starting_role:roles!starting_role_id(type),
               game:games!game_id(winner)
             `),
         ])
@@ -90,11 +91,12 @@ export function useHome() {
               mvpCount: s.mvps,
               goodGames: s.good,
               evilGames: s.evil,
+              points: s.points,
             }
           })
           .sort((a, b) =>
-            b.winRate - a.winRate
-            || b.wins - a.wins,
+            b.points - a.points
+            || b.winRate - a.winRate,
           )
           .slice(0, TOP_PLAYERS_COUNT)
 

@@ -314,12 +314,13 @@ function formatDate(dateStr: string): string {
               text-xs font-semibold uppercase
               tracking-wider text-text-muted"
             style="grid-template-columns:
-              2.5rem 1fr 4.5rem 4.5rem 6rem
-              4.5rem 3.5rem 3.5rem;
+              2.5rem 1fr 4.5rem 4.5rem 4.5rem
+              6rem 4.5rem 3.5rem 3.5rem;
               column-gap: 1rem"
           >
             <span>#</span>
             <span>Гравець</span>
+            <span class="text-center">Бали</span>
             <span class="text-center">Ігри</span>
             <span class="text-center">Win%</span>
             <span class="text-center">W / L</span>
