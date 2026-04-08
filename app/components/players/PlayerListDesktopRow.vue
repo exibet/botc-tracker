@@ -79,7 +79,7 @@ function rankDisplay(
       <span
         class="text-base tabular-nums font-medium"
         :class="player.winRate >= 50
-          ? 'text-alive'
+          ? 'text-win'
           : player.gamesPlayed > 0
             ? 'text-text-muted'
             : 'text-text-subtle'"
@@ -96,8 +96,8 @@ function rankDisplay(
     >
       <span
         class="inline-flex w-7 justify-center rounded
-          bg-alive/10 py-0.5 text-xs font-semibold
-          tabular-nums text-alive"
+          bg-win/10 py-0.5 text-xs font-semibold
+          tabular-nums text-win"
       >
         {{ player.wins }}
       </span>

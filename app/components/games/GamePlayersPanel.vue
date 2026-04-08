@@ -1,0 +1,302 @@
+<script setup lang="ts">
+import type { Alignment } from '~/types'
+import type { GamePlayerWithDetails }
+  from '~/composables/useGamePlayers'
+import GamePlayersTable
+  from '~/components/games/GamePlayersTable.vue'
+import EditEntryDialog
+  from '~/components/games/EditEntryDialog.vue'
+import JoinGameDialog
+  from '~/components/games/JoinGameDialog.vue'
+import AddPlayerDialog
+  from '~/components/games/AddPlayerDialog.vue'
+
+const props = withDefaults(defineProps<{
+  gameId: string
+  winner?: 'good' | 'evil' | null
+  showHeader?: boolean
+}>(), {
+  winner: null,
+  showHeader: true,
+})
+
+const {
+  isAuthenticated,
+  isAdmin,
+  profile,
+} = useAuth()
+const { roles } = useRoles()
+const {
+  players: allPlayers,
+  createManual,
+} = usePlayers()
+const toast = useToast()
+const confirm = useConfirm()
+
+const {
+  players,
+  status,
+  add: addPlayer,
+  update: updatePlayer,
+  remove: removePlayer,
+} = useGamePlayers(
+  computed(() => props.gameId),
+)
+
+defineExpose({ players, status })
+
+const isPlayerInGame = computed(() => {
+  if (!profile.value || !players.value) return true
+  return players.value.some(
+    p => p.player.id === profile.value!.id,
+  )
+})
+
+// --- Join ---
+const showJoinDialog = ref(false)
+
+async function handleJoin() {
+  if (!profile.value) return
+  showJoinDialog.value = false
+  try {
+    await addPlayer({
+      player_id: profile.value.id,
+      added_by: profile.value.id,
+    })
+    showSuccess('Ви приєдналися до гри')
+  }
+  catch {
+    showError('Не вдалося приєднатися до гри')
+  }
+}
+
+// --- Add player (admin) ---
+const showAddPlayerDialog = ref(false)
+
+const existingPlayerIds = computed(() =>
+  players.value?.map(p => p.player.id) ?? [],
+)
+
+async function handleAddPlayer(playerId: string) {
+  if (!profile.value) return
+  showAddPlayerDialog.value = false
+  try {
+    await addPlayer({
+      player_id: playerId,
+      added_by: profile.value.id,
+    })
+    showSuccess('Гравця додано')
+  }
+  catch {
+    showError('Не вдалося додати гравця')
+  }
+}
+
+async function handleCreatePlayer(
+  nickname: string,
+) {
+  if (!profile.value) return
+  showAddPlayerDialog.value = false
+  try {
+    const { id } = await createManual(nickname)
+    await addPlayer({
+      player_id: id,
+      added_by: profile.value.id,
+    })
+    clearNuxtData('players')
+    showSuccess(
+      `Гравця "${nickname}" створено та додано`,
+    )
+  }
+  catch {
+    showError('Не вдалося створити гравця')
+  }
+}
+
+// --- Edit ---
+const showEditDialog = ref(false)
+const editingEntry
+  = ref<GamePlayerWithDetails | null>(null)
+
+function handleEditEntry(
+  entry: GamePlayerWithDetails,
+) {
+  editingEntry.value = entry
+  showEditDialog.value = true
+}
+
+async function handleUpdated(data: {
+  id: string
+  starting_role_id: string
+  ending_role_id: string | null
+  alignment_start: Alignment
+  alignment_end: Alignment | null
+  is_alive: boolean
+}) {
+  showEditDialog.value = false
+  try {
+    await updatePlayer(data.id, {
+      starting_role_id: data.starting_role_id,
+      ending_role_id: data.ending_role_id,
+      alignment_start: data.alignment_start,
+      alignment_end: data.alignment_end,
+      is_alive: data.is_alive,
+    })
+    showSuccess('Запис оновлено')
+  }
+  catch {
+    showError('Не вдалося оновити запис')
+  }
+}
+
+// --- Delete ---
+function handleDeleteEntry(
+  entry: GamePlayerWithDetails,
+) {
+  confirm.require({
+    message:
+      `Видалити ${entry.player.nickname} з гри?`,
+    header: 'Підтвердження',
+    icon: 'pi pi-exclamation-triangle',
+    acceptLabel: 'Видалити',
+    rejectLabel: 'Скасувати',
+    acceptProps: { severity: 'danger' },
+    rejectProps: {
+      severity: 'secondary', text: true,
+    },
+    accept: () => doDelete(entry.id),
+  })
+}
+
+async function doDelete(entryId: string) {
+  try {
+    await removePlayer(entryId)
+    showSuccess('Гравця видалено')
+  }
+  catch {
+    showError('Не вдалося видалити гравця')
+  }
+}
+
+function showSuccess(detail: string) {
+  toast.add({
+    severity: 'success',
+    summary: 'Успішно',
+    detail,
+    life: 3000,
+  })
+}
+
+function showError(detail: string) {
+  toast.add({
+    severity: 'error',
+    summary: 'Помилка',
+    detail,
+    life: 5000,
+  })
+}
+</script>
+
+<template>
+  <div>
+    <!-- Header with actions -->
+    <div
+      v-if="showHeader"
+      class="my-4 flex items-center justify-between
+        px-4 sm:px-6"
+    >
+      <h2
+        class="font-heading text-xl font-semibold
+          tracking-wide sm:text-2xl"
+      >
+        Гравці
+      </h2>
+      <div
+        v-if="isAuthenticated"
+        class="flex gap-4"
+      >
+        <Button
+          v-if="!isPlayerInGame"
+          icon="pi pi-plus"
+          severity="success"
+          size="small"
+          class="min-w-[50px] sm:!hidden"
+          @click="showJoinDialog = true"
+        />
+        <Button
+          v-if="!isPlayerInGame"
+          label="Приєднатися"
+          icon="pi pi-plus"
+          severity="success"
+          size="small"
+          class="!hidden sm:!inline-flex"
+          @click="showJoinDialog = true"
+        />
+        <Button
+          v-if="isAdmin"
+          icon="pi pi-user-plus"
+          severity="secondary"
+          outlined
+          size="small"
+          class="min-w-[50px] sm:!hidden"
+          @click="showAddPlayerDialog = true"
+        />
+        <Button
+          v-if="isAdmin"
+          label="Додати гравця"
+          icon="pi pi-user-plus"
+          severity="secondary"
+          outlined
+          size="small"
+          class="!hidden sm:!inline-flex"
+          @click="showAddPlayerDialog = true"
+        />
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div
+      v-if="status === 'pending'"
+      class="p-4"
+    >
+      <Skeleton
+        height="10rem"
+        class="!rounded-xl"
+      />
+    </div>
+
+    <!-- Table -->
+    <GamePlayersTable
+      v-else-if="players"
+      :players="players"
+      :current-user-id="profile?.id ?? null"
+      :is-admin="isAdmin"
+      :winner="winner ?? null"
+      @edit-entry="handleEditEntry"
+      @delete-entry="handleDeleteEntry"
+    />
+
+    <!-- Dialogs -->
+    <JoinGameDialog
+      v-model:visible="showJoinDialog"
+      @join="handleJoin"
+    />
+
+    <AddPlayerDialog
+      v-model:visible="showAddPlayerDialog"
+      :players="allPlayers ?? []"
+      :existing-player-ids="existingPlayerIds"
+      @add="handleAddPlayer"
+      @create="handleCreatePlayer"
+    />
+
+    <EditEntryDialog
+      v-model:visible="showEditDialog"
+      :entry="editingEntry"
+      :roles="roles ?? []"
+      @updated="handleUpdated"
+    />
+
+    <ConfirmDialog />
+  </div>
+</template>

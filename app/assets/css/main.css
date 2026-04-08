@@ -76,8 +76,9 @@
 
   --color-good: oklch(0.65 0.2 255);
   --color-evil: var(--botc-red-500);
-  --color-alive: oklch(0.723 0.219 149.579);
+  --color-alive: var(--botc-traveller);
   --color-dead: var(--botc-night-500);
+  --color-win: oklch(0.723 0.219 149.579);
 
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;

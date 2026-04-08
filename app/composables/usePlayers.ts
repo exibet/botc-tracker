@@ -1,4 +1,6 @@
 import type { Profile, PlayerWithStats } from '~/types'
+import type { GamePlayerStatsRow } from '~/utils/stats'
+import { aggregatePlayerStats } from '~/utils/stats'
 
 export function usePlayers() {
   const client = useSupabaseClient()
@@ -56,31 +58,9 @@ export function usePlayersWithStats() {
 
       if (gamesError) throw gamesError
 
-      const statsMap = new Map<string, {
-        games: number
-        wins: number
-        mvps: number
-        good: number
-        evil: number
-      }>()
-
-      for (const row of (gameRows as unknown as {
-        player_id: string
-        is_mvp: boolean
-        alignment_start: string | null
-        alignment_end: string | null
-        game: { winner: string }
-      }[])) {
-        const entry = statsMap.get(row.player_id)
-          ?? { games: 0, wins: 0, mvps: 0, good: 0, evil: 0 }
-        entry.games++
-        if (row.is_mvp) entry.mvps++
-        const alignment = row.alignment_end ?? row.alignment_start
-        if (alignment === row.game.winner) entry.wins++
-        if (alignment === 'good') entry.good++
-        else if (alignment === 'evil') entry.evil++
-        statsMap.set(row.player_id, entry)
-      }
+      const statsMap = aggregatePlayerStats(
+        gameRows as unknown as GamePlayerStatsRow[],
+      )
 
       return (profiles as Profile[])
         .map((p): PlayerWithStats => {

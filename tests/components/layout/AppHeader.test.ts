@@ -49,7 +49,6 @@ describe('appHeader', () => {
     expect(text).toContain('Головна')
     expect(text).toContain('Ігри')
     expect(text).toContain('Гравці')
-    expect(text).toContain('Лідерборд')
     expect(text).toContain('Ролі')
   })
 

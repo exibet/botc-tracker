@@ -176,7 +176,7 @@ onMounted(async () => {
               justify-center rounded-full py-0.5
               text-[10px] font-semibold"
             :class="game.won
-              ? 'bg-alive/10 text-alive'
+              ? 'bg-win/10 text-win'
               : 'bg-white/[0.04] text-text-muted'"
           >
             {{ game.won ? 'W' : 'L' }}

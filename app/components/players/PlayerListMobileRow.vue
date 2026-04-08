@@ -71,7 +71,7 @@ function rankDisplay(
           <span class="text-white/[0.15]">|</span>
           <span
             :class="player.winRate >= 50
-              ? 'text-alive' : ''"
+              ? 'text-win' : ''"
           >
             {{ player.gamesPlayed > 0
               ? `${player.winRate}%` : '\u2014' }}
@@ -89,8 +89,8 @@ function rankDisplay(
       <div class="flex shrink-0 items-center gap-2">
         <span
           class="inline-flex w-7 justify-center rounded
-            bg-alive/10 py-0.5 text-[10px] font-semibold
-            text-alive"
+            bg-win/10 py-0.5 text-[10px] font-semibold
+            text-win"
         >
           {{ player.wins }}W
         </span>

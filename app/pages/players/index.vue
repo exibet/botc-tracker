@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { usePlayersWithStats } from '~/composables/usePlayers'
+import { podiumRank } from '~/utils/stats'
 import PlayerListDesktopRow
   from '~/components/players/PlayerListDesktopRow.vue'
 import PlayerListMobileRow
@@ -20,20 +21,6 @@ const filteredPlayers = computed(() => {
     p.nickname.toLowerCase().includes(q),
   )
 })
-
-const hasEnoughForPodium = computed(
-  () => filteredPlayers.value.length >= 3,
-)
-
-function podiumRank(
-  index: number,
-): 'gold' | 'silver' | 'bronze' | null {
-  if (!hasEnoughForPodium.value) return null
-  if (index === 0) return 'gold'
-  if (index === 1) return 'silver'
-  if (index === 2) return 'bronze'
-  return null
-}
 
 function toggleExpand(playerId: string) {
   expandedId.value = expandedId.value === playerId
@@ -160,7 +147,9 @@ function toggleExpand(playerId: string) {
             :player="player"
             :index="index"
             :is-expanded="expandedId === player.id"
-            :podium-rank="podiumRank(index)"
+            :podium-rank="podiumRank(
+              index, 3, filteredPlayers.length,
+            )"
             @toggle="toggleExpand(player.id)"
           />
 
@@ -168,7 +157,9 @@ function toggleExpand(playerId: string) {
             :player="player"
             :index="index"
             :is-expanded="expandedId === player.id"
-            :podium-rank="podiumRank(index)"
+            :podium-rank="podiumRank(
+              index, 3, filteredPlayers.length,
+            )"
             @toggle="toggleExpand(player.id)"
           />
 

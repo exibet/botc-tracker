@@ -163,7 +163,7 @@ const evilPct = computed(() =>
             sm:gap-4"
         >
           <div>
-            <p class="flex items-center justify-center gap-1 font-heading text-lg font-bold text-alive sm:text-xl">
+            <p class="flex items-center justify-center gap-1 font-heading text-lg font-bold text-win sm:text-xl">
               <i class="pi pi-trophy text-[11px]" />
               {{ stats.wins }}
             </p>
@@ -234,10 +234,10 @@ const evilPct = computed(() =>
         style="background: linear-gradient(90deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.02) 100%); border: 1px solid rgba(16, 185, 129, 0.15)"
       >
         <i
-          class="pi pi-bolt text-lg text-alive"
+          class="pi pi-bolt text-lg text-win"
         />
         <p class="text-sm">
-          <span class="font-semibold text-alive">
+          <span class="font-semibold text-win">
             {{ winStreak }} перемог поспіль!
           </span>
           <span class="text-text-muted">

@@ -30,8 +30,9 @@ export function useGamePlayers(gameId: Ref<string> | string) {
   `
 
   const { data: players, status, refresh } = useAsyncData(
-    `game-players-${id.value}`,
+    () => `game-players-${id.value}`,
     async () => {
+      if (!id.value) return [] as GamePlayerWithDetails[]
       const { data, error } = await client
         .from('game_players')
         .select(SELECT_WITH_DETAILS)
@@ -40,6 +41,7 @@ export function useGamePlayers(gameId: Ref<string> | string) {
       if (error) throw error
       return data as GamePlayerWithDetails[]
     },
+    { watch: [id] },
   )
 
   async function add(entry: {

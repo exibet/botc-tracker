@@ -261,7 +261,7 @@ defineProps<{
                   rounded-full px-2.5 py-1 text-xs
                   font-medium"
                 :class="game.won
-                  ? 'bg-alive/10 text-alive ring-1 ring-alive/20'
+                  ? 'bg-win/10 text-win ring-1 ring-win/20'
                   : 'bg-white/[0.04] text-text-muted ring-1 ring-white/[0.06]'"
               >
                 <i
@@ -322,7 +322,7 @@ defineProps<{
                   justify-center rounded-full
                   py-0.5 text-[10px] font-semibold"
                 :class="game.won
-                  ? 'bg-alive/10 text-alive'
+                  ? 'bg-win/10 text-win'
                   : 'bg-white/[0.04] text-text-muted'"
               >
                 {{ game.won ? 'W' : 'L' }}

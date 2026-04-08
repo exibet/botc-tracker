@@ -93,12 +93,6 @@ const winnerInfo = computed(
           </span>
         </div>
 
-        <p
-          v-if="game.notes"
-          class="mt-2 line-clamp-1 text-sm text-text-subtle"
-        >
-          {{ game.notes }}
-        </p>
       </div>
 
       <!-- Arrow -->

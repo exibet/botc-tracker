@@ -13,7 +13,18 @@ const props = defineProps<{
   players: GamePlayerWithDetails[]
   currentUserId?: string | null
   isAdmin?: boolean
+  winner?: 'good' | 'evil' | null
 }>()
+
+function didWin(
+  entry: GamePlayerWithDetails,
+): boolean | null {
+  if (!props.winner) return null
+  const alignment = entry.alignment_end
+    ?? entry.alignment_start
+  if (!alignment) return null
+  return alignment === props.winner
+}
 
 const emit = defineEmits<{
   'edit-entry': [entry: GamePlayerWithDetails]
@@ -99,6 +110,10 @@ function finalAlignment(entry: GamePlayerWithDetails) {
           >
             Статус
           </th>
+          <th
+            v-if="winner"
+            class="px-6 py-4"
+          />
           <th
             v-if="currentUserId || isAdmin"
             class="px-6 py-4"
@@ -294,6 +309,24 @@ function finalAlignment(entry: GamePlayerWithDetails) {
             </div>
           </td>
 
+          <!-- W/L -->
+          <td
+            v-if="winner"
+            class="px-6 py-4"
+          >
+            <span
+              v-if="didWin(entry) !== null"
+              class="inline-flex w-7 items-center
+                justify-center rounded-full py-0.5
+                text-[10px] font-semibold"
+              :class="didWin(entry)
+                ? 'bg-win/10 text-win'
+                : 'bg-white/[0.04] text-text-muted'"
+            >
+              {{ didWin(entry) ? 'W' : 'L' }}
+            </span>
+          </td>
+
           <!-- Actions -->
           <td
             v-if="currentUserId || isAdmin"
@@ -406,6 +439,20 @@ function finalAlignment(entry: GamePlayerWithDetails) {
             :title="entry.is_alive
               ? 'Живий' : 'Мертвий'"
           />
+
+          <!-- W/L badge -->
+          <span
+            v-if="winner && didWin(entry) !== null"
+            class="inline-flex w-7 shrink-0
+              items-center justify-center
+              rounded-full py-0.5
+              text-[10px] font-semibold"
+            :class="didWin(entry)
+              ? 'bg-win/10 text-win'
+              : 'bg-white/[0.04] text-text-muted'"
+          >
+            {{ didWin(entry) ? 'W' : 'L' }}
+          </span>
 
           <!-- Actions -->
           <div class="flex shrink-0 items-center gap-0.5">

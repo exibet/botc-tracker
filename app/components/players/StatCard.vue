@@ -38,9 +38,9 @@ const displayValue = computed(() => {
 const colorConfig = computed(() => {
   switch (props.color) {
     case 'wins': return {
-      icon: 'text-alive',
-      value: 'text-alive',
-      glow: 'var(--color-alive)',
+      icon: 'text-win',
+      value: 'text-win',
+      glow: 'var(--color-win)',
       gradFrom: 'rgba(16, 185, 129, 0.12)',
       gradTo: 'rgba(16, 185, 129, 0.02)',
       border: 'rgba(16, 185, 129, 0.2)',

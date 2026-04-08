@@ -6,8 +6,7 @@ const menuItems = ref([
   { label: 'Головна', icon: 'pi pi-home', route: '/' },
   { label: 'Ігри', icon: 'pi pi-list', route: '/games' },
   { label: 'Гравці', icon: 'pi pi-users', route: '/players' },
-  { label: 'Лідерборд', icon: 'pi pi-trophy', route: '/leaderboard' },
-  { label: 'Ролі', icon: 'pi pi-book', route: '/roles' },
+{ label: 'Ролі', icon: 'pi pi-book', route: '/roles' },
 ])
 
 const userMenu = ref()
