@@ -6,6 +6,8 @@ import {
 } from '~/composables/useRoleTypes'
 import RoleAvatar from '~/components/games/RoleAvatar.vue'
 import AlignmentTag from '~/components/games/AlignmentTag.vue'
+import PlayerAvatar
+  from '~/components/players/PlayerAvatar.vue'
 
 const props = defineProps<{
   players: GamePlayerWithDetails[]
@@ -115,26 +117,18 @@ function finalAlignment(entry: GamePlayerWithDetails) {
           <!-- Player -->
           <td class="px-6 py-4">
             <div class="flex items-center gap-3">
-              <Avatar
-                v-if="entry.player.avatar_url"
-                :image="entry.player.avatar_url"
-                :pt="{
-                  image: { referrerpolicy: 'no-referrer' },
-                }"
-                shape="circle"
-                class="!h-10 !w-10"
-              />
-              <Avatar
-                v-else
-                :label="entry.player.nickname
-                  .slice(0, 2).toUpperCase()"
-                shape="circle"
-                class="!h-10 !w-10 !text-sm"
+              <PlayerAvatar
+                :avatar-url="entry.player.avatar_url"
+                :nickname="entry.player.nickname"
               />
               <div>
-                <span class="text-base font-semibold">
+                <NuxtLink
+                  :to="`/players/${entry.player.id}`"
+                  class="text-base font-semibold
+                    hover:text-primary transition-colors"
+                >
                   {{ entry.player.nickname }}
-                </span>
+                </NuxtLink>
                 <Tag
                   v-if="entry.is_mvp"
                   value="MVP"
@@ -350,19 +344,21 @@ function finalAlignment(entry: GamePlayerWithDetails) {
             :type="finalRole(entry)!.type"
             size="lg"
           />
-          <Avatar
+          <PlayerAvatar
             v-else
-            :label="entry.player.nickname
-              .slice(0, 2).toUpperCase()"
-            shape="circle"
-            class="!h-10 !w-10 !text-sm"
+            :avatar-url="null"
+            :nickname="entry.player.nickname"
           />
 
           <div class="min-w-0 flex-1">
             <div class="flex items-center gap-2">
-              <span class="font-semibold">
+              <NuxtLink
+                :to="`/players/${entry.player.id}`"
+                class="font-semibold
+                  hover:text-primary transition-colors"
+              >
                 {{ entry.player.nickname }}
-              </span>
+              </NuxtLink>
               <Tag
                 v-if="entry.is_mvp"
                 value="MVP"

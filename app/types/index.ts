@@ -90,3 +90,68 @@ export interface PlayerEntry {
   is_alive: boolean
   is_mvp: boolean
 }
+
+export interface PlayerStats {
+  totalGames: number
+  wins: number
+  losses: number
+  winRate: number
+  mvpCount: number
+  survivalRate: number
+  goodGames: number
+  goodWins: number
+  goodWinRate: number
+  evilGames: number
+  evilWins: number
+  evilWinRate: number
+  roleDistribution: Record<RoleType, number>
+}
+
+export interface RolePlayCount {
+  roleName: string
+  roleNameEn: string
+  roleType: RoleType
+  roleImageUrl: string | null
+  count: number
+}
+
+export interface PlayerGameHistory {
+  gameId: string
+  date: string
+  script: Script
+  roleName: string
+  roleNameEn: string
+  roleType: RoleType
+  roleImageUrl: string | null
+  alignment: Alignment | null
+  isAlive: boolean
+  isMvp: boolean
+  winner: Winner
+  won: boolean
+  // Starting role data
+  startingRoleName: string | null
+  startingRoleNameEn: string | null
+  startingRoleImageUrl: string | null
+  startingRoleType: RoleType | null
+  // Ending role data (if changed)
+  endingRoleName: string | null
+  endingRoleNameEn: string | null
+  endingRoleImageUrl: string | null
+  endingRoleType: RoleType | null
+  // Alignment timeline
+  alignmentStart: Alignment | null
+  alignmentEnd: Alignment | null
+  // Whether changes happened
+  hasRoleChange: boolean
+  hasAlignmentChange: boolean
+}
+
+export interface PlayerWithStats extends Profile {
+  gamesPlayed: number
+  wins: number
+  losses: number
+  winRate: number
+  mvpCount: number
+  goodGames: number
+  evilGames: number
+}

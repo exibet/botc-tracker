@@ -8,5 +8,6 @@
 | [x] | google-auth_20260407 | Google OAuth Authentication | 2026-04-07 | 2026-04-07 |
 | [x] | games-crud_20260407 | Games CRUD | 2026-04-07 | 2026-04-07 |
 | [x] | player-self-service_20260407 | Player Self-Service | 2026-04-07 | 2026-04-07 |
+| [x] | player-profiles-stats_20260408 | Player Profiles & Stats | 2026-04-08 | 2026-04-08 |
 
 <!-- Tracks registered by /conductor:new-track -->

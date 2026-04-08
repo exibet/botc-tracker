@@ -1,0 +1,16 @@
+{
+  "id": "player-profiles-stats_20260408",
+  "title": "Player Profiles & Stats",
+  "type": "feature",
+  "status": "complete",
+  "created": "2026-04-08",
+  "updated": "2026-04-08",
+  "phases": {
+    "total": 4,
+    "completed": 4
+  },
+  "tasks": {
+    "total": 13,
+    "completed": 13
+  }
+}
