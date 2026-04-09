@@ -400,33 +400,13 @@ const evilPct = computed(() =>
           </div>
 
           <!-- Good/Evil ratio bar -->
-          <div
+          <GoodEvilBar
             v-if="stats.totalGames > 0"
+            :good-pct="goodPct"
+            :evil-pct="evilPct"
+            height="h-1.5"
             class="mt-6"
-          >
-            <div
-              class="flex h-1.5 overflow-hidden
-                rounded-full bg-white/[0.06]"
-            >
-              <div
-                class="rounded-l-full bg-good
-                  transition-all duration-500"
-                :style="{ width: `${goodPct}%` }"
-              />
-              <div
-                class="rounded-r-full bg-evil
-                  transition-all duration-500"
-                :style="{ width: `${evilPct}%` }"
-              />
-            </div>
-            <div
-              class="mt-1 flex justify-between
-                text-[10px] text-text-subtle"
-            >
-              <span>{{ goodPct }}% Добро</span>
-              <span>{{ evilPct }}% Зло</span>
-            </div>
-          </div>
+          />
         </div>
       </div>
 

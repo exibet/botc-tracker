@@ -105,77 +105,35 @@ const evilPct = computed(() =>
     </div>
 
     <template v-else-if="games?.length">
-      <!-- Stats banner -->
-      <div
-        class="mt-8 rounded-xl border border-white/[0.06]
-          bg-white/[0.02] p-5 sm:p-6"
+      <!-- Stats -->
+      <section
+        class="mt-8 grid grid-cols-3 gap-3"
       >
-        <div
-          class="grid grid-cols-3 gap-4
-            text-center sm:gap-8"
-        >
-          <div>
-            <p
-              class="font-heading text-2xl font-bold
-                text-text sm:text-3xl"
-            >
-              {{ stats.total }}
-            </p>
-            <p class="mt-1 text-sm text-text-muted">
-              Всього ігор
-            </p>
-          </div>
-          <div>
-            <p
-              class="font-heading text-2xl font-bold
-                text-good sm:text-3xl"
-            >
-              {{ stats.goodWins }}
-            </p>
-            <p class="mt-1 text-sm text-text-muted">
-              <i class="pi pi-sun mr-1 text-xs text-good" />
-              Добро
-            </p>
-          </div>
-          <div>
-            <p
-              class="font-heading text-2xl font-bold
-                text-evil sm:text-3xl"
-            >
-              {{ stats.evilWins }}
-            </p>
-            <p class="mt-1 text-sm text-text-muted">
-              <i class="pi pi-moon mr-1 text-xs text-evil" />
-              Зло
-            </p>
-          </div>
-        </div>
+        <StatCard
+          :value="stats.goodWins"
+          label="Добро"
+          icon="pi pi-sun"
+          color="good"
+        />
+        <StatCard
+          :value="stats.total"
+          label="Всього"
+          icon="pi pi-flag"
+        />
+        <StatCard
+          :value="stats.evilWins"
+          label="Зло"
+          icon="pi pi-moon"
+          color="evil"
+        />
+      </section>
 
-        <!-- Win ratio bar -->
-        <div class="mt-4">
-          <div
-            class="flex h-2.5 overflow-hidden rounded-full
-              bg-white/[0.06]"
-          >
-            <div
-              class="rounded-l-full bg-good transition-all
-                duration-500"
-              :style="{ width: `${goodPct}%` }"
-            />
-            <div
-              class="rounded-r-full bg-evil transition-all
-                duration-500"
-              :style="{ width: `${evilPct}%` }"
-            />
-          </div>
-          <div
-            class="mt-1.5 flex justify-between text-xs
-              text-text-subtle"
-          >
-            <span>{{ goodPct }}% Добро</span>
-            <span>{{ evilPct }}% Зло</span>
-          </div>
-        </div>
+      <!-- Win ratio bar -->
+      <div class="mt-3">
+        <GoodEvilBar
+          :good-pct="goodPct"
+          :evil-pct="evilPct"
+        />
       </div>
 
       <!-- Grouped games -->

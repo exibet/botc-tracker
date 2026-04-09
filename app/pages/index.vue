@@ -97,123 +97,38 @@ function formatDate(dateStr: string): string {
         class="mt-6 grid grid-cols-2 gap-3
           sm:grid-cols-4 sm:gap-4"
       >
-        <div
-          class="rounded-xl border border-white/[0.06]
-            bg-white/[0.02] p-4 text-center"
-        >
-          <p
-            class="font-heading text-2xl font-bold
-              text-text sm:text-3xl"
-          >
-            {{ data.totalGames }}
-          </p>
-          <p
-            class="mt-1 text-xs text-text-muted
-              sm:text-sm"
-          >
-            <i
-              class="pi pi-flag mr-1 text-xs text-accent"
-            />
-            Ігор
-          </p>
-        </div>
-        <div
-          class="rounded-xl border border-white/[0.06]
-            bg-white/[0.02] p-4 text-center"
-        >
-          <p
-            class="font-heading text-2xl font-bold
-              text-text sm:text-3xl"
-          >
-            {{ data.totalPlayers }}
-          </p>
-          <p
-            class="mt-1 text-xs text-text-muted
-              sm:text-sm"
-          >
-            <i
-              class="pi pi-users mr-1 text-xs
-                text-accent"
-            />
-            Гравців
-          </p>
-        </div>
-        <div
-          class="rounded-xl border border-white/[0.06]
-            bg-white/[0.02] p-4 text-center"
-        >
-          <p
-            class="font-heading text-2xl font-bold
-              text-good sm:text-3xl"
-          >
-            {{ data.goodWins }}
-          </p>
-          <p
-            class="mt-1 text-xs text-text-muted
-              sm:text-sm"
-          >
-            <i
-              class="pi pi-sun mr-1 text-xs text-good"
-            />
-            Добро
-          </p>
-        </div>
-        <div
-          class="rounded-xl border border-white/[0.06]
-            bg-white/[0.02] p-4 text-center"
-        >
-          <p
-            class="font-heading text-2xl font-bold
-              text-evil sm:text-3xl"
-          >
-            {{ data.evilWins }}
-          </p>
-          <p
-            class="mt-1 text-xs text-text-muted
-              sm:text-sm"
-          >
-            <i
-              class="pi pi-moon mr-1 text-xs text-evil"
-            />
-            Зло
-          </p>
-        </div>
+        <StatCard
+          :value="data.goodWins"
+          label="Добро"
+          icon="pi pi-sun"
+          color="good"
+        />
+        <StatCard
+          :value="data.totalGames"
+          label="Ігор"
+          icon="pi pi-flag"
+          to="/games"
+        />
+        <StatCard
+          :value="data.totalPlayers"
+          label="Гравців"
+          icon="pi pi-users"
+          to="/players"
+        />
+        <StatCard
+          :value="data.evilWins"
+          label="Зло"
+          icon="pi pi-moon"
+          color="evil"
+        />
       </section>
 
       <!-- Good vs Evil ratio bar -->
       <section class="mt-4">
-        <div
-          class="flex h-3 overflow-hidden rounded-full
-            bg-white/[0.06]"
-        >
-          <div
-            class="rounded-l-full bg-good
-              transition-all duration-700"
-            :style="{ width: `${goodPct}%` }"
-          />
-          <div
-            class="rounded-r-full bg-evil
-              transition-all duration-700"
-            :style="{ width: `${evilPct}%` }"
-          />
-        </div>
-        <div
-          class="mt-1.5 flex justify-between text-xs
-            text-text-subtle"
-        >
-          <span>
-            <i
-              class="pi pi-sun mr-0.5 text-[10px]"
-            />
-            {{ goodPct }}% Добро
-          </span>
-          <span>
-            {{ evilPct }}% Зло
-            <i
-              class="pi pi-moon ml-0.5 text-[10px]"
-            />
-          </span>
-        </div>
+        <GoodEvilBar
+          :good-pct="goodPct"
+          :evil-pct="evilPct"
+        />
       </section>
 
       <!-- Last Game (expandable) -->

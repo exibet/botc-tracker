@@ -1,6 +1,9 @@
 import type { GameWithDetails, PlayerWithStats } from '~/types'
 import type { GamePlayerStatsRow } from '~/utils/stats'
-import { aggregatePlayerStats } from '~/utils/stats'
+import {
+  aggregatePlayerStats,
+  computeWinStreaks,
+} from '~/utils/stats'
 
 const GAME_SELECT = `
   *,
@@ -35,7 +38,7 @@ export function useHome() {
               alignment_end,
               starting_role:roles!starting_role_id(type),
               ending_role:roles!ending_role_id(type),
-              game:games!game_id(winner)
+              game:games!game_id(date, winner)
             `),
         ])
 
@@ -54,10 +57,11 @@ export function useHome() {
       const evilWins = totalGames - goodWins
 
       // Aggregate player stats
-      const statsMap = aggregatePlayerStats(
-        gamePlayersRes
-          .data as unknown as GamePlayerStatsRow[],
-      )
+      const typedRows
+        = gamePlayersRes
+          .data as unknown as GamePlayerStatsRow[]
+      const statsMap = aggregatePlayerStats(typedRows)
+      const streakMap = computeWinStreaks(typedRows)
 
       const profileMap = new Map(
         (profilesRes.data as {
@@ -93,6 +97,7 @@ export function useHome() {
               goodGames: s.good,
               evilGames: s.evil,
               points: s.points,
+              winStreak: streakMap.get(id) ?? 0,
             }
           })
           .sort((a, b) =>
