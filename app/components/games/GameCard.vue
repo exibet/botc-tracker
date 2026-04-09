@@ -27,11 +27,9 @@ const sideCounts = computed(() => {
   return { good, evil }
 })
 
-const mvpPlayer = computed(() => {
-  const mvp = props.game.game_players?.find(p => p.is_mvp)
-  if (!mvp?.player) return null
-  return mvp.player
-})
+const mvpPlayer = computed(
+  () => props.game.mvp_player ?? null,
+)
 </script>
 
 <template>

@@ -9,7 +9,7 @@ import PlayerListMobileRow
   from '~/components/players/PlayerListMobileRow.vue'
 import { podiumRank } from '~/utils/stats'
 
-const { data, status } = useHome()
+const { data, status, refresh: refreshHome } = useHome()
 const featuredExpanded = ref(true)
 
 const goodPct = computed(() => {
@@ -64,7 +64,7 @@ function formatDate(dateStr: string): string {
 
     <!-- Loading state -->
     <div
-      v-if="status === 'pending'"
+      v-if="status === 'pending' && !data"
       class="mt-6 space-y-4"
     >
       <div
@@ -186,6 +186,7 @@ function formatDate(dateStr: string): string {
             <GamePlayersPanel
               :game-id="featuredGame.id"
               :winner="featuredGame.winner"
+              @mvp-changed="refreshHome"
             />
           </div>
         </Transition>
@@ -316,7 +317,7 @@ function formatDate(dateStr: string): string {
 
     <!-- Empty state (no games yet) -->
     <div
-      v-else-if="status !== 'pending'"
+      v-else-if="!data"
       class="mt-16 flex flex-col items-center
         text-center text-text-muted"
     >

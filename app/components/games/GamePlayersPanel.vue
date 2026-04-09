@@ -10,6 +10,8 @@ import JoinGameDialog
   from '~/components/games/JoinGameDialog.vue'
 import AddPlayerDialog
   from '~/components/games/AddPlayerDialog.vue'
+import MvpVotingSection
+  from '~/components/games/MvpVotingSection.vue'
 
 const props = withDefaults(defineProps<{
   gameId: string
@@ -36,12 +38,22 @@ const confirm = useConfirm()
 const {
   players,
   status,
+  refresh: refreshPlayers,
   add: addPlayer,
   update: updatePlayer,
   remove: removePlayer,
 } = useGamePlayers(
   computed(() => props.gameId),
 )
+
+const emit = defineEmits<{
+  'mvp-changed': []
+}>()
+
+async function refreshAfterVote() {
+  await refreshPlayers()
+  emit('mvp-changed')
+}
 
 defineExpose({ players, status })
 
@@ -256,9 +268,9 @@ function showError(detail: string) {
       </ClientOnly>
     </div>
 
-    <!-- Loading -->
+    <!-- Loading (initial only) -->
     <div
-      v-if="status === 'pending'"
+      v-if="status === 'pending' && !players"
       class="p-4"
     >
       <Skeleton
@@ -268,14 +280,24 @@ function showError(detail: string) {
     </div>
 
     <!-- Table -->
-    <ClientOnly v-else-if="players">
-      <GamePlayersTable
+    <GamePlayersTable
+      v-else-if="players"
+      :players="players"
+      :current-user-id="profile?.id ?? null"
+      :is-admin="isAdmin"
+      :winner="winner ?? null"
+      @edit-entry="handleEditEntry"
+      @delete-entry="handleDeleteEntry"
+    />
+
+    <!-- MVP Voting -->
+    <ClientOnly v-if="players && players.length > 1">
+      <MvpVotingSection
+        :game-id="gameId"
         :players="players"
         :current-user-id="profile?.id ?? null"
-        :is-admin="isAdmin"
-        :winner="winner ?? null"
-        @edit-entry="handleEditEntry"
-        @delete-entry="handleDeleteEntry"
+        :is-participant="isPlayerInGame"
+        @vote-changed="refreshAfterVote"
       />
     </ClientOnly>
 

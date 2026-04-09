@@ -89,7 +89,7 @@ const evilPct = computed(() =>
 
     <!-- Loading -->
     <div
-      v-if="status === 'pending'"
+      v-if="status === 'pending' && !games?.length"
       class="mt-8 space-y-4"
     >
       <Skeleton

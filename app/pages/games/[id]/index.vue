@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import GamePlayersPanel
   from '~/components/games/GamePlayersPanel.vue'
+import PlayerAvatar
+  from '~/components/players/PlayerAvatar.vue'
 import {
   getScriptLabel,
   getWinnerInfo,
@@ -12,7 +14,7 @@ const gameId = route.params.id as string
 const { getById } = useGames()
 const { isAdmin } = useAuth()
 
-const { data: game, status: gameStatus } = useAsyncData(
+const { data: game, status: gameStatus, refresh: refreshGame } = useAsyncData(
   `game-${gameId}`,
   () => getById(gameId),
 )
@@ -27,6 +29,10 @@ function formatDate(dateStr: string): string {
 
 const winnerInfo = computed(() =>
   game.value ? getWinnerInfo(game.value.winner) : null,
+)
+
+const mvpPlayer = computed(
+  () => game.value?.mvp_player ?? null,
 )
 
 const panelRef = ref<InstanceType<
@@ -47,7 +53,7 @@ watch(
   <div>
     <!-- Loading -->
     <div
-      v-if="gameStatus === 'pending'"
+      v-if="gameStatus === 'pending' && !game"
       class="space-y-6"
     >
       <Skeleton
@@ -67,7 +73,7 @@ watch(
 
     <!-- Not found -->
     <div
-      v-else-if="!game"
+      v-else-if="gameStatus !== 'pending' && !game"
       class="flex flex-col items-center py-16
         text-center text-text-muted"
     >
@@ -175,50 +181,91 @@ watch(
                 <i class="pi pi-book" />
                 {{ game.storyteller.nickname }}
               </span>
+              <!-- MVP: mobile -->
+              <NuxtLink
+                v-if="mvpPlayer"
+                :to="`/players/${mvpPlayer.id}`"
+                class="inline-flex items-center gap-1
+                  text-sm text-accent transition-opacity
+                  hover:opacity-80 lg:hidden"
+              >
+                <i class="pi pi-star-fill text-xs" />
+                {{ mvpPlayer.nickname }}
+              </NuxtLink>
             </div>
           </div>
 
-          <!-- Winner badge -->
-          <div
-            class="hidden items-center gap-3
-              rounded-xl px-5 py-3 lg:flex"
-            :class="[
-              game.winner === 'good'
-                ? 'bg-[color-mix(in_srgb,var(--color-good)_15%,transparent)]'
-                : 'bg-[color-mix(in_srgb,var(--color-evil)_15%,transparent)]',
-            ]"
-          >
-            <div>
-              <p
-                class="text-xs uppercase
-                  tracking-wider text-text-muted"
-              >
-                Переможець
-              </p>
-              <div class="flex items-center gap-2">
-                <i
-                  class="text-lg sm:text-xl"
-                  :class="[
-                    winnerInfo?.icon,
-                    game.winner === 'good'
-                      ? 'text-good'
-                      : 'text-evil',
-                  ]"
+          <!-- Right side badges (desktop) -->
+          <div class="hidden items-stretch gap-4 lg:flex">
+            <!-- MVP badge: desktop -->
+            <NuxtLink
+              v-if="mvpPlayer"
+              :to="`/players/${mvpPlayer.id}`"
+              class="flex shrink-0 flex-col items-center
+                justify-center gap-1 rounded-xl
+                bg-accent/10 px-5 py-3 text-accent
+                transition-opacity hover:opacity-80"
+            >
+              <span class="relative">
+                <PlayerAvatar
+                  :avatar-url="mvpPlayer.avatar_url"
+                  :nickname="mvpPlayer.nickname"
+                  size="sm"
+                  ring-class="ring-1 ring-accent/40"
                 />
+                <i
+                  class="pi pi-star-fill absolute
+                    -right-1 -top-1 text-[10px]
+                    text-accent drop-shadow-sm"
+                />
+              </span>
+              <span class="text-xs font-medium">
+                {{ mvpPlayer.nickname }}
+              </span>
+            </NuxtLink>
+
+            <!-- Winner badge -->
+            <div
+              class="flex items-center justify-center
+                gap-3 rounded-xl px-5 py-3"
+              :class="[
+                game.winner === 'good'
+                  ? 'bg-[color-mix(in_srgb,var(--color-good)_15%,transparent)]'
+                  : 'bg-[color-mix(in_srgb,var(--color-evil)_15%,transparent)]',
+              ]"
+            >
+              <div>
                 <p
-                  class="font-heading text-lg
-                    font-bold sm:text-xl"
-                  :class="[
-                    game.winner === 'good'
-                      ? 'text-good'
-                      : 'text-evil',
-                  ]"
+                  class="text-xs uppercase
+                    tracking-wider text-text-muted"
                 >
-                  {{
-                    winnerInfo?.labelUa
-                      ?? game.winner
-                  }}
+                  Переможець
                 </p>
+                <div class="flex items-center gap-2">
+                  <i
+                    class="text-lg sm:text-xl"
+                    :class="[
+                      winnerInfo?.icon,
+                      game.winner === 'good'
+                        ? 'text-good'
+                        : 'text-evil',
+                    ]"
+                  />
+                  <p
+                    class="font-heading text-lg
+                      font-bold sm:text-xl"
+                    :class="[
+                      game.winner === 'good'
+                        ? 'text-good'
+                        : 'text-evil',
+                    ]"
+                  >
+                    {{
+                      winnerInfo?.labelUa
+                        ?? game.winner
+                    }}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -241,6 +288,7 @@ watch(
         ref="panelRef"
         :game-id="gameId"
         :winner="game.winner"
+        @mvp-changed="refreshGame"
       />
     </template>
   </div>

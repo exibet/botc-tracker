@@ -53,6 +53,7 @@ export interface Game {
   custom_script_name: string | null
   winner: Winner
   storyteller_id: string | null
+  mvp_player_id: string | null
   notes: string | null
   player_count: number | null
   created_by: string
@@ -73,9 +74,18 @@ export interface GamePlayer {
   created_at: string
 }
 
+export interface MvpVote {
+  id: string
+  game_id: string
+  voter_id: string
+  candidate_id: string
+  created_at: string
+}
+
 export interface GameWithDetails extends Game {
   storyteller: { id: string, nickname: string } | null
   created_by_profile: { id: string, nickname: string }
+  mvp_player: { id: string, nickname: string, avatar_url: string | null } | null
   game_players?: {
     is_mvp: boolean
     starting_role: { type: string } | null

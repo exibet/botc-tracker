@@ -13,7 +13,7 @@ const TOP_PLAYERS_COUNT = 5
 export function useHome() {
   const client = useSupabaseClient()
 
-  const { data, status } = useAsyncData(
+  const { data, status, refresh } = useAsyncData(
     'home',
     async () => {
       const [gamesRes, profilesRes, gamePlayersRes]
@@ -113,5 +113,5 @@ export function useHome() {
     },
   )
 
-  return { data, status }
+  return { data, status, refresh }
 }

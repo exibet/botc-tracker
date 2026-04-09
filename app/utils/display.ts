@@ -8,6 +8,19 @@ export function rankDisplay(
   return String(index + 1)
 }
 
+export function pluralizeUa(
+  count: number,
+  one: string,
+  few: string,
+  many: string,
+): string {
+  return count === 1
+    ? one
+    : count >= 2 && count <= 4
+      ? few
+      : many
+}
+
 export function effectiveAlignment(
   alignmentEnd: string | null,
   alignmentStart: string | null,

@@ -8,7 +8,7 @@ defineProps<{
 
 const sizeClasses: Record<string, string> = {
   xs: '!h-5 !w-5 !text-[8px]',
-  sm: '!h-8 !w-8',
+  sm: '!h-8 !w-8 !text-[10px]',
   md: '!h-10 !w-10',
   lg: '!h-16 !w-16 sm:!h-20 sm:!w-20',
 }
