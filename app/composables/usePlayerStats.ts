@@ -7,6 +7,7 @@ import type {
   Script,
   Winner,
 } from '~/types'
+import { winPoints } from '~/utils/stats'
 
 interface GamePlayerRow {
   game_id: string
@@ -50,6 +51,7 @@ function computeStats(rows: GamePlayerRow[]): PlayerStats {
       evilGames: 0,
       evilWins: 0,
       evilWinRate: 0,
+      points: 0,
       roleDistribution: {
         townsfolk: 0,
         outsider: 0,
@@ -62,6 +64,7 @@ function computeStats(rows: GamePlayerRow[]): PlayerStats {
   }
 
   let wins = 0
+  let points = 0
   let mvpCount = 0
   let aliveCount = 0
   let goodGames = 0
@@ -81,7 +84,12 @@ function computeStats(rows: GamePlayerRow[]): PlayerStats {
     const alignment = row.alignment_end ?? row.alignment_start
     const won = didWin(alignment, row.game.winner)
 
-    if (won) wins++
+    if (won) {
+      wins++
+      points += winPoints(
+        row.ending_role?.type ?? row.starting_role?.type ?? null,
+      )
+    }
     if (row.is_mvp) mvpCount++
     if (row.is_alive) aliveCount++
 
@@ -120,6 +128,7 @@ function computeStats(rows: GamePlayerRow[]): PlayerStats {
     evilWinRate: evilGames > 0
       ? Math.round((evilWins / evilGames) * 100)
       : 0,
+    points,
     roleDistribution: roleDist,
   }
 }

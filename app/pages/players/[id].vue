@@ -69,7 +69,10 @@ const evilPct = computed(() =>
     </NuxtLink>
 
     <!-- Loading state -->
-    <div v-if="isLoading" class="flex flex-col gap-6">
+    <div
+      v-if="isLoading"
+      class="flex flex-col gap-6"
+    >
       <!-- Header skeleton -->
       <div
         class="rounded-xl border border-white/[0.06]
@@ -82,8 +85,14 @@ const evilPct = computed(() =>
             class="shrink-0"
           />
           <div class="flex flex-col gap-2">
-            <Skeleton width="12rem" height="2rem" />
-            <Skeleton width="16rem" height="1rem" />
+            <Skeleton
+              width="12rem"
+              height="2rem"
+            />
+            <Skeleton
+              width="16rem"
+              height="1rem"
+            />
           </div>
         </div>
       </div>
@@ -145,111 +154,286 @@ const evilPct = computed(() =>
     </div>
 
     <!-- Profile content -->
-    <div v-else class="flex flex-col gap-6">
+    <div
+      v-else
+      class="flex flex-col gap-6"
+    >
       <!-- Header -->
       <PlayerHeader
         :player="player"
         :last-game-date="lastGameDate"
-        :stats="stats"
+        :win-streak="winStreak"
       />
 
-      <!-- Stats banner -->
+      <!-- Stats section -->
       <div
-        class="rounded-xl
-          px-4 py-3 sm:px-5 sm:py-3.5"
+        class="grid grid-cols-1 gap-3
+          lg:grid-cols-2"
       >
+        <!-- Left column: numbers -->
+        <div class="flex flex-col gap-3">
+          <!-- Hero stats: Points, Win Rate, Games -->
+          <div class="grid grid-cols-3 gap-3">
+            <div
+              class="rounded-xl border
+                border-white/10
+                px-3 py-3 text-center"
+            >
+              <p
+                class="font-heading text-2xl font-bold
+                  text-accent sm:text-3xl"
+              >
+                {{ stats.points }}
+              </p>
+              <p
+                class="mt-0.5 text-[11px]
+                  text-text-muted"
+              >
+                Бали
+              </p>
+            </div>
+            <div
+              class="rounded-xl border
+                border-white/10
+                px-3 py-3 text-center"
+            >
+              <p
+                class="font-heading text-2xl font-bold
+                  text-win sm:text-3xl"
+              >
+                {{ stats.winRate }}<span
+                  class="text-base font-semibold"
+                >%</span>
+              </p>
+              <p
+                class="mt-0.5 text-[11px]
+                  text-text-muted"
+              >
+                Перемог
+              </p>
+            </div>
+            <div
+              class="rounded-xl border
+                border-white/10
+                px-3 py-3 text-center"
+            >
+              <p
+                class="font-heading text-2xl font-bold
+                  text-text sm:text-3xl"
+              >
+                {{ stats.totalGames }}
+              </p>
+              <p
+                class="mt-0.5 text-[11px]
+                  text-text-muted"
+              >
+                Ігор
+              </p>
+            </div>
+          </div>
+
+          <!-- Secondary: Wins, Losses, MVP, Survival -->
+          <div
+            class="grid grid-cols-4 gap-2 rounded-xl
+              border border-white/10
+              px-3 py-3 text-center
+              sm:px-4"
+          >
+            <div>
+              <p
+                class="flex items-center justify-center
+                  gap-1 font-heading text-lg font-bold
+                  text-win"
+              >
+                <i class="pi pi-trophy text-[11px]" />
+                {{ stats.wins }}
+              </p>
+              <p class="text-[11px] text-text-muted">
+                Перемог
+              </p>
+            </div>
+            <div>
+              <p
+                class="font-heading text-lg font-bold
+                  text-text-muted"
+              >
+                {{ stats.losses }}
+              </p>
+              <p class="text-[11px] text-text-muted">
+                Поразок
+              </p>
+            </div>
+            <div>
+              <p
+                class="flex items-center justify-center
+                  gap-1 font-heading text-lg font-bold
+                  text-accent"
+              >
+                <i
+                  class="pi pi-star-fill text-[11px]"
+                />
+                {{ stats.mvpCount }}
+              </p>
+              <p class="text-[11px] text-text-muted">
+                MVP
+              </p>
+            </div>
+            <div>
+              <p
+                class="font-heading text-lg font-bold
+                  text-text"
+              >
+                {{ stats.survivalRate }}<span
+                  class="text-xs font-semibold
+                    text-text-muted"
+                >%</span>
+              </p>
+              <p class="text-[11px] text-text-muted">
+                Виживання
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right column: alignment breakdown -->
         <div
-          class="grid grid-cols-4 gap-2 text-center
-            sm:gap-4"
+          class="flex flex-col justify-between
+            rounded-xl border border-white/10
+            px-4 py-3 sm:px-5"
         >
-          <div>
-            <p class="flex items-center justify-center gap-1 font-heading text-lg font-bold text-win sm:text-xl">
-              <i class="pi pi-trophy text-[11px]" />
-              {{ stats.wins }}
-            </p>
-            <p class="text-[11px] text-text-muted">
-              Перемог
-            </p>
-          </div>
-          <div>
-            <p class="font-heading text-lg font-bold text-text-muted sm:text-xl">
-              {{ stats.losses }}
-            </p>
-            <p class="text-[11px] text-text-muted">
-              Поразок
-            </p>
-          </div>
-          <div>
-            <p class="flex items-center justify-center gap-1 font-heading text-lg font-bold text-good sm:text-xl">
-              <i class="pi pi-sun text-[11px]" />
-              {{ stats.goodGames }}
-            </p>
-            <p class="text-[11px] text-text-muted">
-              Добро
-            </p>
-          </div>
-          <div>
-            <p class="flex items-center justify-center gap-1 font-heading text-lg font-bold text-evil sm:text-xl">
-              <i class="pi pi-moon text-[11px]" />
-              {{ stats.evilGames }}
-            </p>
-            <p class="text-[11px] text-text-muted">
-              Зло
-            </p>
-          </div>
-        </div>
+          <div class="grid grid-cols-2 gap-4">
+            <!-- Good side -->
+            <div class="flex flex-col gap-2">
+              <span
+                class="hidden items-center gap-1.5
+                  text-xs font-semibold uppercase justify-center
+                  tracking-wide text-good sm:flex"
+              >
+                <i class="pi pi-sun text-[10px]" />
+                Добро
+              </span>
+              <p
+                class="font-heading text-2xl
+                  font-bold leading-none text-good"
+              >
+                {{ stats.goodGames }}
+                <span
+                  class="text-xs font-medium
+                  text-good/60"
+                >ігор</span>
+              </p>
+              <div class="flex flex-col gap-1">
+                <div
+                  class="flex items-center
+                    justify-between text-[11px]"
+                >
+                  <span class="text-text-muted">
+                    Вінрейт
+                  </span>
+                  <span
+                    class="font-semibold text-good"
+                  >{{ stats.goodWinRate }}%</span>
+                </div>
+                <div
+                  class="h-1.5 overflow-hidden
+                    rounded-full bg-white/[0.06]"
+                >
+                  <div
+                    class="h-full rounded-full
+                      bg-good transition-all
+                      duration-500"
+                    :style="{
+                      width: `${stats.goodWinRate}%`,
+                    }"
+                  />
+                </div>
+              </div>
+            </div>
 
-        <!-- Good/Evil ratio bar -->
-        <div v-if="stats.totalGames > 0" class="mt-3">
+            <!-- Evil side -->
+            <div class="flex flex-col gap-2">
+              <span
+                class="hidden items-center gap-1.5
+                  text-xs font-semibold uppercase justify-center
+                  tracking-wide text-evil sm:flex"
+              >
+                <i class="pi pi-moon text-[10px]" />
+                Зло
+              </span>
+              <p
+                class="font-heading text-2xl
+                  font-bold leading-none text-evil"
+              >
+                {{ stats.evilGames }}
+                <span
+                  class="text-xs font-medium
+                  text-evil/60"
+                >ігор</span>
+              </p>
+              <div class="flex flex-col gap-1">
+                <div
+                  class="flex items-center
+                    justify-between text-[11px]"
+                >
+                  <span class="text-text-muted">
+                    Вінрейт
+                  </span>
+                  <span
+                    class="font-semibold text-evil"
+                  >{{ stats.evilWinRate }}%</span>
+                </div>
+                <div
+                  class="h-1.5 overflow-hidden
+                    rounded-full bg-white/[0.06]"
+                >
+                  <div
+                    class="h-full rounded-full
+                      bg-evil transition-all
+                      duration-500"
+                    :style="{
+                      width: `${stats.evilWinRate}%`,
+                    }"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Good/Evil ratio bar -->
           <div
-            class="flex h-1.5 overflow-hidden rounded-full
-              bg-white/[0.06]"
+            v-if="stats.totalGames > 0"
+            class="mt-6"
           >
             <div
-              class="rounded-l-full bg-good transition-all
-                duration-500"
-              :style="{ width: `${goodPct}%` }"
-            />
+              class="flex h-1.5 overflow-hidden
+                rounded-full bg-white/[0.06]"
+            >
+              <div
+                class="rounded-l-full bg-good
+                  transition-all duration-500"
+                :style="{ width: `${goodPct}%` }"
+              />
+              <div
+                class="rounded-r-full bg-evil
+                  transition-all duration-500"
+                :style="{ width: `${evilPct}%` }"
+              />
+            </div>
             <div
-              class="rounded-r-full bg-evil transition-all
-                duration-500"
-              :style="{ width: `${evilPct}%` }"
-            />
-          </div>
-          <div
-            class="mt-1 flex justify-between text-[10px]
-              text-text-subtle"
-          >
-            <span>{{ goodPct }}% Добро</span>
-            <span>{{ evilPct }}% Зло</span>
+              class="mt-1 flex justify-between
+                text-[10px] text-text-subtle"
+            >
+              <span>{{ goodPct }}% Добро</span>
+              <span>{{ evilPct }}% Зло</span>
+            </div>
           </div>
         </div>
-      </div>
-
-      <!-- Win streak callout (when active) -->
-      <div
-        v-if="winStreak >= 3"
-        class="flex items-center gap-3 rounded-xl
-          px-5 py-3"
-        style="background: linear-gradient(90deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.02) 100%); border: 1px solid rgba(16, 185, 129, 0.15)"
-      >
-        <i
-          class="pi pi-bolt text-lg text-win"
-        />
-        <p class="text-sm">
-          <span class="font-semibold text-win">
-            {{ winStreak }} перемог поспіль!
-          </span>
-          <span class="text-text-muted">
-            Серія не перервана
-          </span>
-        </p>
       </div>
 
       <!-- Most played roles -->
       <PlayerRoleChart :roles="rolePlayCounts" />
 
-      <hr class="border-white/[0.06]" />
+      <hr class="border-white/[0.06]">
 
       <!-- Game history -->
       <PlayerGameHistory :games="gameHistory" />

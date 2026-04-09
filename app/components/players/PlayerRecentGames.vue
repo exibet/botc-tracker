@@ -43,8 +43,6 @@ onMounted(async () => {
         )
       `)
       .eq('player_id', props.playerId)
-      .order('created_at', { ascending: false })
-      .limit(5)
 
     if (error) throw error
 
@@ -92,6 +90,7 @@ onMounted(async () => {
         new Date(b.date).getTime()
           - new Date(a.date).getTime(),
       )
+      .slice(0, 5)
   }
   finally {
     loading.value = false

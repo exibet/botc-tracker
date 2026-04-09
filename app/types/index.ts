@@ -104,6 +104,7 @@ export interface PlayerStats {
   evilGames: number
   evilWins: number
   evilWinRate: number
+  points: number
   roleDistribution: Record<RoleType, number>
 }
 
@@ -155,4 +156,5 @@ export interface PlayerWithStats extends Profile {
   goodGames: number
   evilGames: number
   points: number
+  winStreak: number
 }

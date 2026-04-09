@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { PlayerWithStats } from '~/types'
+import { rankDisplay } from '~/utils/display'
 import PlayerAvatar
   from '~/components/players/PlayerAvatar.vue'
 
@@ -13,16 +14,6 @@ defineProps<{
 defineEmits<{
   toggle: []
 }>()
-
-function rankDisplay(
-  index: number,
-  rank: 'gold' | 'silver' | 'bronze' | null,
-): string {
-  if (rank === 'gold') return '\u{1F451}'
-  if (rank === 'silver') return '\u{1F948}'
-  if (rank === 'bronze') return '\u{1F949}'
-  return String(index + 1)
-}
 </script>
 
 <template>
@@ -60,9 +51,13 @@ function rankDisplay(
 
       <!-- Name + stats -->
       <div class="min-w-0 flex-1">
-        <span class="block truncate text-sm font-semibold">
-          {{ player.nickname }}
-        </span>
+        <div class="flex items-center gap-1.5">
+          <span
+            class="truncate text-sm font-semibold"
+          >
+            {{ player.nickname }}
+          </span>
+        </div>
         <div
           class="mt-0.5 flex items-center gap-2
             text-xs text-text-muted"

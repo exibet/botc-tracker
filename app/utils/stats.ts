@@ -1,3 +1,5 @@
+import { effectiveAlignment } from '~/utils/display'
+
 /**
  * Shared stats aggregation for game_players rows.
  * Used by useHome, usePlayers, and useLeaderboard.
@@ -10,7 +12,7 @@ export interface GamePlayerStatsRow {
   alignment_end: string | null
   starting_role: { type: string } | null
   ending_role: { type: string } | null
-  game: { winner: string }
+  game: { date?: string, winner: string }
 }
 
 export interface AggregatedPlayerStats {
@@ -26,7 +28,7 @@ export interface AggregatedPlayerStats {
  * Points per win by role type:
  * townsfolk/outsider = 1, minion = 1.5, demon = 2
  */
-function winPoints(roleType: string | null): number {
+export function winPoints(roleType: string | null): number {
   if (roleType === 'demon') return 2
   if (roleType === 'minion') return 1.5
   return 1
@@ -45,8 +47,9 @@ export function aggregatePlayerStats(
       }
     entry.games++
     if (row.is_mvp) entry.mvps++
-    const alignment
-      = row.alignment_end ?? row.alignment_start
+    const alignment = effectiveAlignment(
+      row.alignment_end, row.alignment_start,
+    )
     const won = alignment === row.game.winner
     if (won) {
       entry.wins++
@@ -60,6 +63,34 @@ export function aggregatePlayerStats(
   }
 
   return statsMap
+}
+
+export function computeWinStreaks(
+  rows: GamePlayerStatsRow[],
+): Map<string, number> {
+  const grouped = new Map<string, GamePlayerStatsRow[]>()
+  for (const row of rows) {
+    const list = grouped.get(row.player_id) ?? []
+    list.push(row)
+    grouped.set(row.player_id, list)
+  }
+
+  const streaks = new Map<string, number>()
+  for (const [playerId, games] of grouped) {
+    games.sort((a, b) =>
+      (b.game.date ?? '').localeCompare(a.game.date ?? ''),
+    )
+    let streak = 0
+    for (const g of games) {
+      const alignment = effectiveAlignment(
+        g.alignment_end, g.alignment_start,
+      )
+      if (alignment === g.game.winner) streak++
+      else break
+    }
+    streaks.set(playerId, streak)
+  }
+  return streaks
 }
 
 export function podiumRank(

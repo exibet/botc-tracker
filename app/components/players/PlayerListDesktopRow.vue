@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import type { PlayerWithStats } from '~/types'
+import { rankDisplay } from '~/utils/display'
 import PlayerAvatar
   from '~/components/players/PlayerAvatar.vue'
+import WinStreakBadge
+  from '~/components/players/WinStreakBadge.vue'
 
 defineProps<{
   player: PlayerWithStats
@@ -13,16 +16,6 @@ defineProps<{
 defineEmits<{
   toggle: []
 }>()
-
-function rankDisplay(
-  index: number,
-  rank: 'gold' | 'silver' | 'bronze' | null,
-): string {
-  if (rank === 'gold') return '\u{1F451}'
-  if (rank === 'silver') return '\u{1F948}'
-  if (rank === 'bronze') return '\u{1F949}'
-  return String(index + 1)
-}
 </script>
 
 <template>
@@ -65,6 +58,10 @@ function rankDisplay(
       >
         {{ player.nickname }}
       </NuxtLink>
+      <WinStreakBadge
+        :streak="player.winStreak"
+        size="sm"
+      />
     </div>
 
     <!-- Points -->
@@ -76,7 +73,10 @@ function rankDisplay(
       >
         {{ player.points }}
       </span>
-      <span v-else class="text-xs text-text-subtle">
+      <span
+        v-else
+        class="text-xs text-text-subtle"
+      >
         &mdash;
       </span>
     </div>
@@ -136,7 +136,10 @@ function rankDisplay(
         <i class="pi pi-star-fill text-[9px]" />
         {{ player.mvpCount }}
       </span>
-      <span v-else class="text-xs text-text-subtle">
+      <span
+        v-else
+        class="text-xs text-text-subtle"
+      >
         &mdash;
       </span>
     </div>
@@ -149,7 +152,10 @@ function rankDisplay(
       >
         {{ player.goodGames }}
       </span>
-      <span v-else class="text-xs text-text-subtle">
+      <span
+        v-else
+        class="text-xs text-text-subtle"
+      >
         &mdash;
       </span>
     </div>
@@ -162,7 +168,10 @@ function rankDisplay(
       >
         {{ player.evilGames }}
       </span>
-      <span v-else class="text-xs text-text-subtle">
+      <span
+        v-else
+        class="text-xs text-text-subtle"
+      >
         &mdash;
       </span>
     </div>

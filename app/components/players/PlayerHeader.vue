@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import type { Profile, PlayerStats } from '~/types'
+import type { Profile } from '~/types'
 import { formatDate } from '~/utils/date'
 import PlayerAvatar
   from '~/components/players/PlayerAvatar.vue'
+import WinStreakBadge
+  from '~/components/players/WinStreakBadge.vue'
 
 defineProps<{
   player: Profile
   lastGameDate?: string | null
-  stats: PlayerStats
+  winStreak?: number
 }>()
 </script>
 
@@ -60,42 +62,26 @@ defineProps<{
 
         <!-- Meta row -->
         <div
-          class="mt-1 flex flex-wrap items-center
-            gap-x-3 gap-y-0.5
-            text-xs text-text-muted sm:text-sm"
+          class="mt-2 flex items-center
+            justify-between gap-2"
         >
-          <span class="flex items-center gap-1">
+          <span
+            v-if="lastGameDate"
+            class="flex items-center gap-1
+              text-xs text-text-muted sm:text-sm"
+          >
             <i
-              class="pi pi-calendar text-[10px]
+              class="pi pi-clock text-[10px]
                 text-text-subtle"
             />
-            З {{ formatDate(player.created_at) }}
+            Остання:
+            {{ formatDate(lastGameDate) }}
           </span>
-          <template v-if="lastGameDate">
-            <span class="text-white/[0.15]">|</span>
-            <span class="flex items-center gap-1">
-              <i
-                class="pi pi-clock text-[10px]
-                  text-text-subtle"
-              />
-              Остання:
-              {{ formatDate(lastGameDate) }}
-            </span>
-          </template>
+          <WinStreakBadge
+            v-if="winStreak"
+            :streak="winStreak"
+          />
         </div>
-
-        <!-- MVP achievement badge -->
-        <div
-          v-if="stats.mvpCount > 0"
-          class="mt-3 inline-flex items-center gap-1.5
-            rounded-full bg-accent/15 px-3 py-1
-            text-xs font-bold text-accent
-            ring-1 ring-accent/30"
-        >
-          <i class="pi pi-star-fill text-[11px]" />
-          {{ stats.mvpCount }} MVP
-        </div>
-
       </div>
     </div>
   </div>

@@ -1,6 +1,9 @@
 import type { Profile, PlayerWithStats } from '~/types'
 import type { GamePlayerStatsRow } from '~/utils/stats'
-import { aggregatePlayerStats } from '~/utils/stats'
+import {
+  aggregatePlayerStats,
+  computeWinStreaks,
+} from '~/utils/stats'
 
 export function usePlayers() {
   const client = useSupabaseClient()
@@ -55,14 +58,15 @@ export function usePlayersWithStats() {
           alignment_end,
           starting_role:roles!starting_role_id(type),
           ending_role:roles!ending_role_id(type),
-          game:games!game_id(winner)
+          game:games!game_id(date, winner)
         `)
 
       if (gamesError) throw gamesError
 
-      const statsMap = aggregatePlayerStats(
-        gameRows as unknown as GamePlayerStatsRow[],
-      )
+      const typedRows
+        = gameRows as unknown as GamePlayerStatsRow[]
+      const statsMap = aggregatePlayerStats(typedRows)
+      const streakMap = computeWinStreaks(typedRows)
 
       return (profiles as Profile[])
         .map((p): PlayerWithStats => {
@@ -81,6 +85,7 @@ export function usePlayersWithStats() {
             goodGames: s?.good ?? 0,
             evilGames: s?.evil ?? 0,
             points: s?.points ?? 0,
+            winStreak: streakMap.get(p.id) ?? 0,
           }
         })
         .sort((a, b) =>
