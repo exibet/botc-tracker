@@ -534,7 +534,7 @@ BEGIN
     (g24, p_sasha,     'amnesiac',       'amnesiac',       'good', 'good', true, false, p_artur),
     (g24, p_maria,     'farmer',         'farmer',         'good', 'good', true, false, p_artur),
     (g24, p_ira,       'moonchild',      'moonchild',      'good', 'good', true, false, p_artur),
-    (g24, p_kateryna,  'empath',         'empath',         'good', 'good', true, false, p_artur),
+    (g24, p_kateryna,  'empath',         'empath',         'good', 'evil', true, false, p_artur),
     (g24, p_ruslan,    'fortuneteller',  'fortuneteller',  'good', 'good', true, false, p_artur),
     (g24, p_bogdan,    'mutant',         'mutant',         'good', 'good', true, false, p_artur),
     (g24, p_sergiy,    'undertaker',     'undertaker',     'good', 'good', true, false, p_artur);
@@ -545,10 +545,10 @@ BEGIN
   INSERT INTO game_players (game_id, player_id, starting_role_id, ending_role_id, alignment_start, alignment_end, is_alive, is_mvp, added_by) VALUES
     (g25, p_bogdan,    'riot',           'riot',           'evil', 'evil', true, false, p_artur),
     (g25, p_ira,       'witch',          'witch',          'evil', 'evil', true, false, p_artur),
-    (g25, p_volodymyr, 'monk',           'monk',           'good', 'good', true, false, p_artur),
+    (g25, p_volodymyr, 'monk',           'monk',           'good', 'evil', true, false, p_artur),
     (g25, p_sergiy,    'ravenkeeper',    'ravenkeeper',    'good', 'good', true, false, p_artur),
     (g25, p_natali,    'virgin',         'virgin',         'good', 'good', true, false, p_artur),
-    (g25, p_maria,     'slayer',         'slayer',         'good', 'good', true, false, p_artur),
+    (g25, p_maria,     'slayer',         'slayer',         'good', 'evil', true, false, p_artur),
     (g25, p_nastya,    'soldier',        'soldier',        'good', 'good', true, false, p_artur),
     (g25, p_kateryna,  'mayor',          'mayor',          'good', 'good', true, false, p_artur);
 
@@ -571,12 +571,12 @@ BEGIN
   INSERT INTO game_players (game_id, player_id, starting_role_id, ending_role_id, alignment_start, alignment_end, is_alive, is_mvp, added_by) VALUES
     (g27, p_ira,       'pukka',          'pukka',          'evil', 'evil', true, false, p_artur),
     (g27, p_nastya,    'fearmonger',     'fearmonger',     'evil', 'evil', true, false, p_artur),
-    (g27, p_kateryna,  'dreamer',        'dreamer',        'good', 'good', true, false, p_artur),
-    (g27, p_bogdan,    'seamstress',     'seamstress',     'good', 'good', true, false, p_artur),
-    (g27, p_volodymyr, 'philosopher',    'philosopher',    'good', 'good', true, false, p_artur),
-    (g27, p_sergiy,    'artist',         'artist',         'good', 'good', true, false, p_artur),
-    (g27, p_natali,    'sweetheart',     'sweetheart',     'good', 'good', true, false, p_artur),
-    (g27, p_maria,     'juggler',        'juggler',        'good', 'good', true, false, p_artur);
+    (g27, p_kateryna,  'dreamer',        'dreamer',        'good', 'evil', true, false, p_artur),
+    (g27, p_bogdan,    'seamstress',     'seamstress',     'good', 'evil', true, false, p_artur),
+    (g27, p_volodymyr, 'philosopher',    'philosopher',    'good', 'evil', true, false, p_artur),
+    (g27, p_sergiy,    'artist',         'artist',         'good', 'evil', true, false, p_artur),
+    (g27, p_natali,    'sweetheart',     'sweetheart',     'good', 'evil', true, false, p_artur),
+    (g27, p_maria,     'juggler',        'juggler',        'good', 'evil', true, false, p_artur);
 
   -- -------------------------------------------------------
   -- g28: 2026-03-22 Game 1 (9 players, good wins)
@@ -626,7 +626,7 @@ BEGIN
   -- -------------------------------------------------------
   INSERT INTO game_players (game_id, player_id, starting_role_id, ending_role_id, alignment_start, alignment_end, is_alive, is_mvp, added_by) VALUES
     (g31, p_inna,      'shabaloth',      'shabaloth',      'evil', 'evil', true, false, p_artur),
-    (g31, p_nastya,    'nightwatchman',  'nightwatchman',  'good', 'good', true, false, p_artur),
+    (g31, p_nastya,    'nightwatchman',  'nightwatchman',  'good', 'evil', true, false, p_artur),
     (g31, p_anya,      'psychopath',     'psychopath',     'evil', 'evil', true, false, p_artur),
     (g31, p_vlad,      'bountyhunter',   'bountyhunter',   'good', 'good', true, false, p_artur),
     (g31, p_volodymyr, 'heretic',        'heretic',        'good', 'good', true, false, p_artur),
@@ -640,7 +640,7 @@ BEGIN
   INSERT INTO game_players (game_id, player_id, starting_role_id, ending_role_id, alignment_start, alignment_end, is_alive, is_mvp, added_by) VALUES
     (g32, p_ruslan,    'lleech',         'lleech',         'evil', 'evil', true, false, p_artur),
     (g32, p_ira,       'mezepheles',     'mezepheles',     'evil', 'evil', true, false, p_artur),
-    (g32, p_bogdan,    'noble',          'noble',          'good', 'good', true, false, p_artur),
+    (g32, p_bogdan,    'noble',          'noble',          'good', 'evil', true, false, p_artur),
     (g32, p_inna,      'lunatic',        'lunatic',        'good', 'good', true, false, p_artur),
     (g32, p_anya,      'cannibal',       'cannibal',       'good', 'good', true, false, p_artur),
     (g32, p_nastya,    'king',           'king',           'good', 'good', true, false, p_artur),

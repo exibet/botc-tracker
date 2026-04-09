@@ -54,6 +54,7 @@ export function usePlayersWithStats() {
           alignment_start,
           alignment_end,
           starting_role:roles!starting_role_id(type),
+          ending_role:roles!ending_role_id(type),
           game:games!game_id(winner)
         `)
 
@@ -83,7 +84,8 @@ export function usePlayersWithStats() {
           }
         })
         .sort((a, b) =>
-          b.gamesPlayed - a.gamesPlayed
+          b.points - a.points
+          || b.gamesPlayed - a.gamesPlayed
           || a.nickname.localeCompare(b.nickname),
         )
     },

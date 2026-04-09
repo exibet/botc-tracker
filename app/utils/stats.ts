@@ -9,6 +9,7 @@ export interface GamePlayerStatsRow {
   alignment_start: string | null
   alignment_end: string | null
   starting_role: { type: string } | null
+  ending_role: { type: string } | null
   game: { winner: string }
 }
 
@@ -50,7 +51,7 @@ export function aggregatePlayerStats(
     if (won) {
       entry.wins++
       entry.points += winPoints(
-        row.starting_role?.type ?? null,
+        row.ending_role?.type ?? row.starting_role?.type ?? null,
       )
     }
     if (alignment === 'good') entry.good++
