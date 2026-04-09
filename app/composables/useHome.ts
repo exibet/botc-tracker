@@ -5,11 +5,7 @@ import {
   computeWinStreaks,
 } from '~/utils/stats'
 
-const GAME_SELECT = `
-  *,
-  storyteller:profiles!storyteller_id(id, nickname),
-  created_by_profile:profiles!created_by(id, nickname)
-`
+import { GAME_SELECT } from '~/utils/queries'
 
 const MIN_GAMES_FOR_TOP = 1
 const TOP_PLAYERS_COUNT = 5

@@ -1,10 +1,5 @@
 import type { Game, GameWithDetails } from '~/types'
-
-const GAME_SELECT = `
-  *,
-  storyteller:profiles!storyteller_id(id, nickname),
-  created_by_profile:profiles!created_by(id, nickname)
-`
+import { GAME_SELECT } from '~/utils/queries'
 
 export function useGames() {
   const client = useSupabaseClient()

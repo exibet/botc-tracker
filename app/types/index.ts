@@ -76,6 +76,11 @@ export interface GamePlayer {
 export interface GameWithDetails extends Game {
   storyteller: { id: string, nickname: string } | null
   created_by_profile: { id: string, nickname: string }
+  game_players?: {
+    is_mvp: boolean
+    starting_role: { type: string } | null
+    player: { id: string, nickname: string, avatar_url: string | null } | null
+  }[]
 }
 
 export interface PlayerEntry {
