@@ -7,10 +7,10 @@ defineProps<{
 }>()
 
 const sizeClasses: Record<string, string> = {
-  xs: '!h-5 !w-5 !text-[8px]',
-  sm: '!h-8 !w-8 !text-[10px]',
-  md: '!h-10 !w-10',
-  lg: '!h-16 !w-16 sm:!h-20 sm:!w-20',
+  xs: '!size-5 !min-w-5 !max-w-5 !text-[8px]',
+  sm: '!size-8 !min-w-8 !max-w-8 !text-[10px] !bg-gray-800',
+  md: '!size-10 !min-w-10 !max-w-10',
+  lg: '!size-16 !min-w-16 !max-w-16 sm:!size-20 sm:!min-w-20 sm:!max-w-20',
 }
 </script>
 

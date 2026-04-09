@@ -11,7 +11,7 @@ defineProps<{
     <div
       class="flex overflow-hidden rounded-full
         bg-white/[0.06]"
-      :class="height ?? 'h-3'"
+      :class="height ?? 'h-2'"
     >
       <div
         class="rounded-l-full bg-good

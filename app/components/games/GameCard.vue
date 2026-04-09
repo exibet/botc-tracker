@@ -30,6 +30,30 @@ const sideCounts = computed(() => {
 const mvpPlayer = computed(
   () => props.game.mvp_player ?? null,
 )
+
+const MAX_AVATARS = 10
+
+const allPlayers = computed(() => {
+  const mvpId = mvpPlayer.value?.id
+  return props.game.game_players
+    ?.map(gp => gp.player)
+    .filter((p): p is NonNullable<typeof p> =>
+      !!p && p.id !== mvpId,
+    ) ?? []
+})
+
+const visiblePlayers = computed(
+  () => allPlayers.value.slice(0, MAX_AVATARS),
+)
+
+const overflowPlayers = computed(
+  () => allPlayers.value.slice(MAX_AVATARS),
+)
+
+const overflowTooltip = computed(() =>
+  overflowPlayers.value
+    .map(p => p.nickname).join(', '),
+)
 </script>
 
 <template>
@@ -146,31 +170,66 @@ const mvpPlayer = computed(
 
       </div>
 
+      <!-- Player avatars (desktop) -->
+      <div
+        v-if="allPlayers.length && false"
+        class="hidden shrink-0 self-center lg:flex"
+      >
+        <span
+          v-for="(p, i) in visiblePlayers"
+          :key="p.id"
+          v-tooltip.top="p.nickname"
+          :class="[
+            i > 0 ? '-ml-2' : '',
+            'transition-transform duration-200',
+            'hover:scale-150 hover:z-10',
+          ]"
+        >
+          <PlayerAvatar
+            :avatar-url="p.avatar_url"
+            :nickname="p.nickname"
+            size="sm"
+            ring-class="ring-1 ring-white/35"
+          />
+        </span>
+        <span
+          v-if="overflowPlayers.length"
+          v-tooltip.top="overflowTooltip"
+          class="-ml-2 flex size-8 items-center
+            justify-center rounded-full text-xs font-semibold
+            text-text-muted  bg-black ring-1
+            ring-[var(--surface-ground)]/35
+            transition-transform duration-200
+            hover:scale-150 hover:z-10"
+        >
+          +{{ overflowPlayers.length }}
+        </span>
+      </div>
+
       <!-- MVP: desktop -->
       <NuxtLink
         v-if="mvpPlayer"
+        v-tooltip.top="'MVP: ' + mvpPlayer.nickname"
         :to="`/players/${mvpPlayer.id}`"
-        class="hidden shrink-0 flex-col items-center
-          gap-1 self-center px-4 text-accent
-          transition-opacity hover:opacity-80
-          lg:flex"
+        class="hidden shrink-0 self-center
+          text-accent lg:inline-flex"
         @click.stop
       >
-        <span class="relative">
+        <span
+          class="relative transition-transform
+            duration-200 hover:scale-150 inline-block"
+        >
           <PlayerAvatar
             :avatar-url="mvpPlayer.avatar_url"
             :nickname="mvpPlayer.nickname"
             size="sm"
-            ring-class="ring-1 ring-accent/40"
+            ring-class="ring-1 ring-accent/80"
           />
           <i
             class="pi pi-star-fill absolute
               -right-1 -top-1 text-[10px]
               text-accent drop-shadow-sm"
           />
-        </span>
-        <span class="text-xs font-medium">
-          {{ mvpPlayer.nickname }}
         </span>
       </NuxtLink>
 

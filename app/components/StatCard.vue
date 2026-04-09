@@ -7,6 +7,8 @@ defineProps<{
   to?: string
 }>()
 
+const NuxtLink = resolveComponent('NuxtLink')
+
 const colorClass = {
   good: 'text-good',
   evil: 'text-evil',
@@ -17,33 +19,48 @@ const colorClass = {
 
 <template>
   <component
-    :is="to ? 'NuxtLink' : 'div'"
+    :is="to ? NuxtLink : 'div'"
     :to="to || undefined"
     class="rounded-xl border border-white/[0.06]
-      bg-white/[0.02] p-4 text-center"
+      bg-white/[0.02]"
     :class="to
       ? 'transition-colors hover:bg-white/[0.05]'
       : ''"
   >
-    <p
-      class="font-heading text-2xl font-bold
-        sm:text-3xl"
-      :class="colorClass[color ?? 'text']"
-    >
-      {{ value }}
-    </p>
-    <p
-      class="mt-1 text-xs text-text-muted
-        sm:text-sm"
+    <!-- Mobile: inline icon + value -->
+    <div
+      class="flex items-center justify-center
+        gap-1.5 px-2 py-2 sm:hidden"
     >
       <i
-        :class="[
-          icon,
-          'mr-1 text-xs',
-          colorClass[color ?? 'accent'],
-        ]"
+        class="text-xs"
+        :class="[icon, colorClass[color ?? 'accent']]"
       />
-      {{ label }}
-    </p>
+      <p
+        class="font-heading text-lg font-bold"
+        :class="colorClass[color ?? 'text']"
+      >
+        {{ value }}
+      </p>
+    </div>
+    <!-- Desktop: stacked value + label -->
+    <div class="hidden p-4 text-center sm:block">
+      <p
+        class="font-heading text-2xl font-bold"
+        :class="colorClass[color ?? 'text']"
+      >
+        {{ value }}
+      </p>
+      <p class="mt-1 text-xs text-text-muted sm:text-sm">
+        <i
+          :class="[
+            icon,
+            'mr-1 text-xs',
+            colorClass[color ?? 'accent'],
+          ]"
+        />
+        {{ label }}
+      </p>
+    </div>
   </component>
 </template>

@@ -43,7 +43,7 @@ export function useHome() {
       if (gamePlayersRes.error) throw gamePlayersRes.error
 
       const allGames = gamesRes.data as GameWithDetails[]
-      const recentGames = allGames.slice(0, 5)
+      const recentGames = allGames.slice(0, 10)
 
       // Stats from games list (no extra query)
       const totalGames = allGames.length
@@ -79,7 +79,6 @@ export function useHome() {
               nickname: p?.nickname ?? '?',
               avatar_url: p?.avatar_url ?? null,
               role: 'player' as const,
-              is_manual: false,
               created_at: '',
               gamesPlayed: s.games,
               wins: s.wins,

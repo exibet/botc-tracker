@@ -87,13 +87,6 @@ function toggleExpand(playerId: string) {
         <h1 class="font-heading text-3xl font-bold tracking-tight">
           Гравці
         </h1>
-        <p
-          v-if="players?.length"
-          class="mt-1 text-sm text-text-muted"
-        >
-          {{ players.length }}
-          {{ players.length === 1 ? 'гравець' : 'гравців' }}
-        </p>
       </div>
       <div class="relative">
         <InputText

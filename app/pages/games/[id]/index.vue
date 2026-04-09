@@ -7,25 +7,21 @@ import {
   getScriptLabel,
   getWinnerInfo,
 } from '~/composables/useGameLabels'
+import { formatDateLong } from '~/utils/date'
 
 const route = useRoute()
 const gameId = route.params.id as string
 
-const { getById } = useGames()
+const { getById, remove } = useGames()
 const { isAdmin } = useAuth()
+const confirm = useConfirm()
+const toast = useToast()
+const router = useRouter()
 
 const { data: game, status: gameStatus, refresh: refreshGame } = useAsyncData(
   `game-${gameId}`,
   () => getById(gameId),
 )
-
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('uk-UA', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  })
-}
 
 const winnerInfo = computed(() =>
   game.value ? getWinnerInfo(game.value.winner) : null,
@@ -47,6 +43,39 @@ watch(
     }
   },
 )
+
+function confirmDelete() {
+  confirm.require({
+    group: 'delete-game',
+    message: 'Ви впевнені, що хочете видалити цю гру?',
+    header: 'Видалення гри',
+    icon: 'pi pi-exclamation-triangle',
+    acceptLabel: 'Видалити',
+    rejectLabel: 'Скасувати',
+    acceptProps: { severity: 'danger' },
+    rejectProps: { severity: 'secondary', text: true },
+    accept: async () => {
+      try {
+        await remove(gameId)
+        toast.add({
+          severity: 'success',
+          summary: 'Успішно',
+          detail: 'Гру видалено',
+          life: 3000,
+        })
+        router.push('/games')
+      }
+      catch {
+        toast.add({
+          severity: 'error',
+          summary: 'Помилка',
+          detail: 'Не вдалося видалити гру',
+          life: 5000,
+        })
+      }
+    },
+  })
+}
 </script>
 
 <template>
@@ -110,18 +139,27 @@ watch(
           Ігри
         </NuxtLink>
         <ClientOnly>
-          <NuxtLink
+          <div
             v-if="isAdmin"
-            :to="`/games/${game.id}/edit`"
+            class="flex gap-1"
           >
+            <NuxtLink :to="`/games/${game.id}/edit`">
+              <Button
+                label="Редагувати"
+                icon="pi pi-pencil"
+                severity="secondary"
+                text
+                size="small"
+              />
+            </NuxtLink>
             <Button
-              label="Редагувати"
-              icon="pi pi-pencil"
-              severity="secondary"
+              icon="pi pi-trash"
+              severity="danger"
               text
               size="small"
+              @click="confirmDelete"
             />
-          </NuxtLink>
+          </div>
         </ClientOnly>
       </div>
 
@@ -144,7 +182,7 @@ watch(
               class="font-heading text-2xl font-bold
                 tracking-tight sm:text-3xl"
             >
-              {{ formatDate(game.date) }}
+              {{ formatDateLong(game.date) }}
             </h1>
 
             <div
@@ -291,5 +329,7 @@ watch(
         @mvp-changed="refreshGame"
       />
     </template>
+
+    <ConfirmDialog group="delete-game" />
   </div>
 </template>

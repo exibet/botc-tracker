@@ -8,9 +8,20 @@ import PlayerListDesktopRow
 import PlayerListMobileRow
   from '~/components/players/PlayerListMobileRow.vue'
 import { podiumRank } from '~/utils/stats'
+import { formatDateWithWeekday } from '~/utils/date'
 
 const { data, status, refresh: refreshHome } = useHome()
-const featuredExpanded = ref(true)
+
+const expandedGameId = ref<string | null>(null)
+
+function toggleGame(gameId: string) {
+  expandedGameId.value
+    = expandedGameId.value === gameId ? null : gameId
+}
+
+function isExpanded(gameId: string) {
+  return expandedGameId.value === gameId
+}
 
 const goodPct = computed(() => {
   if (!data.value?.totalGames) return 0
@@ -23,30 +34,26 @@ const evilPct = computed(() => {
   return 100 - goodPct.value
 })
 
-const featuredGame = computed(
-  () => data.value?.recentGames?.[0] ?? null,
-)
+const lastDayGames = computed(() => {
+  const games = data.value?.recentGames
+  if (!games || !games.length) return []
+  const lastDate = games[0]!.date
+  return games.filter(g => g.date === lastDate)
+})
 
-const olderGames = computed(
-  () => data.value?.recentGames?.slice(1, 5) ?? [],
-)
+const olderGames = computed(() => {
+  const games = data.value?.recentGames
+  if (!games || !games.length) return []
+  const lastDate = games[0]!.date
+  return games.filter(g => g.date !== lastDate).slice(0, 4)
+})
 
-function formatDate(dateStr: string): string {
-  const d = new Date(dateStr)
-  const formatted = d.toLocaleDateString('uk-UA', {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'short',
-  })
-  return formatted.charAt(0).toUpperCase()
-    + formatted.slice(1)
-}
 </script>
 
 <template>
   <div>
     <!-- Hero -->
-    <section class="pb-2 pt-6 text-center sm:pt-10">
+    <section class="pb-2 text-center sm:pt-10">
       <h1
         class="font-heading text-3xl font-bold
           tracking-tight text-text sm:text-4xl"
@@ -102,24 +109,28 @@ function formatDate(dateStr: string): string {
           label="Добро"
           icon="pi pi-sun"
           color="good"
+          class="order-3 sm:order-none"
         />
         <StatCard
           :value="data.totalGames"
           label="Ігор"
           icon="pi pi-flag"
           to="/games"
+          class="order-2 sm:order-none"
         />
         <StatCard
           :value="data.totalPlayers"
           label="Гравців"
           icon="pi pi-users"
           to="/players"
+          class="order-1 sm:order-none"
         />
         <StatCard
           :value="data.evilWins"
           label="Зло"
           icon="pi pi-moon"
           color="evil"
+          class="order-4 sm:order-none"
         />
       </section>
 
@@ -131,65 +142,65 @@ function formatDate(dateStr: string): string {
         />
       </section>
 
-      <!-- Last Game (expandable) -->
-      <section
-        v-if="featuredGame"
-        class="mt-8"
-      >
+      <!-- Last Game Day (expandable cards) -->
+      <section v-if="lastDayGames.length" class="mt-8">
         <h2
           class="mb-3 flex items-baseline gap-2
             font-heading text-lg font-semibold
             tracking-wide text-accent"
         >
-          Остання гра
+          Останній ігровий день
           <span
             class="text-sm font-normal
               text-text-muted"
           >
-            {{ formatDate(featuredGame.date) }}
+            {{ formatDateWithWeekday(lastDayGames[0]!.date) }}
           </span>
         </h2>
-        <div
-          class="cursor-pointer
-            [&_a]:pointer-events-none"
-          @click="
-            featuredExpanded = !featuredExpanded
-          "
-        >
-          <GameCard
-            :game="featuredGame"
-            :class="featuredExpanded
-              ? '!rounded-b-none !border-b-0'
-              : ''"
-          />
-        </div>
-
-        <!-- Expanded players panel -->
-        <Transition
-          enter-active-class="transition-all
-            duration-200 ease-out"
-          leave-active-class="transition-all
-            duration-150 ease-in"
-          enter-from-class="max-h-0 opacity-0"
-          enter-to-class="max-h-[32rem]
-            opacity-100"
-          leave-from-class="max-h-[32rem]
-            opacity-100"
-          leave-to-class="max-h-0 opacity-0"
-        >
+        <div class="space-y-4">
           <div
-            v-if="featuredExpanded"
-            class="overflow-hidden rounded-b-xl
-              border border-t-0
-              border-white/[0.06]"
+            v-for="game in lastDayGames"
+            :key="game.id"
           >
-            <GamePlayersPanel
-              :game-id="featuredGame.id"
-              :winner="featuredGame.winner"
-              @mvp-changed="refreshHome"
-            />
+            <div
+              class="cursor-pointer
+                [&_a]:pointer-events-none"
+              @click="toggleGame(game.id)"
+            >
+              <GameCard
+                :game="game"
+                :class="isExpanded(game.id)
+                  ? '!rounded-b-none !border-b-0'
+                  : ''"
+              />
+            </div>
+            <Transition
+              enter-active-class="transition-all
+                duration-200 ease-out"
+              leave-active-class="transition-all
+                duration-150 ease-in"
+              enter-from-class="max-h-0 opacity-0"
+              enter-to-class="max-h-[32rem]
+                opacity-100"
+              leave-from-class="max-h-[32rem]
+                opacity-100"
+              leave-to-class="max-h-0 opacity-0"
+            >
+              <div
+                v-if="isExpanded(game.id)"
+                class="overflow-hidden rounded-b-xl
+                  border border-t-0
+                  border-white/[0.06]"
+              >
+                <GamePlayersPanel
+                  :game-id="game.id"
+                  :winner="game.winner"
+                  @mvp-changed="refreshHome"
+                />
+              </div>
+            </Transition>
           </div>
-        </Transition>
+        </div>
       </section>
 
       <!-- Top Players -->
