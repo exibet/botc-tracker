@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { usePlayersWithStats } from '~/composables/usePlayers'
-import { podiumRank } from '~/utils/stats'
 import PlayerListDesktopRow
   from '~/components/players/PlayerListDesktopRow.vue'
 import PlayerListMobileRow
@@ -13,13 +12,61 @@ const { players, status } = usePlayersWithStats()
 const search = ref('')
 const expandedId = ref<string | null>(null)
 
+type SortKey = 'points' | 'gamesPlayed' | 'winRate'
+  | 'mvpCount' | 'goodGames' | 'evilGames'
+const sortKey = ref<SortKey>('points')
+const sortAsc = ref(false)
+
+const sortColumns: {
+  key: SortKey | null
+  label?: string
+  icon?: string
+}[] = [
+  { key: 'points', label: 'Бали' },
+  { key: 'gamesPlayed', label: 'Ігри' },
+  { key: 'winRate', label: 'Win%' },
+  { key: null, label: 'W / L' },
+  { key: 'mvpCount', label: 'MVP' },
+  { key: 'goodGames', icon: 'pi-sun' },
+  { key: 'evilGames', icon: 'pi-moon' },
+]
+
+function toggleSort(key: SortKey) {
+  if (sortKey.value === key) {
+    sortAsc.value = !sortAsc.value
+  }
+  else {
+    sortKey.value = key
+    sortAsc.value = false
+  }
+}
+
 const filteredPlayers = computed(() => {
   if (!players.value) return []
+  let list = [...players.value]
   const q = search.value.toLowerCase().trim()
-  if (!q) return players.value
-  return players.value.filter(p =>
-    p.nickname.toLowerCase().includes(q),
+  if (q) {
+    list = list.filter(p =>
+      p.nickname.toLowerCase().includes(q),
+    )
+  }
+  const dir = sortAsc.value ? 1 : -1
+  const key = sortKey.value
+  list.sort((a, b) =>
+    dir * (a[key] - b[key])
+    || a.nickname.localeCompare(b.nickname),
   )
+  return list
+})
+
+const podiumMap = computed(() => {
+  const map = new Map<string, 'gold' | 'silver' | 'bronze'>()
+  if (!players.value || players.value.length < 3) return map
+  const ranks = ['gold', 'silver', 'bronze'] as const
+  for (let i = 0; i < 3; i++) {
+    map.set(players.value[i].id, ranks[i])
+  }
+  return map
 })
 
 function toggleExpand(playerId: string) {
@@ -124,17 +171,40 @@ function toggleExpand(playerId: string) {
         >
           <span>#</span>
           <span>Гравець</span>
-          <span class="text-center">Бали</span>
-          <span class="text-center">Ігри</span>
-          <span class="text-center">Win%</span>
-          <span class="text-center">W / L</span>
-          <span class="text-center">MVP</span>
-          <span class="text-center">
-            <i class="pi pi-sun text-[10px]" />
-          </span>
-          <span class="text-center">
-            <i class="pi pi-moon text-[10px]" />
-          </span>
+          <template
+            v-for="col in sortColumns"
+            :key="col.key"
+          >
+            <button
+              v-if="col.key"
+              class="flex cursor-pointer items-center
+                justify-center gap-1 transition-colors
+                hover:text-text-primary"
+              :class="sortKey === col.key
+                ? 'text-text-primary' : ''"
+              @click="toggleSort(col.key)"
+            >
+              <i
+                v-if="col.icon"
+                :class="`pi ${col.icon} text-[10px]`"
+              />
+              <template v-else>
+                {{ col.label }}
+              </template>
+              <i
+                v-if="sortKey === col.key"
+                class="pi text-[10px]"
+                :class="sortAsc
+                  ? 'pi-arrow-up' : 'pi-arrow-down'"
+              />
+            </button>
+            <span
+              v-else
+              class="text-center"
+            >
+              {{ col.label }}
+            </span>
+          </template>
         </div>
       </div>
 
@@ -148,9 +218,7 @@ function toggleExpand(playerId: string) {
             :player="player"
             :index="index"
             :is-expanded="expandedId === player.id"
-            :podium-rank="podiumRank(
-              index, 3, filteredPlayers.length,
-            )"
+            :podium-rank="podiumMap.get(player.id) ?? null"
             @toggle="toggleExpand(player.id)"
           />
 
@@ -158,9 +226,7 @@ function toggleExpand(playerId: string) {
             :player="player"
             :index="index"
             :is-expanded="expandedId === player.id"
-            :podium-rank="podiumRank(
-              index, 3, filteredPlayers.length,
-            )"
+            :podium-rank="podiumMap.get(player.id) ?? null"
             @toggle="toggleExpand(player.id)"
           />
 
