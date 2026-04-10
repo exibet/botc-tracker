@@ -23,6 +23,10 @@ export function useRoles() {
 
     if (error) throw error
     return data as Role[]
+  }, {
+    getCachedData(key, nuxtApp) {
+      return nuxtApp.payload.data[key] || nuxtApp.static.data[key]
+    },
   })
 
   const filteredRoles = computed(() => {

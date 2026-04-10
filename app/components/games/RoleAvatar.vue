@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { getRoleTypeColor } from '~/composables/useRoleTypes'
+import { resolveRoleImage } from '~/utils/role-image'
 
 const props = defineProps<{
   imageUrl: string | null | undefined
@@ -37,12 +38,16 @@ const ringClass = computed(() =>
 const color = computed(
   () => getRoleTypeColor(props.type),
 )
+
+const resolvedUrl = computed(
+  () => resolveRoleImage(props.imageUrl),
+)
 </script>
 
 <template>
   <img
-    v-if="imageUrl"
-    :src="imageUrl"
+    v-if="resolvedUrl"
+    :src="resolvedUrl"
     :alt="name"
     class="shrink-0 rounded-full object-cover"
     :class="[sizeClass, ringClass]"

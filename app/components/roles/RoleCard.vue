@@ -6,6 +6,7 @@ import {
   getRoleTypeInfo,
   getRoleTypeTagClass,
 } from '~/composables/useRoleTypes'
+import { resolveRoleImage } from '~/utils/role-image'
 
 const props = defineProps<{
   role: Role
@@ -20,6 +21,9 @@ const tagClass = computed(() => getRoleTypeTagClass(props.role.type))
 const editionLabel = computed(() =>
   EDITIONS.find(e => e.value === props.role.edition)?.label
   ?? props.role.edition,
+)
+const roleImage = computed(
+  () => resolveRoleImage(props.role.image_url),
 )
 </script>
 
@@ -44,8 +48,8 @@ const editionLabel = computed(() =>
       @click="expanded = !expanded"
     >
       <img
-        v-if="role.image_url"
-        :src="role.image_url"
+        v-if="roleImage"
+        :src="roleImage"
         :alt="role.name_en"
         class="size-10 shrink-0 rounded-full
           object-cover ring-2"
