@@ -276,16 +276,20 @@ const evilPct = computed(() =>
                 px-3 py-3 text-center"
             >
               <p
-                class="font-heading text-2xl font-bold
-                  text-text sm:text-3xl"
+                class="flex items-center justify-center
+                  gap-1 font-heading text-2xl font-bold
+                  text-accent sm:text-3xl"
               >
-                {{ stats.totalGames }}
+                <i
+                  class="pi pi-star-fill text-sm"
+                />
+                {{ stats.mvpCount }}
               </p>
               <p
                 class="mt-0.5 text-[11px]
                   text-text-muted"
               >
-                Ігор
+                MVP
               </p>
             </div>
           </div>
@@ -297,6 +301,17 @@ const evilPct = computed(() =>
               px-3 py-3 text-center
               sm:px-4"
           >
+            <div>
+              <p
+                class="font-heading text-lg font-bold
+                  text-text"
+              >
+                {{ stats.totalGames }}
+              </p>
+              <p class="text-[11px] text-text-muted">
+                Ігор
+              </p>
+            </div>
             <div>
               <p
                 class="flex items-center justify-center
@@ -319,21 +334,6 @@ const evilPct = computed(() =>
               </p>
               <p class="text-[11px] text-text-muted">
                 Поразок
-              </p>
-            </div>
-            <div>
-              <p
-                class="flex items-center justify-center
-                  gap-1 font-heading text-lg font-bold
-                  text-accent"
-              >
-                <i
-                  class="pi pi-star-fill text-[11px]"
-                />
-                {{ stats.mvpCount }}
-              </p>
-              <p class="text-[11px] text-text-muted">
-                MVP
               </p>
             </div>
             <div>
