@@ -62,7 +62,7 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
   ],
 
-  devtools: { enabled: true },
+  devtools: { enabled: false },
 
   app: {
     head: {

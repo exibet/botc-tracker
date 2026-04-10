@@ -53,12 +53,20 @@ defineProps<{
 
       <!-- Info -->
       <div class="min-w-0 flex-1">
-        <h1
-          class="truncate font-heading text-2xl
-            font-bold tracking-tight sm:text-3xl"
-        >
-          {{ player.nickname }}
-        </h1>
+        <div class="flex items-center gap-2">
+          <h1
+            class="truncate font-heading text-2xl
+              font-bold tracking-tight sm:text-3xl"
+          >
+            {{ player.nickname }}
+          </h1>
+          <Tag
+            v-if="player.is_manual"
+            value="ручний"
+            severity="warn"
+            class="shrink-0 text-[10px]"
+          />
+        </div>
 
         <!-- Meta row -->
         <div

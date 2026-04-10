@@ -7,10 +7,26 @@ import PlayerRoleChart
   from '~/components/players/PlayerRoleChart.vue'
 import PlayerGameHistory
   from '~/components/players/PlayerGameHistory.vue'
+import LinkProfileDialog
+  from '~/components/players/LinkProfileDialog.vue'
+import UnlinkProfileDialog
+  from '~/components/players/UnlinkProfileDialog.vue'
 
 const route = useRoute()
 const playerId = route.params.id as string
 const client = useSupabaseClient()
+const { isAdmin } = useAuth()
+
+const showLinkDialog = ref(false)
+const showUnlinkDialog = ref(false)
+
+function onLinked(authId: string) {
+  navigateTo(`/players/${authId}`)
+}
+
+function onUnlinked(manualId: string) {
+  navigateTo(`/players/${manualId}`)
+}
 
 const { data: player, status: profileStatus } = useAsyncData(
   `player-profile-${playerId}`,
@@ -57,16 +73,44 @@ const evilPct = computed(() =>
 
 <template>
   <div>
-    <!-- Back link -->
-    <NuxtLink
-      to="/players"
-      class="mb-6 inline-flex items-center gap-1.5
-        text-sm text-text-muted transition-colors
-        hover:text-text"
+    <!-- Back link + admin actions -->
+    <div
+      class="mb-6 flex items-center justify-between"
     >
-      <i class="pi pi-arrow-left text-xs" />
-      Гравці
-    </NuxtLink>
+      <NuxtLink
+        to="/players"
+        class="inline-flex items-center gap-1.5
+          text-sm text-text-muted transition-colors
+          hover:text-text"
+      >
+        <i class="pi pi-arrow-left text-xs" />
+        Гравці
+      </NuxtLink>
+
+      <div
+        v-if="isAdmin && player"
+        class="flex items-center gap-2"
+      >
+        <Button
+          v-if="player.is_manual"
+          icon="pi pi-link"
+          label="Зв'язати"
+          severity="secondary"
+          text
+          size="small"
+          @click="showLinkDialog = true"
+        />
+        <Button
+          v-else
+          icon="pi pi-replay"
+          label="Від'єднати"
+          severity="secondary"
+          text
+          size="small"
+          @click="showUnlinkDialog = true"
+        />
+      </div>
+    </div>
 
     <!-- Loading state -->
     <div
@@ -163,6 +207,20 @@ const evilPct = computed(() =>
         :player="player"
         :last-game-date="lastGameDate"
         :win-streak="winStreak"
+      />
+
+      <LinkProfileDialog
+        v-if="player.is_manual"
+        v-model:visible="showLinkDialog"
+        :manual-profile="player"
+        @linked="onLinked"
+      />
+
+      <UnlinkProfileDialog
+        v-if="!player.is_manual"
+        v-model:visible="showUnlinkDialog"
+        :profile="player"
+        @unlinked="onUnlinked"
       />
 
       <!-- Stats section -->

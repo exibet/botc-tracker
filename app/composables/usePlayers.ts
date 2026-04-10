@@ -5,10 +5,19 @@ import {
   computeWinStreaks,
 } from '~/utils/stats'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type SupabaseRpc = (...args: any[]) => any
+
 export function usePlayers() {
   const client = useSupabaseClient()
+  const rpc = (client as unknown as { rpc: SupabaseRpc }).rpc
+    .bind(client)
 
-  const { data: players, status } = useAsyncData('players', async () => {
+  const {
+    data: players,
+    status,
+    refresh: refreshPlayers,
+  } = useAsyncData('players', async () => {
     const { data, error } = await client
       .from('profiles')
       .select('*')
@@ -33,7 +42,37 @@ export function usePlayers() {
     return data
   }
 
-  return { players, status, createManual }
+  async function linkProfile(
+    manualId: string,
+    authId: string,
+  ) {
+    const { error } = await rpc('link_manual_profile', {
+      manual_id: manualId,
+      auth_id: authId,
+    })
+    if (error) throw error
+  }
+
+  async function unlinkProfile(
+    authId: string,
+    nickname: string,
+  ) {
+    const { data, error } = await rpc('unlink_profile', {
+      auth_id: authId,
+      manual_nickname: nickname,
+    })
+    if (error) throw error
+    return data as string
+  }
+
+  return {
+    players,
+    status,
+    refreshPlayers,
+    createManual,
+    linkProfile,
+    unlinkProfile,
+  }
 }
 
 export function usePlayersWithStats() {
