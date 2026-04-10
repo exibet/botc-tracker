@@ -11,7 +11,7 @@ export interface EditionInfo {
 
 export const ROLE_TYPES: RoleTypeInfo[] = [
   { value: 'townsfolk', label: 'Городяни', color: 'var(--color-townsfolk)' },
-  { value: 'outsider', label: 'Аутсайдери', color: 'var(--color-outsider)' },
+  { value: 'outsider', label: 'Чужинці', color: 'var(--color-outsider)' },
   { value: 'minion', label: 'Міньйони', color: 'var(--color-minion)' },
   { value: 'demon', label: 'Демони', color: 'var(--color-demon)' },
   { value: 'traveller', label: 'Мандрівники', color: 'var(--color-traveller)' },

@@ -366,6 +366,7 @@ function confirmDelete() {
                 v-if="game.status === 'upcoming'"
                 label="Гра відбулася"
                 icon="pi pi-play"
+                size="small"
                 severity="warn"
                 :loading="transitioning"
                 @click="transitionStatus('in_progress')"
@@ -375,6 +376,7 @@ function confirmDelete() {
               <Button
                 v-if="game.status === 'in_progress'"
                 label="Завершити гру"
+                size="small"
                 icon="pi pi-lock"
                 @click="showFinishDialog = true"
               />

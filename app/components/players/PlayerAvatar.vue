@@ -15,17 +15,19 @@ const sizeClasses: Record<string, string> = {
 </script>
 
 <template>
-  <Avatar
+  <img
     v-if="avatarUrl"
-    :image="avatarUrl"
-    :pt="{ image: { referrerpolicy: 'no-referrer' } }"
-    shape="circle"
+    :src="avatarUrl"
+    :alt="nickname"
+    referrerpolicy="no-referrer"
+    class="shrink-0 rounded-full object-cover"
     :class="[sizeClasses[size ?? 'md'], ringClass]"
-  />
+  >
   <Avatar
     v-else
     :label="nickname.slice(0, 2).toUpperCase()"
     shape="circle"
+    class="shrink-0"
     :class="[sizeClasses[size ?? 'md'], ringClass]"
   />
 </template>

@@ -14,6 +14,12 @@ const { data, status, refresh: refreshHome } = useHome()
 
 const expandedGameId = ref<string | null>(null)
 
+watch(() => data.value?.inProgressGames, (games) => {
+  if (games?.length && !expandedGameId.value) {
+    expandedGameId.value = games[0]!.id
+  }
+}, { immediate: true })
+
 function toggleGame(gameId: string) {
   expandedGameId.value
     = expandedGameId.value === gameId ? null : gameId
@@ -34,20 +40,13 @@ const evilPct = computed(() => {
   return 100 - goodPct.value
 })
 
-const lastDayGames = computed(() => {
+const recentFinished = computed(() => {
   const games = data.value?.recentGames
-  if (!games || !games.length) return []
-  const lastDate = games[0]!.date
-  return games.filter(g => g.date === lastDate)
+  if (!games?.length) return []
+  return games
+    .filter(g => g.status === 'finished')
+    .slice(0, 4)
 })
-
-const olderGames = computed(() => {
-  const games = data.value?.recentGames
-  if (!games || !games.length) return []
-  const lastDate = games[0]!.date
-  return games.filter(g => g.date !== lastDate).slice(0, 4)
-})
-
 </script>
 
 <template>
@@ -142,26 +141,35 @@ const olderGames = computed(() => {
         />
       </section>
 
-      <!-- Last Game Day (expandable cards) -->
-      <section v-if="lastDayGames.length" class="mt-8">
+      <!-- Games in progress -->
+      <section
+        v-if="data.inProgressGames?.length"
+        class="mt-8"
+      >
         <h2
           class="mb-3 flex items-baseline gap-2
             font-heading text-lg font-semibold
             tracking-wide text-accent"
         >
-          Останній ігровий день
-          <span
-            class="text-sm font-normal
-              text-text-muted"
-          >
-            {{ formatDateWithWeekday(lastDayGames[0]!.date) }}
-          </span>
+          Ігри в процесі
         </h2>
         <div class="space-y-4">
-          <div
-            v-for="game in lastDayGames"
+          <template
+            v-for="(game, index)
+              in data.inProgressGames"
             :key="game.id"
           >
+            <p
+              v-if="index === 0
+                || game.date
+                  !== data.inProgressGames[index - 1]!.date"
+              class="text-right text-xs font-medium
+                uppercase tracking-wide
+                text-text-subtle"
+              :class="{ 'pt-2': index !== 0 }"
+            >
+              {{ formatDateWithWeekday(game.date) }}
+            </p>
             <div
               class="cursor-pointer
                 [&_a]:pointer-events-none"
@@ -200,7 +208,7 @@ const olderGames = computed(() => {
                 />
               </div>
             </Transition>
-          </div>
+          </template>
         </div>
       </section>
 
@@ -289,9 +297,79 @@ const olderGames = computed(() => {
         </div>
       </section>
 
+      <!-- Upcoming Games -->
+      <section
+        v-if="data.upcomingGames?.length"
+        class="mt-8"
+      >
+        <h2
+          class="mb-3 font-heading text-lg
+            font-semibold tracking-wide text-accent"
+        >
+          Заплановані ігри
+        </h2>
+        <div class="space-y-4">
+          <template
+            v-for="(game, index)
+              in data.upcomingGames"
+            :key="game.id"
+          >
+            <p
+              v-if="index === 0
+                || game.date
+                  !== data.upcomingGames[index - 1]!.date"
+              class="text-right text-xs font-medium
+                uppercase tracking-wide
+                text-text-subtle"
+              :class="{ 'pt-2': index !== 0 }"
+            >
+              {{ formatDateWithWeekday(game.date) }}
+            </p>
+            <div
+              class="cursor-pointer
+                [&_a]:pointer-events-none"
+              @click="toggleGame(game.id)"
+            >
+              <GameCard
+                :game="game"
+                :class="isExpanded(game.id)
+                  ? '!rounded-b-none !border-b-0'
+                  : ''"
+              />
+            </div>
+            <Transition
+              enter-active-class="transition-all
+                duration-200 ease-out"
+              leave-active-class="transition-all
+                duration-150 ease-in"
+              enter-from-class="max-h-0 opacity-0"
+              enter-to-class="max-h-[32rem]
+                opacity-100"
+              leave-from-class="max-h-[32rem]
+                opacity-100"
+              leave-to-class="max-h-0 opacity-0"
+            >
+              <div
+                v-if="isExpanded(game.id)"
+                class="overflow-hidden rounded-b-xl
+                  border border-t-0
+                  border-white/[0.06]"
+              >
+                <GamePlayersPanel
+                  :game-id="game.id"
+                  :winner="game.winner"
+                  :game-status="game.status"
+                  @mvp-changed="refreshHome"
+                />
+              </div>
+            </Transition>
+          </template>
+        </div>
+      </section>
+
       <!-- Recent Games -->
       <section
-        v-if="olderGames.length"
+        v-if="recentFinished.length"
         class="mt-8"
       >
         <div
@@ -319,7 +397,7 @@ const olderGames = computed(() => {
 
         <div class="grid gap-4 lg:grid-cols-2">
           <GameCard
-            v-for="game in olderGames"
+            v-for="game in recentFinished"
             :key="game.id"
             :game="game"
           />

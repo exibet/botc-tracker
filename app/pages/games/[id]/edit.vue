@@ -166,6 +166,7 @@ const revertTarget = computed(() => {
             :icon="revertTarget.icon"
             :severity="revertTarget.severity"
             :loading="saving"
+            size="small"
             @click="handleRevertStatus"
           />
         </div>

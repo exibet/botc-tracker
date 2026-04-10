@@ -302,6 +302,7 @@ function entryPoints(
             >
               <AlignmentTag
                 :alignment="entry.alignment_start!"
+                size="xs"
                 muted
               />
               <i
@@ -423,7 +424,7 @@ function entryPoints(
           />
           <PlayerAvatar
             v-else
-            :avatar-url="null"
+            :avatar-url="entry.player.avatar_url"
             :nickname="entry.player.nickname"
           />
 

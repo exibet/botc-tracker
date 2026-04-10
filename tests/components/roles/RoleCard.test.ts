@@ -42,7 +42,7 @@ describe('roleCard', () => {
     })
     const img = wrapper.find('img')
     expect(img.exists()).toBe(true)
-    expect(img.attributes('src')).toBe(mockRole.image_url)
+    expect(img.attributes('src')).toBe('/roles/empath.webp')
   })
 
   it('renders fallback initial when no image', async () => {

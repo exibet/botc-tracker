@@ -206,7 +206,6 @@ async function doDelete(entryId: string) {
     showError('Не вдалося видалити гравця')
   }
 }
-
 </script>
 
 <template>
@@ -241,6 +240,7 @@ async function doDelete(entryId: string) {
             label="Приєднатися"
             icon="pi pi-plus"
             severity="success"
+            variant="outlined"
             size="small"
             class="!hidden sm:!inline-flex"
             @click="showJoinDialog = true"

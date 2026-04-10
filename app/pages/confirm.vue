@@ -1,12 +1,18 @@
 <script setup lang="ts">
 const router = useRouter()
+const route = useRoute()
 const { profileReady } = useAuth()
+
+const returnTo = computed(() => {
+  const path = route.query.returnTo as string | undefined
+  return path && path.startsWith('/') ? path : '/'
+})
 
 // Plugin handles profile loading via onAuthStateChange.
 // Just wait for it to finish, then redirect.
 watch(profileReady, (ready) => {
   if (ready) {
-    router.replace('/')
+    router.replace(returnTo.value)
   }
 }, { immediate: true })
 </script>

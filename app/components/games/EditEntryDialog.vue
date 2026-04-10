@@ -109,7 +109,7 @@ watch(() => props.entry, (entry) => {
     alignmentManual.value = false
   }
 
-  isAlive.value = entry.is_alive
+  isAlive.value = entry.is_alive ?? true
 
   if (
     entry.starting_role
@@ -219,38 +219,9 @@ function handleHide() {
     <div class="flex flex-col gap-4">
       <!-- ========== ROLE ========== -->
       <div class="flex flex-col gap-2">
-        <label
-          class="text-xs font-semibold uppercase
-            tracking-wider text-text-subtle"
-        >
-          Роль
-        </label>
-
         <!-- Picker (when open or no role set) -->
         <template v-if="activePicker !== null || !selectedRole">
-          <div class="flex flex-col gap-2">
-            <div
-              class="flex items-center justify-between
-                rounded-lg bg-white/[0.04] px-3 py-2"
-            >
-              <span
-                class="text-sm font-medium text-text-muted"
-              >
-                {{
-                  activePicker === 'ending'
-                    ? 'Оберіть кінцеву роль'
-                    : 'Оберіть роль'
-                }}
-              </span>
-              <Button
-                v-if="selectedRole"
-                label="Готово"
-                severity="secondary"
-                text
-                size="small"
-                @click="activePicker = null"
-              />
-            </div>
+          <div class="flex flex-col gap-4">
             <RolePickerPanel
               :roles="roles"
               :selected-id="
@@ -259,6 +230,8 @@ function handleHide() {
                   : (selectedRole?.id ?? null)
               "
               compact
+              show-type-filter
+              :hidden-types="['traveller', 'fabled']"
               @select="handlePickerSelect"
             />
           </div>
@@ -457,7 +430,6 @@ function handleHide() {
         <Button
           label="Зберегти"
           icon="pi pi-check"
-          severity="success"
           :disabled="!canSubmit"
           :loading="saving"
           @click="handleSubmit"

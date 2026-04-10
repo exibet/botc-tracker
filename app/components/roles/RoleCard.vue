@@ -6,7 +6,7 @@ import {
   getRoleTypeInfo,
   getRoleTypeTagClass,
 } from '~/composables/useRoleTypes'
-import { resolveRoleImage } from '~/utils/role-image'
+import RoleAvatar from '~/components/games/RoleAvatar.vue'
 
 const props = defineProps<{
   role: Role
@@ -21,9 +21,6 @@ const tagClass = computed(() => getRoleTypeTagClass(props.role.type))
 const editionLabel = computed(() =>
   EDITIONS.find(e => e.value === props.role.edition)?.label
   ?? props.role.edition,
-)
-const roleImage = computed(
-  () => resolveRoleImage(props.role.image_url),
 )
 </script>
 
@@ -47,32 +44,12 @@ const roleImage = computed(
       :aria-expanded="expanded"
       @click="expanded = !expanded"
     >
-      <img
-        v-if="roleImage"
-        :src="roleImage"
-        :alt="role.name_en"
-        class="size-10 shrink-0 rounded-full
-          object-cover ring-2"
-        :style="{
-          '--tw-ring-color':
-            `color-mix(in srgb, ${typeColor} 40%, transparent)`,
-        }"
-        loading="lazy"
-      >
-      <div
-        v-else
-        class="flex size-10 shrink-0 items-center
-          justify-center rounded-full text-sm
-          font-bold text-white/90 ring-2"
-        :style="{
-          'background-color':
-            `color-mix(in srgb, ${typeColor} 20%, transparent)`,
-          '--tw-ring-color':
-            `color-mix(in srgb, ${typeColor} 40%, transparent)`,
-        }"
-      >
-        {{ role.name_ua.charAt(0) }}
-      </div>
+      <RoleAvatar
+        :image-url="role.image_url"
+        :name="role.name_ua"
+        :type="role.type"
+        size="lg"
+      />
 
       <div class="min-w-0 flex-1">
         <div

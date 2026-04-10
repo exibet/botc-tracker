@@ -144,16 +144,29 @@ const hoverShadowClass = computed(() => {
             text-text-muted sm:gap-6"
         >
           <span
-            v-if="game.player_count"
             class="flex items-center gap-1.5"
           >
-            <i class="pi pi-users text-sm" />
-            {{ game.player_count }}
-            <span class="hidden sm:inline">
-              гравців
+            <i
+              class="text-sm"
+              :class="game.player_count
+                ? 'pi pi-users'
+                : 'pi pi-book'"
+            />
+            <template v-if="game.player_count">
+              {{ game.player_count }}
+              <span class="hidden sm:inline">
+                гравців
+              </span>
+            </template>
+            <span v-else>
+              {{ game.storyteller?.nickname
+                ?? 'Оповідач' }}
             </span>
           </span>
-          <template v-if="sideCounts">
+          <template
+            v-if="sideCounts
+              && game.status !== 'upcoming'"
+          >
             <span
               class="inline-flex items-center gap-1
                 rounded-full bg-good/10 px-1.5 py-0.5

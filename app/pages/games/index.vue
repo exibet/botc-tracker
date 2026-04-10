@@ -83,8 +83,8 @@ const evilPct = computed(() =>
         >
           <Button
             label="Створити гру"
+            variant="outlined"
             icon="pi pi-plus"
-            severity="contrast"
             data-testid="create-game-btn"
           />
         </NuxtLink>

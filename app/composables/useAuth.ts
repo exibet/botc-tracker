@@ -36,11 +36,13 @@ export function useAuth() {
   async function signInWithGoogle() {
     loading.value = true
     try {
+      const returnPath = useRoute().fullPath
+      const redirectTo = `${window.location.origin}/confirm`
+        + `?returnTo=${encodeURIComponent(returnPath)}`
+
       const { error } = await client.auth.signInWithOAuth({
         provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/confirm`,
-        },
+        options: { redirectTo },
       })
       if (error) throw error
     }

@@ -43,6 +43,16 @@ export function useHome() {
       if (gamePlayersRes.error) throw gamePlayersRes.error
 
       const allGames = gamesRes.data as GameWithDetails[]
+      const inProgressGames = allGames
+        .filter(g => g.status === 'in_progress')
+        .sort((a, b) =>
+          b.date.localeCompare(a.date),
+        )
+      const upcomingGames = allGames
+        .filter(g => g.status === 'upcoming')
+        .sort((a, b) =>
+          a.date.localeCompare(b.date),
+        )
       const recentGames = allGames.slice(0, 10)
 
       // Stats only from finished games
@@ -105,6 +115,8 @@ export function useHome() {
           .slice(0, TOP_PLAYERS_COUNT)
 
       return {
+        inProgressGames,
+        upcomingGames,
         recentGames,
         totalGames,
         totalPlayers: profilesRes.data.length,

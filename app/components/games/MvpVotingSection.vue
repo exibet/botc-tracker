@@ -192,6 +192,8 @@ function barWidth(voteCount: number): string {
             label="Голосувати"
             icon="pi pi-star"
             size="small"
+            severity="success"
+            variant="outlined"
             :disabled="isSubmitting"
             :loading="isSubmitting"
             @click="popoverRef.toggle($event)"

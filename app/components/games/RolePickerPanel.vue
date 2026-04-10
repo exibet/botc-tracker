@@ -10,6 +10,8 @@ const props = defineProps<{
   roles: Role[]
   selectedId: string | null
   compact?: boolean
+  showTypeFilter?: boolean
+  hiddenTypes?: string[]
 }>()
 
 const emit = defineEmits<{
@@ -17,14 +19,37 @@ const emit = defineEmits<{
 }>()
 
 const search = ref('')
+const typeFilter = ref<string | null>(null)
+const listEl = ref<HTMLElement | null>(null)
+
+watch(typeFilter, () => {
+  listEl.value?.scrollTo(0, 0)
+})
+
+const availableTypes = computed(() => {
+  const hidden = new Set(props.hiddenTypes ?? [])
+  return ROLE_TYPES.filter(t =>
+    !hidden.has(t.value)
+    && props.roles.some(r => r.type === t.value),
+  )
+})
 
 const filtered = computed(() => {
-  if (!search.value.trim()) return props.roles
-  const q = search.value.trim().toLowerCase()
-  return props.roles.filter(
-    r => r.name_ua.toLowerCase().includes(q)
-      || r.name_en.toLowerCase().includes(q),
-  )
+  let result = props.roles
+
+  if (typeFilter.value) {
+    result = result.filter(r => r.type === typeFilter.value)
+  }
+
+  if (search.value.trim()) {
+    const q = search.value.trim().toLowerCase()
+    result = result.filter(
+      r => r.name_ua.toLowerCase().includes(q)
+        || r.name_en.toLowerCase().includes(q),
+    )
+  }
+
+  return result
 })
 
 const grouped = computed(() => {
@@ -47,7 +72,9 @@ const grouped = computed(() => {
         type,
         label: info.label,
         color: info.color,
-        roles: rolesOfType,
+        roles: rolesOfType.toSorted((a, b) =>
+          a.name_ua.localeCompare(b.name_ua, 'uk'),
+        ),
       })
     }
   }
@@ -66,6 +93,28 @@ function handleSelect(role: Role) {
       border-white/[0.08]
       bg-[var(--botc-night-950)]"
   >
+    <!-- Type filters -->
+    <div
+      v-if="showTypeFilter"
+      class="grid grid-cols-2 gap-1.5
+        border-b border-white/[0.06] px-3 py-2.5
+        sm:grid-cols-4"
+    >
+      <button
+        v-for="t in availableTypes"
+        :key="t.value"
+        type="button"
+        class="type-chip"
+        :class="typeFilter === t.value
+          ? 'type-chip-active' : ''"
+        :style="{ '--chip-color': t.color }"
+        @click="typeFilter = typeFilter === t.value
+          ? null : t.value"
+      >
+        {{ t.label }}
+      </button>
+    </div>
+
     <!-- Search -->
     <div class="border-b border-white/[0.06] p-3">
       <IconField>
@@ -82,8 +131,9 @@ function handleSelect(role: Role) {
 
     <!-- Grouped roles -->
     <div
+      ref="listEl"
       class="overflow-y-auto"
-      :class="compact ? 'max-h-56' : 'max-h-80'"
+      :class="compact ? 'max-h-[27rem]' : 'max-h-96'"
     >
       <div
         v-if="grouped.length === 0"
@@ -128,7 +178,7 @@ function handleSelect(role: Role) {
           :key="role.id"
           type="button"
           class="flex w-full cursor-pointer items-center
-            gap-3 px-4 py-2.5 text-left
+            gap-3 px-4 py-3 text-left
             transition-colors duration-100
             hover:bg-white/[0.05]"
           :class="[
@@ -142,7 +192,7 @@ function handleSelect(role: Role) {
             :image-url="role.image_url"
             :name="role.name_ua"
             :type="role.type"
-            :size="compact ? 'sm' : 'md'"
+            size="md"
           />
           <div class="min-w-0 flex-1">
             <p class="text-sm font-medium text-text">
@@ -163,3 +213,49 @@ function handleSelect(role: Role) {
     </div>
   </div>
 </template>
+
+<style scoped>
+.type-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  border: 1px solid color-mix(
+    in srgb, var(--chip-color) 20%, transparent
+  );
+  background: color-mix(
+    in srgb, var(--chip-color) 8%, transparent
+  );
+  color: color-mix(
+    in srgb, var(--chip-color) 70%, #9ca3af
+  );
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.type-chip:hover {
+  background: color-mix(
+    in srgb, var(--chip-color) 14%, transparent
+  );
+  border-color: color-mix(
+    in srgb, var(--chip-color) 30%, transparent
+  );
+  color: color-mix(
+    in srgb, var(--chip-color) 85%, #d1d5db
+  );
+}
+
+.type-chip-active {
+  background: color-mix(
+    in srgb, var(--chip-color) 20%, transparent
+  );
+  border-color: color-mix(
+    in srgb, var(--chip-color) 50%, transparent
+  );
+  color: var(--chip-color);
+  font-weight: 600;
+}
+</style>
