@@ -1,0 +1,17 @@
+{
+  "name": "BotC Tracker - Blood on the Clocktower",
+  "short_name": "BotC Tracker",
+  "description": "Track Blood on the Clocktower games, player stats, win rates & MVP votes",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1a2e",
+  "theme_color": "#ef4444",
+  "lang": "uk",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

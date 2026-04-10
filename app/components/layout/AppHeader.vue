@@ -56,7 +56,7 @@ const userInitials = computed(() => {
               class="font-heading text-xl font-bold
                 text-primary"
               aria-hidden="true"
-            >&#x2720;</span>
+            >⛧</span>
             <span class="font-heading text-lg font-bold">
               <span class="text-accent">BotC</span>
               <span class="text-text"> Tracker</span>

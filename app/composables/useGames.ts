@@ -10,6 +10,7 @@ export function useGames() {
       .from('games')
       .select(GAME_SELECT)
       .order('date', { ascending: false })
+      .order('created_at', { ascending: false })
 
     if (error) throw error
     return data as GameWithDetails[]

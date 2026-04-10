@@ -21,7 +21,8 @@ export function useHome() {
           client
             .from('games')
             .select(GAME_SELECT)
-            .order('date', { ascending: false }),
+            .order('date', { ascending: false })
+            .order('created_at', { ascending: false }),
           client
             .from('profiles')
             .select('id, nickname, avatar_url'),

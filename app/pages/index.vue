@@ -57,7 +57,7 @@ const recentFinished = computed(() => {
         class="font-heading text-3xl font-bold
           tracking-tight text-text sm:text-4xl"
       >
-        <span class="text-primary">&#x2720;</span>
+        <span class="text-primary text-4xl sm:text-5xl">⛧</span>
         <span class="text-accent mx-3">Хроніки</span>
         <br class="sm:hidden">Годинникової Вежі
       </h1>

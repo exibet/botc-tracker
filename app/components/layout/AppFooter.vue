@@ -22,7 +22,7 @@ const year = new Date().getFullYear()
           <span
             class="font-heading font-bold text-primary"
             aria-hidden="true"
-          >&#x2720;</span>
+          >⛧</span>
           <span class="font-heading font-semibold">
             <span class="text-accent">BotC</span>
             <span class="text-text"> Tracker</span>
