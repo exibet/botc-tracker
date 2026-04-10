@@ -8,17 +8,33 @@ export default defineNuxtPlugin(async () => {
     await loadProfile(session.user.id)
   }
   else {
-    // No session — mark as ready so confirm page doesn't hang
     profileReady.value = true
   }
 
-  // React to future auth changes (login, logout, token refresh)
+  // React to all auth changes (login, logout, token refresh)
   client.auth.onAuthStateChange(async (event, newSession) => {
     if (event === 'SIGNED_OUT') {
       clearProfile()
     }
-    else if (newSession?.user && event === 'SIGNED_IN') {
-      await loadProfile(newSession.user.id)
+    else if (
+      newSession?.user
+      && (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')
+    ) {
+      if (!profileReady.value) {
+        await loadProfile(newSession.user.id)
+      }
+    }
+  })
+
+  // Refresh Supabase session when tab becomes visible after inactivity
+  document.addEventListener('visibilitychange', async () => {
+    if (document.visibilityState === 'visible') {
+      const { data: { session: currentSession } }
+        = await client.auth.getSession()
+      if (currentSession) {
+        await client.auth.refreshSession()
+      }
+      refreshNuxtData()
     }
   })
 })
