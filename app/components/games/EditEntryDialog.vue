@@ -26,7 +26,7 @@ const emit = defineEmits<{
     ending_role_id: string | null
     alignment_start: Alignment
     alignment_end: Alignment | null
-    is_alive: boolean
+    is_alive: boolean | null
   }]
 }>()
 
@@ -34,7 +34,7 @@ const emit = defineEmits<{
 const selectedRole = ref<Role | null>(null)
 const alignmentValue = ref<Alignment>('good')
 const alignmentManual = ref(false)
-const isAlive = ref(true)
+const isAlive = ref<boolean | null>(null)
 const saving = ref(false)
 const endingRole = ref<Role | null>(null)
 const showEndingRole = ref(false)

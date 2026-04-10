@@ -13,7 +13,7 @@ interface GamePlayerRow {
   game_id: string
   alignment_start: Alignment | null
   alignment_end: Alignment | null
-  is_alive: boolean
+  is_alive: boolean | null
   is_mvp: boolean
   starting_role: {
     name_ua: string
@@ -33,6 +33,7 @@ interface GamePlayerRow {
     script: Script
     status: string
     winner: Winner | null
+    created_at: string
   }
 }
 
@@ -95,7 +96,7 @@ function computeStats(allRows: GamePlayerRow[]): PlayerStats {
       )
     }
     if (row.is_mvp) mvpCount++
-    if (row.is_alive) aliveCount++
+    if (row.is_alive === true) aliveCount++
 
     if (alignment === 'good') {
       goodGames++
@@ -194,7 +195,12 @@ function computeRolePlayCounts(rows: GamePlayerRow[]): RolePlayCount[] {
 }
 
 function toGameHistory(rows: GamePlayerRow[]): PlayerGameHistory[] {
-  return rows.filter(r => r.game.status === 'finished')
+  return [...rows]
+    .filter(r => r.game.status === 'finished')
+    .sort((a, b) =>
+      b.game.date.localeCompare(a.game.date)
+      || b.game.created_at.localeCompare(a.game.created_at),
+    )
     .map((row) => {
       const role = row.ending_role ?? row.starting_role
       const alignment = row.alignment_end ?? row.alignment_start
@@ -241,7 +247,6 @@ function toGameHistory(rows: GamePlayerRow[]): PlayerGameHistory[] {
         hasAlignmentChange,
       }
     })
-    .sort((a, b) => b.date.localeCompare(a.date))
 }
 
 const SELECT_PLAYER_GAMES = `
@@ -257,7 +262,7 @@ const SELECT_PLAYER_GAMES = `
     name_ua, name_en, type, image_url
   ),
   game:games!game_id(
-    id, date, script, status, winner
+    id, date, script, status, winner, created_at
   )
 `
 

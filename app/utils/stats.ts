@@ -12,7 +12,12 @@ export interface GamePlayerStatsRow {
   alignment_end: string | null
   starting_role: { type: string } | null
   ending_role: { type: string } | null
-  game: { date?: string, winner: string | null, status?: string }
+  game: {
+    date?: string
+    winner: string | null
+    status?: string
+    created_at?: string
+  }
 }
 
 function isFinishedGame(row: GamePlayerStatsRow): boolean {
@@ -95,7 +100,10 @@ export function computeWinStreaks(
   const streaks = new Map<string, number>()
   for (const [playerId, games] of grouped) {
     games.sort((a, b) =>
-      (b.game.date ?? '').localeCompare(a.game.date ?? ''),
+      (b.game.date ?? '').localeCompare(a.game.date ?? '')
+      || (b.game.created_at ?? '').localeCompare(
+        a.game.created_at ?? '',
+      ),
     )
     let streak = 0
     for (const g of games) {

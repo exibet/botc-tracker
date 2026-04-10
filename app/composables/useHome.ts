@@ -34,7 +34,7 @@ export function useHome() {
               alignment_end,
               starting_role:roles!starting_role_id(type),
               ending_role:roles!ending_role_id(type),
-              game:games!game_id(date, winner, status)
+              game:games!game_id(date, winner, status, created_at)
             `),
         ])
 

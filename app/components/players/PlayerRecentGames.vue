@@ -39,7 +39,7 @@ onMounted(async () => {
           name_ua, image_url, type
         ),
         game:games!game_id(
-          id, date, script, status, winner
+          id, date, script, status, winner, created_at
         )
       `)
       .eq('player_id', props.playerId)
@@ -67,11 +67,19 @@ onMounted(async () => {
         script: Script
         status: string
         winner: Winner | null
+        created_at: string
       }
     }[]
 
     games.value = rows
       .filter(r => r.game.status === 'finished')
+      .sort((a, b) =>
+        b.game.date.localeCompare(a.game.date)
+        || b.game.created_at.localeCompare(
+          a.game.created_at,
+        ),
+      )
+      .slice(0, 5)
       .map((r) => {
         const role = r.ending_role ?? r.starting_role
         const alignment
@@ -88,11 +96,6 @@ onMounted(async () => {
           isMvp: r.is_mvp,
         }
       })
-      .sort((a, b) =>
-        new Date(b.date).getTime()
-          - new Date(a.date).getTime(),
-      )
-      .slice(0, 5)
   }
   finally {
     loading.value = false

@@ -4,6 +4,7 @@
 -- All role IDs are hardcoded to avoid PostgreSQL subquery optimization issues
 
 -- Step 1: Clean existing data (respecting FK order)
+DELETE FROM mvp_votes;
 DELETE FROM game_players;
 DELETE FROM games;
 DELETE FROM profiles WHERE is_manual = true;
@@ -125,40 +126,40 @@ BEGIN
   -- ============================================================
   -- Winner: determined by Demon's result. Demon Перемога = 'evil', Demon Поразка = 'good'
   -- Scripts cycle: trouble_brewing, bad_moon_rising, sects_and_violets
-  INSERT INTO games (id, date, script, winner, player_count, created_by) VALUES
-    (g1,  '2026-01-06', 'trouble_brewing',    'good', 12, p_artur),
-    (g2,  '2026-01-06', 'bad_moon_rising',    'good', 12, p_artur),
-    (g3,  '2026-01-11', 'sects_and_violets',  'good', 13, p_artur),
-    (g4,  '2026-01-11', 'trouble_brewing',    'good', 12, p_artur),
-    (g5,  '2026-01-11', 'bad_moon_rising',    'evil', 10, p_artur),
-    (g6,  '2026-01-13', 'sects_and_violets',  'good', 11, p_artur),
-    (g7,  '2026-01-13', 'trouble_brewing',    'evil', 11, p_artur),
-    (g8,  '2026-01-18', 'bad_moon_rising',    'good', 14, p_artur),
-    (g9,  '2026-01-18', 'sects_and_violets',  'evil', 13, p_artur),
-    (g10, '2026-01-22', 'trouble_brewing',    'good', 10, p_artur),
-    (g11, '2026-01-22', 'bad_moon_rising',    'good', 11, p_artur),
-    (g12, '2026-02-01', 'sects_and_violets',  'good',  6, p_artur),
-    (g13, '2026-02-01', 'trouble_brewing',    'good',  7, p_artur),
-    (g14, '2026-02-01', 'bad_moon_rising',    'evil',  8, p_artur),
-    (g15, '2026-02-01', 'sects_and_violets',  'good',  7, p_artur),
-    (g16, '2026-02-08', 'trouble_brewing',    'evil', 15, p_artur),
-    (g17, '2026-02-08', 'bad_moon_rising',    'good', 10, p_artur),
-    (g18, '2026-02-13', 'sects_and_violets',  'evil',  9, p_artur),
-    (g19, '2026-02-13', 'trouble_brewing',    'evil', 12, p_artur),
-    (g20, '2026-02-13', 'bad_moon_rising',    'evil', 10, p_artur),
-    (g21, '2026-02-22', 'sects_and_violets',  'evil',  7, p_artur),
-    (g22, '2026-02-22', 'trouble_brewing',    'good',  8, p_artur),
-    (g23, '2026-02-22', 'bad_moon_rising',    'good', 11, p_artur),
-    (g24, '2026-02-22', 'sects_and_violets',  'evil', 11, p_artur),
-    (g25, '2026-03-01', 'trouble_brewing',    'evil',  8, p_artur),
-    (g26, '2026-03-01', 'bad_moon_rising',    'good',  8, p_artur),
-    (g27, '2026-03-01', 'sects_and_violets',  'evil',  8, p_artur),
-    (g28, '2026-03-22', 'trouble_brewing',    'good',  9, p_artur),
-    (g29, '2026-03-22', 'bad_moon_rising',    'good', 10, p_artur),
-    (g30, '2026-03-22', 'sects_and_violets',  'good',  9, p_artur),
-    (g31, '2026-03-27', 'trouble_brewing',    'evil',  8, p_artur),
-    (g32, '2026-03-27', 'bad_moon_rising',    'good',  8, p_artur),
-    (g33, '2026-03-27', 'sects_and_violets',  'evil',  10, p_artur);
+  INSERT INTO games (id, date, script, winner, status, player_count, created_by) VALUES
+    (g1,  '2026-01-06', 'trouble_brewing',    'good', 'finished', 12, p_artur),
+    (g2,  '2026-01-06', 'bad_moon_rising',    'good', 'finished', 12, p_artur),
+    (g3,  '2026-01-11', 'sects_and_violets',  'good', 'finished', 13, p_artur),
+    (g4,  '2026-01-11', 'trouble_brewing',    'good', 'finished', 12, p_artur),
+    (g5,  '2026-01-11', 'bad_moon_rising',    'evil', 'finished', 10, p_artur),
+    (g6,  '2026-01-13', 'sects_and_violets',  'good', 'finished', 11, p_artur),
+    (g7,  '2026-01-13', 'trouble_brewing',    'evil', 'finished', 11, p_artur),
+    (g8,  '2026-01-18', 'bad_moon_rising',    'good', 'finished', 14, p_artur),
+    (g9,  '2026-01-18', 'sects_and_violets',  'evil', 'finished', 13, p_artur),
+    (g10, '2026-01-22', 'trouble_brewing',    'good', 'finished', 10, p_artur),
+    (g11, '2026-01-22', 'bad_moon_rising',    'good', 'finished', 11, p_artur),
+    (g12, '2026-02-01', 'sects_and_violets',  'good', 'finished',  6, p_artur),
+    (g13, '2026-02-01', 'trouble_brewing',    'good', 'finished',  7, p_artur),
+    (g14, '2026-02-01', 'bad_moon_rising',    'evil', 'finished',  8, p_artur),
+    (g15, '2026-02-01', 'sects_and_violets',  'good', 'finished',  7, p_artur),
+    (g16, '2026-02-08', 'trouble_brewing',    'evil', 'finished', 15, p_artur),
+    (g17, '2026-02-08', 'bad_moon_rising',    'good', 'finished', 10, p_artur),
+    (g18, '2026-02-13', 'sects_and_violets',  'evil', 'finished',  9, p_artur),
+    (g19, '2026-02-13', 'trouble_brewing',    'evil', 'finished', 12, p_artur),
+    (g20, '2026-02-13', 'bad_moon_rising',    'evil', 'finished', 10, p_artur),
+    (g21, '2026-02-22', 'sects_and_violets',  'evil', 'finished',  7, p_artur),
+    (g22, '2026-02-22', 'trouble_brewing',    'good', 'finished',  8, p_artur),
+    (g23, '2026-02-22', 'bad_moon_rising',    'good', 'finished', 11, p_artur),
+    (g24, '2026-02-22', 'sects_and_violets',  'evil', 'finished', 11, p_artur),
+    (g25, '2026-03-01', 'trouble_brewing',    'evil', 'finished',  8, p_artur),
+    (g26, '2026-03-01', 'bad_moon_rising',    'good', 'finished',  8, p_artur),
+    (g27, '2026-03-01', 'sects_and_violets',  'evil', 'finished',  8, p_artur),
+    (g28, '2026-03-22', 'trouble_brewing',    'good', 'finished',  9, p_artur),
+    (g29, '2026-03-22', 'bad_moon_rising',    'good', 'finished', 10, p_artur),
+    (g30, '2026-03-22', 'sects_and_violets',  'good', 'finished',  9, p_artur),
+    (g31, '2026-03-27', 'trouble_brewing',    'evil', 'finished',  8, p_artur),
+    (g32, '2026-03-27', 'bad_moon_rising',    'good', 'finished',  8, p_artur),
+    (g33, '2026-03-27', 'sects_and_violets',  'evil', 'finished', 10, p_artur);
 
   -- ============================================================
   -- GAME PLAYERS
@@ -661,5 +662,50 @@ BEGIN
     (g33, p_ira,       'empath',         'empath',         'good', 'good', true, false, p_artur),
     (g33, p_anya,      'fortuneteller',  'fortuneteller',  'good', 'good', true, false, p_artur),
     (g33, p_artem,     'undertaker',     'undertaker',     'good', 'good', true, false, p_artur);
+
+  -- ============================================================
+  -- RANDOMIZE is_alive based on realistic survival rates per role type
+  -- demon ~30%, minion ~50%, townsfolk ~60%, outsider ~65%
+  -- Uses md5 hash of (game_id + player_id) for deterministic randomness
+  -- ============================================================
+  UPDATE game_players gp
+  SET is_alive = (
+    ('x' || left(md5(gp.game_id::text || gp.player_id::text), 8))::bit(32)::int
+    % 100
+  ) < CASE
+    WHEN r.type = 'demon'     THEN 30
+    WHEN r.type = 'minion'    THEN 50
+    WHEN r.type = 'townsfolk' THEN 60
+    WHEN r.type = 'outsider'  THEN 65
+    WHEN r.type = 'traveller' THEN 80
+    ELSE 100
+  END
+  FROM roles r
+  WHERE r.id = COALESCE(gp.ending_role_id, gp.starting_role_id);
+
+  -- ============================================================
+  -- STAGGER created_at so same-day games have proper order
+  -- g1/g2 same day, g3/g4/g5 same day, etc.
+  -- Each game gets +1 minute offset based on its position
+  -- ============================================================
+  UPDATE games SET created_at = (date::timestamp + interval '10 hours')
+    WHERE id IN (g1, g3, g6, g8, g10, g12, g16, g18, g21, g25, g28, g31);
+  UPDATE games SET created_at = (date::timestamp + interval '13 hours')
+    WHERE id IN (g2, g4, g7, g9, g11, g13, g17, g19, g22, g26, g29, g32);
+  UPDATE games SET created_at = (date::timestamp + interval '16 hours')
+    WHERE id IN (g5, g14, g20, g23, g27, g30, g33);
+  UPDATE games SET created_at = (date::timestamp + interval '19 hours')
+    WHERE id IN (g15, g24);
+
+  -- ============================================================
+  -- BACKFILL games.mvp_player_id from game_players.is_mvp
+  -- ============================================================
+  UPDATE games g
+  SET mvp_player_id = (
+    SELECT gp.player_id
+    FROM game_players gp
+    WHERE gp.game_id = g.id AND gp.is_mvp = true
+    LIMIT 1
+  );
 
 END $$;

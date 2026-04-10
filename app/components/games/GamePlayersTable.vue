@@ -314,26 +314,29 @@ function entryPoints(
 
           <!-- Status -->
           <td class="px-6 py-4">
-            <div class="flex items-center gap-2">
+            <div
+              v-if="entry.is_alive != null"
+              class="flex items-center gap-2"
+            >
               <span
                 class="inline-block size-2.5 rounded-full"
-                :class="[
-                  entry.is_alive
-                    ? 'bg-alive'
-                    : 'bg-dead',
-                ]"
+                :class="entry.is_alive
+                  ? 'bg-alive' : 'bg-dead'"
               />
               <span
                 class="text-sm"
-                :class="[
-                  entry.is_alive
-                    ? 'text-text'
-                    : 'text-text-muted',
-                ]"
+                :class="entry.is_alive
+                  ? 'text-text' : 'text-text-muted'"
               >
                 {{ entry.is_alive ? 'Живий' : 'Мертвий' }}
               </span>
             </div>
+            <span
+              v-else
+              class="text-sm text-text-subtle"
+            >
+              —
+            </span>
           </td>
 
           <!-- W/L -->
@@ -470,13 +473,11 @@ function entryPoints(
 
           <!-- Status dot -->
           <span
+            v-if="entry.is_alive != null"
             class="inline-block size-2.5 shrink-0
               rounded-full"
-            :class="[
-              entry.is_alive
-                ? 'bg-alive'
-                : 'bg-dead',
-            ]"
+            :class="entry.is_alive
+              ? 'bg-alive' : 'bg-dead'"
             :title="entry.is_alive
               ? 'Живий' : 'Мертвий'"
           />

@@ -275,7 +275,10 @@ function gamePoints(game: PlayerGameHistory): number {
 
             <!-- Status -->
             <td class="px-6 py-3.5">
-              <div class="flex items-center gap-2">
+              <div
+                v-if="game.isAlive != null"
+                class="flex items-center gap-2"
+              >
                 <span
                   class="inline-block size-2.5 rounded-full"
                   :class="game.isAlive
@@ -289,6 +292,12 @@ function gamePoints(game: PlayerGameHistory): number {
                   {{ game.isAlive ? 'Живий' : 'Мертвий' }}
                 </span>
               </div>
+              <span
+                v-else
+                class="text-sm text-text-subtle"
+              >
+                —
+              </span>
             </td>
 
             <!-- Result -->
@@ -357,6 +366,7 @@ function gamePoints(game: PlayerGameHistory): number {
 
             <div class="flex shrink-0 items-center gap-2">
               <span
+                v-if="game.isAlive != null"
                 class="inline-block size-2 rounded-full"
                 :class="game.isAlive
                   ? 'bg-traveller' : 'bg-dead'"

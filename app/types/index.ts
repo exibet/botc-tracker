@@ -70,7 +70,7 @@ export interface GamePlayer {
   ending_role_id: string | null
   alignment_start: Alignment | null
   alignment_end: Alignment | null
-  is_alive: boolean
+  is_alive: boolean | null
   is_mvp: boolean
   added_by: string
   created_at: string
@@ -104,7 +104,7 @@ export interface PlayerEntry {
   ending_role_id: string | null
   ending_role_name: string | null
   alignment_end: Alignment | null
-  is_alive: boolean
+  is_alive: boolean | null
   is_mvp: boolean
 }
 
@@ -142,7 +142,7 @@ export interface PlayerGameHistory {
   roleType: RoleType
   roleImageUrl: string | null
   alignment: Alignment | null
-  isAlive: boolean
+  isAlive: boolean | null
   isMvp: boolean
   winner: Winner | null
   won: boolean | null
