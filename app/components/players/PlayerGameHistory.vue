@@ -9,12 +9,21 @@ import {
   getRoleTypeTagClass,
   getRoleTypeLabel,
 } from '~/composables/useRoleTypes'
+import { gamePoints as calcGamePoints } from '~/utils/stats'
 import RoleAvatar from '~/components/games/RoleAvatar.vue'
 import AlignmentTag from '~/components/games/AlignmentTag.vue'
 
 defineProps<{
   games: PlayerGameHistory[]
 }>()
+
+function gamePoints(game: PlayerGameHistory): number {
+  return calcGamePoints(
+    game.won,
+    game.endingRoleType,
+    game.roleType,
+  )
+}
 </script>
 
 <template>
@@ -81,6 +90,12 @@ defineProps<{
               class="px-6 py-3 text-xs font-semibold
                 uppercase tracking-wider text-text-muted"
             >
+              Бали
+            </th>
+            <th
+              class="px-6 py-3 text-xs font-semibold
+                uppercase tracking-wider text-text-muted"
+            >
               Статус
             </th>
             <th
@@ -131,8 +146,16 @@ defineProps<{
                   size="md"
                 />
                 <div class="flex flex-col items-start gap-0.5">
-                  <span class="text-sm font-medium ml-1">
+                  <span
+                    class="ml-1 flex items-center gap-1
+                      text-sm font-medium"
+                  >
                     {{ game.roleName }}
+                    <i
+                      v-if="game.isMvp"
+                      class="pi pi-star-fill text-accent
+                        text-[10px]"
+                    />
                   </span>
                   <Tag
                     :value="getRoleTypeLabel(game.roleType)"
@@ -179,8 +202,16 @@ defineProps<{
                     size="md"
                   />
                   <div class="flex flex-col items-start gap-0.5">
-                    <span class="text-sm font-medium">
+                    <span
+                      class="flex items-center gap-1
+                        text-sm font-medium"
+                    >
                       {{ game.endingRoleName || game.roleName }}
+                      <i
+                        v-if="game.isMvp"
+                        class="pi pi-star-fill text-accent
+                          text-[10px]"
+                      />
                     </span>
                     <Tag
                       :value="getRoleTypeLabel(game.endingRoleType || game.roleType)"
@@ -227,9 +258,19 @@ defineProps<{
                 />
                 <AlignmentTag
                   :alignment="game.alignmentEnd!"
-                  size="xs"
                 />
               </div>
+            </td>
+
+            <!-- Points -->
+            <td class="px-6 py-3.5">
+              <span
+                class="text-sm font-semibold"
+                :class="gamePoints(game)
+                  ? 'text-accent' : 'text-text-subtle'"
+              >
+                {{ gamePoints(game) || '–' }}
+              </span>
             </td>
 
             <!-- Status -->
@@ -247,10 +288,6 @@ defineProps<{
                 >
                   {{ game.isAlive ? 'Живий' : 'Мертвий' }}
                 </span>
-                <i
-                  v-if="game.isMvp"
-                  class="pi pi-star-fill text-accent text-xs"
-                />
               </div>
             </td>
 
@@ -307,7 +344,14 @@ defineProps<{
               <div class="mt-0.5 flex items-center gap-2 text-xs text-text-muted">
                 <span>{{ formatDateShort(game.date) }}</span>
                 <span class="text-white/[0.15]">|</span>
-                <span>{{ getScriptLabel(game.script) }}</span>
+                <span
+                  class="font-semibold"
+                  :class="gamePoints(game)
+                    ? 'text-accent' : 'text-text-subtle'"
+                >
+                  {{ gamePoints(game)
+                    ? `+${gamePoints(game)}` : '0' }} б.
+                </span>
               </div>
             </div>
 
@@ -369,6 +413,11 @@ defineProps<{
                 >
                   {{ game.endingRoleName || game.roleName }}
                 </span>
+                <i
+                  v-if="game.isMvp"
+                  class="pi pi-star-fill text-accent
+                    text-[10px]"
+                />
               </div>
             </template>
 

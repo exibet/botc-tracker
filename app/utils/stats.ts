@@ -39,6 +39,15 @@ export function winPoints(roleType: string | null): number {
   return 1
 }
 
+export function gamePoints(
+  won: boolean | null,
+  endingRoleType: string | null,
+  startingRoleType: string | null,
+): number {
+  if (!won) return 0
+  return winPoints(endingRoleType ?? startingRoleType)
+}
+
 export function aggregatePlayerStats(
   rows: GamePlayerStatsRow[],
 ): Map<string, AggregatedPlayerStats> {

@@ -4,6 +4,7 @@ import {
   getRoleTypeTagClass,
   getRoleTypeLabel,
 } from '~/composables/useRoleTypes'
+import { gamePoints } from '~/utils/stats'
 import RoleAvatar from '~/components/games/RoleAvatar.vue'
 import AlignmentTag from '~/components/games/AlignmentTag.vue'
 import PlayerAvatar
@@ -79,6 +80,20 @@ function finalAlignment(entry: GamePlayerWithDetails) {
     ? entry.alignment_end!
     : entry.alignment_start
 }
+
+const isFinished = computed(
+  () => props.gameStatus === 'finished',
+)
+
+function entryPoints(
+  entry: GamePlayerWithDetails,
+): number {
+  return gamePoints(
+    didWin(entry),
+    entry.ending_role?.type ?? null,
+    entry.starting_role?.type ?? null,
+  )
+}
 </script>
 
 <template>
@@ -119,6 +134,13 @@ function finalAlignment(entry: GamePlayerWithDetails) {
             v-if="winner"
             class="px-6 py-4"
           />
+          <th
+            v-if="isFinished"
+            class="px-6 py-4 text-sm font-semibold
+              tracking-wide text-text-muted"
+          >
+            Бали
+          </th>
           <th
             v-if="currentUserId || isAdmin"
             class="px-6 py-4"
@@ -329,6 +351,20 @@ function finalAlignment(entry: GamePlayerWithDetails) {
                 : 'bg-white/[0.04] text-text-muted'"
             >
               {{ didWin(entry) ? 'W' : 'L' }}
+            </span>
+          </td>
+
+          <!-- Points -->
+          <td
+            v-if="isFinished"
+            class="px-6 py-4"
+          >
+            <span
+              class="text-sm font-semibold"
+              :class="entryPoints(entry)
+                ? 'text-accent' : 'text-text-subtle'"
+            >
+              {{ entryPoints(entry) || '–' }}
             </span>
           </td>
 
