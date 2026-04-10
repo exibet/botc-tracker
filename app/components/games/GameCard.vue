@@ -3,6 +3,7 @@ import type { GameWithDetails } from '~/types'
 import {
   getScriptLabel,
   getWinnerInfo,
+  getGameStatusInfo,
 } from '~/composables/useGameLabels'
 import PlayerAvatar
   from '~/components/players/PlayerAvatar.vue'
@@ -13,6 +14,10 @@ const props = defineProps<{
 
 const winnerInfo = computed(
   () => getWinnerInfo(props.game.winner),
+)
+
+const statusInfo = computed(
+  () => getGameStatusInfo(props.game.status),
 )
 
 const sideCounts = computed(() => {
@@ -54,6 +59,16 @@ const overflowTooltip = computed(() =>
   overflowPlayers.value
     .map(p => p.nickname).join(', '),
 )
+
+const hoverShadowClass = computed(() => {
+  if (props.game.winner === 'good')
+    return 'hover:shadow-[0_0_24px_-6px_var(--color-good)]'
+  if (props.game.winner === 'evil')
+    return 'hover:shadow-[0_0_24px_-6px_var(--color-evil)]'
+  if (props.game.status === 'in_progress')
+    return 'hover:shadow-[0_0_24px_-6px_rgb(245,158,11)]'
+  return 'hover:shadow-[0_0_24px_-6px_rgb(34,197,94)]'
+})
 </script>
 
 <template>
@@ -64,16 +79,13 @@ const overflowTooltip = computed(() =>
       transition-all duration-200
       hover:border-white/[0.12] hover:bg-white/[0.03]
       sm:p-6"
-    :class="[
-      game.winner === 'good'
-        ? 'hover:shadow-[0_0_24px_-6px_var(--color-good)]'
-        : 'hover:shadow-[0_0_24px_-6px_var(--color-evil)]',
-    ]"
+    :class="[hoverShadowClass]"
     data-testid="game-card"
   >
     <div class="flex items-start gap-4 sm:gap-6">
-      <!-- Winner badge -->
+      <!-- Winner badge (finished games) -->
       <div
+        v-if="game.winner"
         class="flex size-14 shrink-0 flex-col
           items-center justify-center rounded-lg
           sm:size-16 gap-1"
@@ -92,17 +104,29 @@ const overflowTooltip = computed(() =>
               : 'text-evil',
           ]"
         />
-        <span
-          class="mt-0.5 text-[10px] font-semibold
-            uppercase tracking-wide"
+      </div>
+
+      <!-- Status badge (upcoming / in_progress) -->
+      <div
+        v-else
+        class="flex size-14 shrink-0 flex-col
+          items-center justify-center rounded-lg
+          sm:size-16 gap-1"
+        :class="[
+          game.status === 'in_progress'
+            ? 'bg-amber-500/[0.08] ring-1 ring-amber-500/20'
+            : 'bg-green-500/[0.08] ring-1 ring-green-500/20',
+        ]"
+      >
+        <i
+          class="text-2xl sm:text-3xl"
           :class="[
-            game.winner === 'good'
-              ? 'text-good'
-              : 'text-evil',
+            statusInfo?.icon,
+            game.status === 'in_progress'
+              ? 'text-amber-500'
+              : 'text-green-500',
           ]"
-        >
-          {{ winnerInfo?.labelUa }}
-        </span>
+        />
       </div>
 
       <!-- Game info -->
@@ -147,13 +171,6 @@ const overflowTooltip = computed(() =>
               {{ sideCounts.evil }}
             </span>
           </template>
-          <span
-            v-if="game.storyteller"
-            class="flex items-center gap-1.5"
-          >
-            <i class="pi pi-book text-sm" />
-            {{ game.storyteller.nickname }}
-          </span>
           <!-- MVP: mobile -->
           <NuxtLink
             v-if="mvpPlayer"
@@ -170,7 +187,7 @@ const overflowTooltip = computed(() =>
 
       </div>
 
-      <!-- Player avatars (desktop) -->
+      <!-- Player avatars (desktop) — hidden feature, enable by removing `&& false` -->
       <div
         v-if="allPlayers.length && false"
         class="hidden shrink-0 self-center lg:flex"

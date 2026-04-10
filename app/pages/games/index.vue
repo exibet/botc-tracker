@@ -38,12 +38,16 @@ const groupedGames = computed<MonthGroup[]>(() => {
   return Array.from(groups.values())
 })
 
+const finishedGames = computed(() =>
+  games.value?.filter(g => g.status === 'finished') ?? [],
+)
+
 const stats = computed(() => {
-  if (!games.value?.length) {
+  if (!finishedGames.value.length) {
     return { total: 0, goodWins: 0, evilWins: 0 }
   }
-  const total = games.value.length
-  const goodWins = games.value.filter(
+  const total = finishedGames.value.length
+  const goodWins = finishedGames.value.filter(
     g => g.winner === 'good',
   ).length
   const evilWins = total - goodWins
@@ -105,8 +109,9 @@ const evilPct = computed(() =>
     </div>
 
     <template v-else-if="games?.length">
-      <!-- Stats -->
+      <!-- Stats (finished games only) -->
       <section
+        v-if="stats.total"
         class="mt-8 grid grid-cols-3 gap-3"
       >
         <StatCard
@@ -129,7 +134,10 @@ const evilPct = computed(() =>
       </section>
 
       <!-- Win ratio bar -->
-      <div class="mt-3">
+      <div
+        v-if="stats.total"
+        class="mt-3"
+      >
         <GoodEvilBar
           :good-pct="goodPct"
           :evil-pct="evilPct"

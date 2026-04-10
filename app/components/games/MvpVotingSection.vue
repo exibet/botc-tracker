@@ -10,6 +10,7 @@ const props = defineProps<{
   players: GamePlayerWithDetails[]
   currentUserId: string | null
   isParticipant: boolean
+  votingOpen?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -109,7 +110,9 @@ const hasVoted = computed(
 )
 
 const canVote = computed(
-  () => props.currentUserId && props.isParticipant,
+  () => props.votingOpen !== false
+    && props.currentUserId
+    && props.isParticipant,
 )
 
 const votedCandidate = computed(() => {

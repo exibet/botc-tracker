@@ -31,11 +31,15 @@ interface GamePlayerRow {
     id: string
     date: string
     script: Script
-    winner: Winner
+    status: string
+    winner: Winner | null
   }
 }
 
-function computeStats(rows: GamePlayerRow[]): PlayerStats {
+function computeStats(allRows: GamePlayerRow[]): PlayerStats {
+  const rows = allRows.filter(
+    r => r.game.status === 'finished' && r.game.winner,
+  )
   const total = rows.length
   if (total === 0) {
     return {
@@ -135,9 +139,9 @@ function computeStats(rows: GamePlayerRow[]): PlayerStats {
 
 function didWin(
   alignment: Alignment | null,
-  winner: Winner,
+  winner: Winner | null,
 ): boolean {
-  if (!alignment) return false
+  if (!alignment || !winner) return false
   return alignment === winner
 }
 
@@ -190,7 +194,7 @@ function computeRolePlayCounts(rows: GamePlayerRow[]): RolePlayCount[] {
 }
 
 function toGameHistory(rows: GamePlayerRow[]): PlayerGameHistory[] {
-  return rows
+  return rows.filter(r => r.game.status === 'finished')
     .map((row) => {
       const role = row.ending_role ?? row.starting_role
       const alignment = row.alignment_end ?? row.alignment_start
@@ -253,7 +257,7 @@ const SELECT_PLAYER_GAMES = `
     name_ua, name_en, type, image_url
   ),
   game:games!game_id(
-    id, date, script, winner
+    id, date, script, status, winner
   )
 `
 

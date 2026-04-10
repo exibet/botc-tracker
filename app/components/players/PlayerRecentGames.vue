@@ -10,7 +10,7 @@ interface RecentGame {
   roleName: string
   roleImageUrl: string | null
   roleType: string
-  winner: Winner
+  winner: Winner | null
   won: boolean
   isMvp: boolean
 }
@@ -39,7 +39,7 @@ onMounted(async () => {
           name_ua, image_url, type
         ),
         game:games!game_id(
-          id, date, script, winner
+          id, date, script, status, winner
         )
       `)
       .eq('player_id', props.playerId)
@@ -65,11 +65,13 @@ onMounted(async () => {
         id: string
         date: string
         script: Script
-        winner: Winner
+        status: string
+        winner: Winner | null
       }
     }[]
 
     games.value = rows
+      .filter(r => r.game.status === 'finished')
       .map((r) => {
         const role = r.ending_role ?? r.starting_role
         const alignment

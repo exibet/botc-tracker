@@ -12,7 +12,12 @@ export interface GamePlayerStatsRow {
   alignment_end: string | null
   starting_role: { type: string } | null
   ending_role: { type: string } | null
-  game: { date?: string, winner: string }
+  game: { date?: string, winner: string | null, status?: string }
+}
+
+function isFinishedGame(row: GamePlayerStatsRow): boolean {
+  return row.game.winner != null
+    && (!row.game.status || row.game.status === 'finished')
 }
 
 export interface AggregatedPlayerStats {
@@ -40,6 +45,8 @@ export function aggregatePlayerStats(
   const statsMap = new Map<string, AggregatedPlayerStats>()
 
   for (const row of rows) {
+    if (!isFinishedGame(row)) continue
+
     const entry = statsMap.get(row.player_id)
       ?? {
         games: 0, wins: 0, mvps: 0,
@@ -70,6 +77,7 @@ export function computeWinStreaks(
 ): Map<string, number> {
   const grouped = new Map<string, GamePlayerStatsRow[]>()
   for (const row of rows) {
+    if (!isFinishedGame(row)) continue
     const list = grouped.get(row.player_id) ?? []
     list.push(row)
     grouped.set(row.player_id, list)

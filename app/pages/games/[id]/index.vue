@@ -3,7 +3,11 @@ import GamePlayersPanel
   from '~/components/games/GamePlayersPanel.vue'
 import PlayerAvatar
   from '~/components/players/PlayerAvatar.vue'
+import WinnerSelector
+  from '~/components/games/WinnerSelector.vue'
+import type { Winner } from '~/types'
 import {
+  getGameStatusInfo,
   getScriptLabel,
   getWinnerInfo,
 } from '~/composables/useGameLabels'
@@ -12,10 +16,10 @@ import { formatDateLong } from '~/utils/date'
 const route = useRoute()
 const gameId = route.params.id as string
 
-const { getById, remove } = useGames()
+const { getById, update, remove } = useGames()
 const { isAdmin } = useAuth()
 const confirm = useConfirm()
-const toast = useToast()
+const { success: toastSuccess, error: toastError } = useAppToast()
 const router = useRouter()
 
 const { data: game, status: gameStatus, refresh: refreshGame } = useAsyncData(
@@ -31,18 +35,48 @@ const mvpPlayer = computed(
   () => game.value?.mvp_player ?? null,
 )
 
+const statusInfo = computed(() =>
+  game.value ? getGameStatusInfo(game.value.status) : null,
+)
+
+const transitioning = ref(false)
+const showFinishDialog = ref(false)
+const selectedWinner = ref<Winner | null>(null)
+
+async function finishGame() {
+  if (!selectedWinner.value) return
+  showFinishDialog.value = false
+  await transitionStatus('finished', { winner: selectedWinner.value })
+  selectedWinner.value = null
+}
+
 const panelRef = ref<InstanceType<
   typeof GamePlayersPanel
 > | null>(null)
 
-watch(
-  () => panelRef.value?.players,
-  (p) => {
-    if (game.value && p) {
-      game.value.player_count = p.length || null
-    }
-  },
-)
+function onPlayerCountChanged(count: number) {
+  if (game.value) {
+    game.value = { ...game.value, player_count: count || null }
+  }
+}
+
+async function transitionStatus(
+  newStatus: 'upcoming' | 'in_progress' | 'finished',
+  updates: Record<string, unknown> = {},
+) {
+  transitioning.value = true
+  try {
+    await update(gameId, { status: newStatus, ...updates })
+    await refreshGame()
+    toastSuccess(`Статус змінено: ${getGameStatusInfo(newStatus)?.labelUa}`)
+  }
+  catch {
+    toastError('Не вдалося змінити статус гри')
+  }
+  finally {
+    transitioning.value = false
+  }
+}
 
 function confirmDelete() {
   confirm.require({
@@ -57,21 +91,11 @@ function confirmDelete() {
     accept: async () => {
       try {
         await remove(gameId)
-        toast.add({
-          severity: 'success',
-          summary: 'Успішно',
-          detail: 'Гру видалено',
-          life: 3000,
-        })
+        toastSuccess('Гру видалено')
         router.push('/games')
       }
       catch {
-        toast.add({
-          severity: 'error',
-          summary: 'Помилка',
-          detail: 'Не вдалося видалити гру',
-          life: 5000,
-        })
+        toastError('Не вдалося видалити гру')
       }
     },
   })
@@ -163,14 +187,17 @@ function confirmDelete() {
         </ClientOnly>
       </div>
 
-      <!-- Winner banner -->
+      <!-- Status banner -->
       <div
-        class="mb-8 overflow-hidden rounded-xl border
-          p-6 sm:p-8"
+        class="mb-8 overflow-hidden rounded-xl border p-6"
         :class="[
-          game.winner === 'good'
+          game.status === 'finished' && game.winner === 'good'
             ? 'border-[color-mix(in_srgb,var(--color-good)_20%,transparent)] bg-[color-mix(in_srgb,var(--color-good)_6%,transparent)]'
-            : 'border-[color-mix(in_srgb,var(--color-evil)_20%,transparent)] bg-[color-mix(in_srgb,var(--color-evil)_6%,transparent)]',
+            : game.status === 'finished' && game.winner === 'evil'
+              ? 'border-[color-mix(in_srgb,var(--color-evil)_20%,transparent)] bg-[color-mix(in_srgb,var(--color-evil)_6%,transparent)]'
+              : game.status === 'in_progress'
+                ? 'border-amber-500/20 bg-amber-500/[0.06]'
+                : 'border-green-500/20 bg-green-500/[0.06]',
         ]"
       >
         <div
@@ -178,12 +205,29 @@ function confirmDelete() {
             sm:items-center sm:justify-between"
         >
           <div>
-            <h1
-              class="font-heading text-2xl font-bold
-                tracking-tight sm:text-3xl"
-            >
-              {{ formatDateLong(game.date) }}
-            </h1>
+            <div class="flex items-center gap-3">
+              <h1
+                class="font-heading text-2xl font-bold
+                  tracking-tight sm:text-3xl"
+              >
+                {{ formatDateLong(game.date) }}
+              </h1>
+              <Tag
+                v-if="statusInfo && game.status !== 'finished'"
+                :value="statusInfo.labelUa"
+                :severity="statusInfo.severity"
+                rounded
+                class="!text-xs"
+              >
+                <template #default>
+                  <i
+                    :class="statusInfo.icon"
+                    class="mr-1 text-xs"
+                  />
+                  {{ statusInfo.labelUa }}
+                </template>
+              </Tag>
+            </div>
 
             <div
               class="mt-3 flex flex-wrap items-center
@@ -262,8 +306,9 @@ function confirmDelete() {
               </span>
             </NuxtLink>
 
-            <!-- Winner badge -->
+            <!-- Winner badge (finished only) -->
             <div
+              v-if="game.winner"
               class="flex items-center justify-center
                 gap-3 rounded-xl px-5 py-3"
               :class="[
@@ -309,6 +354,34 @@ function confirmDelete() {
           </div>
         </div>
 
+        <!-- Admin status transition controls -->
+        <ClientOnly>
+          <div
+            v-if="isAdmin && game.status !== 'finished'"
+            class="mt-4 border-t border-white/[0.06] pt-6"
+          >
+            <div class="flex justify-end">
+              <!-- Upcoming -> In progress -->
+              <Button
+                v-if="game.status === 'upcoming'"
+                label="Гра відбулася"
+                icon="pi pi-play"
+                severity="warn"
+                :loading="transitioning"
+                @click="transitionStatus('in_progress')"
+              />
+
+              <!-- In progress -> Finish -->
+              <Button
+                v-if="game.status === 'in_progress'"
+                label="Завершити гру"
+                icon="pi pi-lock"
+                @click="showFinishDialog = true"
+              />
+            </div>
+          </div>
+        </ClientOnly>
+
         <!-- Notes -->
         <p
           v-if="game.notes"
@@ -326,10 +399,48 @@ function confirmDelete() {
         ref="panelRef"
         :game-id="gameId"
         :winner="game.winner"
+        :game-status="game.status"
         @mvp-changed="refreshGame"
+        @player-count-changed="onPlayerCountChanged"
       />
     </template>
 
     <ConfirmDialog group="delete-game" />
+
+    <!-- Finish game dialog -->
+    <Dialog
+      v-model:visible="showFinishDialog"
+      header="Завершити гру"
+      modal
+      :style="{ width: '24rem' }"
+      :closable="!transitioning"
+    >
+      <p class="mb-4 text-sm text-text-muted">
+        Оберіть переможця, щоб завершити гру
+      </p>
+      <WinnerSelector
+        :model-value="selectedWinner"
+        size="sm"
+        @update:model-value="selectedWinner = $event as Winner"
+      />
+      <template #footer>
+        <div class="mt-6">
+          <Button
+            label="Скасувати"
+            severity="secondary"
+            text
+            :disabled="transitioning"
+            @click="showFinishDialog = false; selectedWinner = null"
+          />
+          <Button
+            label="Завершити"
+            icon="pi pi-lock"
+            :disabled="!selectedWinner"
+            :loading="transitioning"
+            @click="finishGame"
+          />
+        </div>
+      </template>
+    </Dialog>
   </div>
 </template>

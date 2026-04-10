@@ -34,7 +34,7 @@ export function useHome() {
               alignment_end,
               starting_role:roles!starting_role_id(type),
               ending_role:roles!ending_role_id(type),
-              game:games!game_id(date, winner)
+              game:games!game_id(date, winner, status)
             `),
         ])
 
@@ -45,9 +45,12 @@ export function useHome() {
       const allGames = gamesRes.data as GameWithDetails[]
       const recentGames = allGames.slice(0, 10)
 
-      // Stats from games list (no extra query)
-      const totalGames = allGames.length
-      const goodWins = allGames.filter(
+      // Stats only from finished games
+      const finishedGames = allGames.filter(
+        g => g.status === 'finished',
+      )
+      const totalGames = finishedGames.length
+      const goodWins = finishedGames.filter(
         g => g.winner === 'good',
       ).length
       const evilWins = totalGames - goodWins

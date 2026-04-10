@@ -22,6 +22,7 @@ export type Script
 
 export type Alignment = 'good' | 'evil'
 export type Winner = 'good' | 'evil'
+export type GameStatus = 'upcoming' | 'in_progress' | 'finished'
 export type UserRole = 'player' | 'admin'
 
 export interface Role {
@@ -51,7 +52,8 @@ export interface Game {
   date: string
   script: Script
   custom_script_name: string | null
-  winner: Winner
+  status: GameStatus
+  winner: Winner | null
   storyteller_id: string | null
   mvp_player_id: string | null
   notes: string | null
@@ -142,8 +144,8 @@ export interface PlayerGameHistory {
   alignment: Alignment | null
   isAlive: boolean
   isMvp: boolean
-  winner: Winner
-  won: boolean
+  winner: Winner | null
+  won: boolean | null
   // Starting role data
   startingRoleName: string | null
   startingRoleNameEn: string | null

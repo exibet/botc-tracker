@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import GameForm from '~/components/games/GameForm.vue'
+import { getGameStatusInfo } from '~/composables/useGameLabels'
 
 definePageMeta({ middleware: ['admin'] })
 
 const route = useRoute()
 const router = useRouter()
-const toast = useToast()
+const { success: toastSuccess, error: toastError } = useAppToast()
 const gameId = route.params.id as string
 
 const { getById, update } = useGames()
@@ -16,6 +17,10 @@ const { data: game, status: gameStatus } = useAsyncData(
   () => getById(gameId),
 )
 
+const statusInfo = computed(() =>
+  game.value ? getGameStatusInfo(game.value.status) : null,
+)
+
 const gameFormRef = ref()
 const saving = ref(false)
 
@@ -23,11 +28,36 @@ function triggerSubmit() {
   gameFormRef.value?.$el?.requestSubmit()
 }
 
+async function handleRevertStatus() {
+  if (!game.value) return
+  const target = game.value.status === 'finished'
+    ? 'in_progress'
+    : 'upcoming'
+  const updates: Record<string, unknown> = { status: target }
+  if (target === 'in_progress') updates.winner = null
+
+  saving.value = true
+  try {
+    await update(gameId, updates)
+    clearNuxtData(`game-${gameId}`)
+
+    const info = getGameStatusInfo(target)
+    toastSuccess(`Статус: ${info?.labelUa}`)
+    router.push(`/games/${gameId}`)
+  }
+  catch (err) {
+    toastError(String(err))
+  }
+  finally {
+    saving.value = false
+  }
+}
+
 async function handleSubmit(data: {
   date: string
   script: string
   custom_script_name: string | null
-  winner: string
+  winner: string | null
   storyteller_id: string | null
   notes: string | null
 }) {
@@ -37,25 +67,23 @@ async function handleSubmit(data: {
 
     clearNuxtData(`game-${gameId}`)
 
-    toast.add({
-      severity: 'success',
-      summary: 'Гру оновлено',
-      life: 3000,
-    })
+    toastSuccess('Гру оновлено')
     router.push(`/games/${gameId}`)
   }
   catch (err) {
-    toast.add({
-      severity: 'error',
-      summary: 'Помилка оновлення гри',
-      detail: String(err),
-      life: 5000,
-    })
+    toastError(String(err))
   }
   finally {
     saving.value = false
   }
 }
+
+const revertTarget = computed(() => {
+  if (!game.value) return null
+  if (game.value.status === 'finished') return getGameStatusInfo('in_progress')
+  if (game.value.status === 'in_progress') return getGameStatusInfo('upcoming')
+  return null
+})
 </script>
 
 <template>
@@ -69,9 +97,23 @@ async function handleSubmit(data: {
       Назад до гри
     </NuxtLink>
 
-    <h1 class="mb-6 font-heading text-2xl font-bold">
-      Редагувати гру
-    </h1>
+    <div class="mb-6 flex items-center gap-3">
+      <h1 class="font-heading text-2xl font-bold">
+        Редагувати гру
+      </h1>
+      <Tag
+        v-if="statusInfo"
+        :severity="statusInfo.severity"
+        rounded
+        class="!text-xs"
+      >
+        <i
+          :class="statusInfo.icon"
+          class="mr-1 text-xs"
+        />
+        {{ statusInfo.labelUa }}
+      </Tag>
+    </div>
 
     <div
       v-if="gameStatus === 'pending'"
@@ -100,6 +142,7 @@ async function handleSubmit(data: {
         }"
         :players="allPlayers ?? []"
         :loading="saving"
+        :show-winner="game.status === 'finished'"
         @submit="handleSubmit"
       />
     </template>
@@ -112,24 +155,39 @@ async function handleSubmit(data: {
         sm:-mx-6"
     >
       <div
-        class="flex items-center justify-end gap-3
+        class="flex items-center justify-between
           px-4 py-3 sm:px-6"
       >
-        <NuxtLink :to="`/games/${gameId}`">
+        <!-- Revert status (left) -->
+        <div>
           <Button
-            label="Скасувати"
-            severity="secondary"
-            text
-            type="button"
+            v-if="revertTarget"
+            :label="revertTarget.labelUa"
+            :icon="revertTarget.icon"
+            :severity="revertTarget.severity"
+            :loading="saving"
+            @click="handleRevertStatus"
           />
-        </NuxtLink>
-        <Button
-          label="Зберегти"
-          icon="pi pi-check"
-          :loading="saving"
-          data-testid="game-submit"
-          @click="triggerSubmit"
-        />
+        </div>
+
+        <!-- Save / Cancel (right) -->
+        <div class="flex items-center gap-3">
+          <NuxtLink :to="`/games/${gameId}`">
+            <Button
+              label="Скасувати"
+              severity="secondary"
+              text
+              type="button"
+            />
+          </NuxtLink>
+          <Button
+            label="Зберегти"
+            icon="pi pi-check"
+            :loading="saving"
+            data-testid="game-submit"
+            @click="triggerSubmit"
+          />
+        </div>
       </div>
     </div>
   </div>

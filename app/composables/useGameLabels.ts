@@ -26,15 +26,44 @@ export function getScriptLabel(script: string): string {
   return SCRIPTS.find(s => s.value === script)?.labelUa ?? script
 }
 
-export function getWinnerInfo(winner: string) {
+export interface GameStatusInfo {
+  value: string
+  labelUa: string
+  icon: string
+  severity: 'info' | 'warn' | 'success'
+}
+
+export const GAME_STATUSES: GameStatusInfo[] = [
+  {
+    value: 'upcoming', labelUa: 'Заплановано',
+    icon: 'pi pi-calendar', severity: 'success',
+  },
+  {
+    value: 'in_progress', labelUa: 'В процесі',
+    icon: 'pi pi-play', severity: 'warn',
+  },
+  {
+    value: 'finished', labelUa: 'Завершена',
+    icon: 'pi pi-check-circle', severity: 'success',
+  },
+]
+
+export function getWinnerInfo(winner: string | null) {
+  if (!winner) return null
   return WINNERS.find(w => w.value === winner)
+}
+
+export function getGameStatusInfo(status: string) {
+  return GAME_STATUSES.find(s => s.value === status)
 }
 
 export function useGameLabels() {
   return {
     scripts: SCRIPTS,
     winners: WINNERS,
+    gameStatuses: GAME_STATUSES,
     getScriptLabel,
     getWinnerInfo,
+    getGameStatusInfo,
   }
 }

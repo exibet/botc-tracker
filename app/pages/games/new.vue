@@ -4,7 +4,7 @@ import GameForm from '~/components/games/GameForm.vue'
 definePageMeta({ middleware: ['admin'] })
 
 const router = useRouter()
-const toast = useToast()
+const { success: toastSuccess, error: toastError } = useAppToast()
 const { create } = useGames()
 const { players } = usePlayers()
 
@@ -19,7 +19,7 @@ async function handleSubmit(data: {
   date: string
   script: string
   custom_script_name: string | null
-  winner: string
+  winner: string | null
   storyteller_id: string | null
   notes: string | null
 }) {
@@ -32,20 +32,11 @@ async function handleSubmit(data: {
 
     clearNuxtData('games')
 
-    toast.add({
-      severity: 'success',
-      summary: 'Гру створено',
-      life: 3000,
-    })
+    toastSuccess('Гру створено')
     router.push('/games')
   }
   catch (err) {
-    toast.add({
-      severity: 'error',
-      summary: 'Помилка створення гри',
-      detail: String(err),
-      life: 5000,
-    })
+    toastError(String(err))
   }
   finally {
     saving.value = false

@@ -14,6 +14,7 @@ const props = defineProps<{
   currentUserId?: string | null
   isAdmin?: boolean
   winner?: 'good' | 'evil' | null
+  gameStatus?: string
 }>()
 
 function didWin(
@@ -34,11 +35,15 @@ const emit = defineEmits<{
 function canEdit(entry: GamePlayerWithDetails): boolean {
   if (!props.currentUserId) return false
   if (props.isAdmin) return true
+  if (props.gameStatus !== 'in_progress') return false
   return entry.player.id === props.currentUserId
 }
 
-function canDelete(_entry: GamePlayerWithDetails): boolean {
-  return !!props.isAdmin
+function canDelete(entry: GamePlayerWithDetails): boolean {
+  if (props.isAdmin) return true
+  if (props.gameStatus === 'finished') return false
+  if (!props.currentUserId) return false
+  return entry.player.id === props.currentUserId
 }
 
 function hasRole(entry: GamePlayerWithDetails): boolean {

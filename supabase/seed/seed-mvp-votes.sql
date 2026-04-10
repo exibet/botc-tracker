@@ -26,9 +26,9 @@ BEGIN
   SELECT id INTO p_ruslan   FROM profiles WHERE nickname = 'Руслан';
   SELECT id INTO p_artur    FROM profiles WHERE nickname = 'Артур';
 
-  -- Game
-  INSERT INTO games (id, date, script, winner, player_count, created_by)
-  VALUES (g_id, '2026-04-09', 'trouble_brewing', 'good', 8, p_artur);
+  -- Game (finished with winner)
+  INSERT INTO games (id, date, script, status, winner, player_count, created_by)
+  VALUES (g_id, '2026-04-09', 'trouble_brewing', 'finished', 'good', 8, p_artur);
 
   -- Players
   INSERT INTO game_players (game_id, player_id, starting_role_id, ending_role_id, alignment_start, alignment_end, is_alive, is_mvp, added_by) VALUES

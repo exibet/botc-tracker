@@ -30,14 +30,17 @@ export function useGames() {
     date: string
     script: string
     custom_script_name?: string | null
-    winner: string
     storyteller_id?: string | null
     notes?: string | null
     player_count?: number | null
   }) {
     const { data, error } = await client
       .from('games')
-      .insert({ ...game, created_by: profile.value!.id })
+      .insert({
+        ...game,
+        status: 'upcoming',
+        created_by: profile.value!.id,
+      })
       .select()
       .single()
 
@@ -50,7 +53,8 @@ export function useGames() {
     date: string
     script: string
     custom_script_name: string | null
-    winner: string
+    status: string
+    winner: string | null
     storyteller_id: string | null
     notes: string | null
     player_count: number | null

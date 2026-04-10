@@ -1,18 +1,20 @@
 <script setup lang="ts">
 import type { Profile } from '~/types'
-import { SCRIPTS, WINNERS } from '~/composables/useGameLabels'
+import { SCRIPTS } from '~/composables/useGameLabels'
+import WinnerSelector from '~/components/games/WinnerSelector.vue'
 
 const props = defineProps<{
   initialData?: {
     date: string
     script: string
     custom_script_name: string | null
-    winner: string
+    winner: string | null
     storyteller_id: string | null
     notes: string | null
   }
   players: Profile[]
   loading?: boolean
+  showWinner?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -20,7 +22,7 @@ const emit = defineEmits<{
     date: string
     script: string
     custom_script_name: string | null
-    winner: string
+    winner: string | null
     storyteller_id: string | null
     notes: string | null
   }]
@@ -33,7 +35,7 @@ const form = reactive({
   script: props.initialData?.script ?? 'trouble_brewing',
   custom_script_name:
     props.initialData?.custom_script_name ?? '',
-  winner: props.initialData?.winner ?? 'good',
+  winner: props.initialData?.winner ?? null,
   storyteller_id: props.initialData?.storyteller_id ?? null,
   notes: props.initialData?.notes ?? '',
 })
@@ -64,7 +66,7 @@ function handleSubmit() {
     custom_script_name: form.script === 'custom'
       ? (form.custom_script_name || null)
       : null,
-    winner: form.winner,
+    winner: form.winner || null,
     storyteller_id: form.storyteller_id || null,
     notes: form.notes || null,
   })
@@ -167,7 +169,7 @@ function handleSubmit() {
     </div>
 
     <!-- Winner toggle -->
-    <div>
+    <div v-if="showWinner">
       <label
         class="mb-3 block text-sm font-semibold
           tracking-wide text-text-muted"
@@ -175,51 +177,10 @@ function handleSubmit() {
         <i class="pi pi-flag mr-1.5 text-xs" />
         Переможець
       </label>
-      <div class="flex gap-3">
-        <button
-          v-for="w in WINNERS"
-          :key="w.value"
-          type="button"
-          class="flex flex-1 cursor-pointer items-center
-            justify-center gap-3 rounded-xl
-            border-2 px-6 py-4
-            transition-all duration-200
-            sm:flex-none sm:min-w-48"
-          :class="[
-            form.winner === w.value
-              ? w.value === 'good'
-                ? 'border-good bg-[color-mix(in_srgb,var(--color-good)_12%,transparent)] shadow-[0_0_20px_-4px_var(--color-good)]'
-                : 'border-evil bg-[color-mix(in_srgb,var(--color-evil)_12%,transparent)] shadow-[0_0_20px_-4px_var(--color-evil)]'
-              : 'border-white/[0.08] bg-white/[0.02] hover:border-white/[0.15] hover:bg-white/[0.04]',
-          ]"
-          data-testid="game-winner"
-          @click="form.winner = w.value"
-        >
-          <i
-            :class="[
-              w.icon,
-              form.winner === w.value
-                ? w.value === 'good'
-                  ? 'text-good'
-                  : 'text-evil'
-                : 'text-text-muted',
-            ]"
-            class="text-2xl"
-          />
-          <span
-            class="font-heading text-lg font-bold"
-            :class="[
-              form.winner === w.value
-                ? w.value === 'good'
-                  ? 'text-good'
-                  : 'text-evil'
-                : 'text-text-muted',
-            ]"
-          >
-            {{ w.labelUa }}
-          </span>
-        </button>
-      </div>
+      <WinnerSelector
+        :model-value="form.winner"
+        @update:model-value="form.winner = $event"
+      />
     </div>
 
     <!-- Notes -->

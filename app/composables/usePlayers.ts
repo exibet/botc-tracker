@@ -58,7 +58,7 @@ export function usePlayersWithStats() {
           alignment_end,
           starting_role:roles!starting_role_id(type),
           ending_role:roles!ending_role_id(type),
-          game:games!game_id(date, winner)
+          game:games!game_id(date, winner, status)
         `)
 
       if (gamesError) throw gamesError

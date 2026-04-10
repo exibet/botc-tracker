@@ -17,9 +17,11 @@ const props = withDefaults(defineProps<{
   gameId: string
   winner?: 'good' | 'evil' | null
   showHeader?: boolean
+  gameStatus?: string
 }>(), {
   winner: null,
   showHeader: true,
+  gameStatus: 'upcoming',
 })
 
 const {
@@ -32,7 +34,7 @@ const {
   players: allPlayers,
   createManual,
 } = usePlayers()
-const toast = useToast()
+const { success: showSuccess, error: showError } = useAppToast()
 const confirm = useConfirm()
 
 const {
@@ -48,6 +50,7 @@ const {
 
 const emit = defineEmits<{
   'mvp-changed': []
+  'player-count-changed': [count: number]
 }>()
 
 async function refreshAfterVote() {
@@ -55,7 +58,11 @@ async function refreshAfterVote() {
   emit('mvp-changed')
 }
 
-defineExpose({ players, status })
+const playerCount = computed(
+  () => players.value?.length ?? 0,
+)
+
+defineExpose({ players, status, playerCount })
 
 const isPlayerInGame = computed(() => {
   if (!profile.value || !players.value) return true
@@ -63,6 +70,11 @@ const isPlayerInGame = computed(() => {
     p => p.player.id === profile.value!.id,
   )
 })
+
+const canJoinOrLeave = computed(() =>
+  props.gameStatus === 'upcoming'
+  || props.gameStatus === 'in_progress',
+)
 
 // --- Join ---
 const showJoinDialog = ref(false)
@@ -75,6 +87,7 @@ async function handleJoin() {
       player_id: profile.value.id,
       added_by: profile.value.id,
     })
+    emit('player-count-changed', players.value?.length ?? 0)
     showSuccess('Ви приєдналися до гри')
   }
   catch {
@@ -97,6 +110,7 @@ async function handleAddPlayer(playerId: string) {
       player_id: playerId,
       added_by: profile.value.id,
     })
+    emit('player-count-changed', players.value?.length ?? 0)
     showSuccess('Гравця додано')
   }
   catch {
@@ -116,6 +130,7 @@ async function handleCreatePlayer(
       added_by: profile.value.id,
     })
     clearNuxtData('players')
+    emit('player-count-changed', players.value?.length ?? 0)
     showSuccess(
       `Гравця "${nickname}" створено та додано`,
     )
@@ -133,6 +148,7 @@ const editingEntry
 function handleEditEntry(
   entry: GamePlayerWithDetails,
 ) {
+  if (!isAdmin.value && props.gameStatus !== 'in_progress') return
   editingEntry.value = entry
   showEditDialog.value = true
 }
@@ -183,6 +199,7 @@ function handleDeleteEntry(
 async function doDelete(entryId: string) {
   try {
     await removePlayer(entryId)
+    emit('player-count-changed', players.value?.length ?? 0)
     showSuccess('Гравця видалено')
   }
   catch {
@@ -190,23 +207,6 @@ async function doDelete(entryId: string) {
   }
 }
 
-function showSuccess(detail: string) {
-  toast.add({
-    severity: 'success',
-    summary: 'Успішно',
-    detail,
-    life: 3000,
-  })
-}
-
-function showError(detail: string) {
-  toast.add({
-    severity: 'error',
-    summary: 'Помилка',
-    detail,
-    life: 5000,
-  })
-}
 </script>
 
 <template>
@@ -229,7 +229,7 @@ function showError(detail: string) {
           class="flex gap-4"
         >
           <Button
-            v-if="!isPlayerInGame"
+            v-if="!isPlayerInGame && canJoinOrLeave"
             icon="pi pi-plus"
             severity="success"
             size="small"
@@ -237,7 +237,7 @@ function showError(detail: string) {
             @click="showJoinDialog = true"
           />
           <Button
-            v-if="!isPlayerInGame"
+            v-if="!isPlayerInGame && canJoinOrLeave"
             label="Приєднатися"
             icon="pi pi-plus"
             severity="success"
@@ -246,7 +246,7 @@ function showError(detail: string) {
             @click="showJoinDialog = true"
           />
           <Button
-            v-if="isAdmin"
+            v-if="isAdmin && canJoinOrLeave"
             icon="pi pi-user-plus"
             severity="secondary"
             outlined
@@ -255,7 +255,7 @@ function showError(detail: string) {
             @click="showAddPlayerDialog = true"
           />
           <Button
-            v-if="isAdmin"
+            v-if="isAdmin && canJoinOrLeave"
             label="Додати гравця"
             icon="pi pi-user-plus"
             severity="secondary"
@@ -286,17 +286,19 @@ function showError(detail: string) {
       :current-user-id="profile?.id ?? null"
       :is-admin="isAdmin"
       :winner="winner ?? null"
+      :game-status="gameStatus"
       @edit-entry="handleEditEntry"
       @delete-entry="handleDeleteEntry"
     />
 
     <!-- MVP Voting -->
-    <ClientOnly v-if="players && players.length > 1">
+    <ClientOnly v-if="players && players.length > 1 && gameStatus !== 'upcoming'">
       <MvpVotingSection
         :game-id="gameId"
         :players="players"
         :current-user-id="profile?.id ?? null"
         :is-participant="isPlayerInGame"
+        :voting-open="gameStatus === 'in_progress'"
         @vote-changed="refreshAfterVote"
       />
     </ClientOnly>

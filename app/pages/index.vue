@@ -195,6 +195,7 @@ const olderGames = computed(() => {
                 <GamePlayersPanel
                   :game-id="game.id"
                   :winner="game.winner"
+                  :game-status="game.status"
                   @mvp-changed="refreshHome"
                 />
               </div>

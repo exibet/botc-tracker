@@ -63,7 +63,6 @@ export function useGamePlayers(gameId: Ref<string> | string) {
     if (error) throw error
     const record = data as GamePlayerWithDetails
     players.value = [...(players.value ?? []), record]
-    await syncPlayerCount()
     return record
   }
 
@@ -105,15 +104,6 @@ export function useGamePlayers(gameId: Ref<string> | string) {
         p => p.id !== entryId,
       )
     }
-    await syncPlayerCount()
-  }
-
-  async function syncPlayerCount() {
-    const count = players.value?.length ?? 0
-    await client
-      .from('games')
-      .update({ player_count: count || null })
-      .eq('id', id.value)
   }
 
   return {
