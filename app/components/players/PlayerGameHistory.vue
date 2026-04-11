@@ -49,7 +49,7 @@ function gamePoints(game: PlayerGameHistory): number {
           bg-white/[0.03]"
       >
         <i
-          class="pi pi-list text-2xl text-text-subtle"
+          class="pi pi-list text-text-subtle"
         />
       </div>
       <p class="mt-3 text-sm text-text-muted">
@@ -189,7 +189,7 @@ function gamePoints(game: PlayerGameHistory): number {
 
                 <!-- Arrow -->
                 <i
-                  class="pi pi-arrow-right shrink-0 text-xs
+                  class="pi pi-arrow-right shrink-0
                     text-text-subtle"
                 />
 
@@ -253,7 +253,7 @@ function gamePoints(game: PlayerGameHistory): number {
                   muted
                 />
                 <i
-                  class="pi pi-arrow-right text-xs
+                  class="pi pi-arrow-right
                     text-text-subtle"
                 />
                 <AlignmentTag
@@ -346,7 +346,7 @@ function gamePoints(game: PlayerGameHistory): number {
                 </span>
                 <i
                   v-if="game.isMvp"
-                  class="pi pi-star-fill text-accent text-[10px]
+                  class="pi pi-star-fill text-accent
                     shrink-0"
                 />
               </div>

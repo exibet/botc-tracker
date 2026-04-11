@@ -82,7 +82,11 @@ export default defineNuxtConfig({
         { property: 'og:site_name', content: 'BotC Tracker' },
         { property: 'og:locale', content: 'uk_UA' },
         { property: 'og:locale:alternate', content: 'en_US' },
+        { property: 'og:image', content: 'https://botc-tracker.vercel.app/og-image.png' },
+        { property: 'og:image:width', content: '1200' },
+        { property: 'og:image:height', content: '630' },
         { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:image', content: 'https://botc-tracker.vercel.app/og-image.png' },
         { name: 'twitter:title', content: 'BotC Tracker - Game Stats & Community Analytics' },
         { name: 'twitter:description', content: 'Real-time tracking of Blood on the Clocktower games, player stats, win rates, and MVP voting.' },
       ],
@@ -115,6 +119,10 @@ export default defineNuxtConfig({
   },
 
   css: ['~/assets/css/main.css'],
+
+  features: {
+    inlineStyles: true,
+  },
   compatibilityDate: '2025-07-15',
 
   vite: {
@@ -128,7 +136,10 @@ export default defineNuxtConfig({
         options: {
           prefix: 'p',
           darkModeSelector: '.dark',
-          cssLayer: false,
+          cssLayer: {
+            name: 'primevue',
+            order: 'tw-base, primevue, tw-utilities',
+          },
         },
       },
     },

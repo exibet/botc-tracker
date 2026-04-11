@@ -96,7 +96,7 @@ const hoverShadowClass = computed(() => {
         ]"
       >
         <i
-          class="text-2xl sm:text-3xl"
+          style="font-size: 20px;"
           :class="[
             winnerInfo?.icon,
             game.winner === 'good'
@@ -119,7 +119,7 @@ const hoverShadowClass = computed(() => {
         ]"
       >
         <i
-          class="text-2xl sm:text-3xl"
+          style="font-size: 20px;"
           :class="[
             statusInfo?.icon,
             game.status === 'in_progress'
@@ -172,7 +172,7 @@ const hoverShadowClass = computed(() => {
                 rounded-full bg-good/10 px-1.5 py-0.5
                 text-[10px] font-semibold text-good"
             >
-              <i class="pi pi-sun text-[8px]" />
+              <i class="pi pi-sun" />
               {{ sideCounts.good }}
             </span>
             <span
@@ -180,7 +180,7 @@ const hoverShadowClass = computed(() => {
                 rounded-full bg-evil/10 px-1.5 py-0.5
                 text-[10px] font-semibold text-evil"
             >
-              <i class="pi pi-moon text-[8px]" />
+              <i class="pi pi-moon" />
               {{ sideCounts.evil }}
             </span>
           </template>
@@ -193,7 +193,7 @@ const hoverShadowClass = computed(() => {
               hover:opacity-80 lg:hidden"
             @click.stop
           >
-            <i class="pi pi-star-fill text-xs" />
+            <i class="pi pi-star-fill" />
             {{ mvpPlayer.nickname }}
           </NuxtLink>
         </div>

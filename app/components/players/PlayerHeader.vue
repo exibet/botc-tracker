@@ -79,7 +79,7 @@ defineProps<{
               text-xs text-text-muted sm:text-sm"
           >
             <i
-              class="pi pi-clock text-[10px]
+              class="pi pi-clock
                 text-text-subtle"
             />
             Остання:

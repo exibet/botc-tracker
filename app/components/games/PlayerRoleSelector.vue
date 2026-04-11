@@ -362,7 +362,7 @@ function isEndingRolePickerOpen(playerId: string): boolean {
                     muted
                   />
                   <i
-                    class="pi pi-arrow-right text-xs
+                    class="pi pi-arrow-right
                       text-text-subtle"
                   />
                   <AlignmentTag
@@ -426,7 +426,7 @@ function isEndingRolePickerOpen(playerId: string): boolean {
                   data-testid="ending-change-section"
                 >
                   <div class="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-text-muted">
-                    <i class="pi pi-replay text-[10px]" />
+                    <i class="pi pi-replay" />
                     Зміна під час гри
                   </div>
 
@@ -473,7 +473,7 @@ function isEndingRolePickerOpen(playerId: string): boolean {
                           </span>
                         </template>
                         <i
-                          class="pi pi-chevron-down text-xs text-text-subtle
+                          class="pi pi-chevron-down text-text-subtle
                             transition-transform duration-200"
                           :class="{ 'rotate-180': isEndingRolePickerOpen(entry.player_id) }"
                         />
@@ -506,7 +506,7 @@ function isEndingRolePickerOpen(playerId: string): boolean {
                         <AlignmentTag
                           :alignment="(entry.alignment_end ?? entry.alignment_start)"
                         />
-                        <i class="pi pi-sync text-xs text-text-subtle" />
+                        <i class="pi pi-sync text-text-subtle" />
                       </button>
                     </div>
 
@@ -574,7 +574,7 @@ function isEndingRolePickerOpen(playerId: string): boolean {
                 hover:bg-red-500/10 hover:text-red-400"
               @click="removePlayer(entry.player_id)"
             >
-              <i class="pi pi-trash text-xs" />
+              <i class="pi pi-trash" />
             </button>
           </div>
 
@@ -678,7 +678,7 @@ function isEndingRolePickerOpen(playerId: string): boolean {
               data-testid="toggle-change-btn"
               @click="toggleChangeExpanded(entry.player_id)"
             >
-              <i class="pi pi-replay text-[10px]" />
+              <i class="pi pi-replay" />
               Змінено?
             </button>
           </div>
@@ -691,7 +691,7 @@ function isEndingRolePickerOpen(playerId: string): boolean {
             data-testid="ending-change-section"
           >
             <div class="mb-2.5 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-widest text-text-muted">
-              <i class="pi pi-replay text-[9px]" />
+              <i class="pi pi-replay" />
               Зміна під час гри
             </div>
 
@@ -727,7 +727,7 @@ function isEndingRolePickerOpen(playerId: string): boolean {
                   </span>
                 </template>
                 <i
-                  class="pi pi-chevron-down text-xs text-text-subtle
+                  class="pi pi-chevron-down text-text-subtle
                     transition-transform duration-200"
                   :class="{ 'rotate-180': isEndingRolePickerOpen(entry.player_id) }"
                 />
@@ -762,7 +762,7 @@ function isEndingRolePickerOpen(playerId: string): boolean {
                     :alignment="(entry.alignment_end ?? entry.alignment_start)"
                     size="xs"
                   />
-                  <i class="pi pi-sync text-[10px] text-text-subtle" />
+                  <i class="pi pi-sync text-text-subtle" />
                 </button>
               </div>
 
@@ -774,7 +774,7 @@ function isEndingRolePickerOpen(playerId: string): boolean {
                 data-testid="clear-change-btn"
                 @click="clearEndingChange(entry.player_id)"
               >
-                <i class="pi pi-times text-[10px]" />
+                <i class="pi pi-times" />
                 Скасувати
               </button>
             </div>
@@ -789,7 +789,7 @@ function isEndingRolePickerOpen(playerId: string): boolean {
         border-white/[0.08] py-10 text-center"
     >
       <i
-        class="pi pi-users mb-3 text-3xl
+        class="pi pi-users mb-3
           text-text-subtle"
       />
       <p class="text-sm text-text-muted">

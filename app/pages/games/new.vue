@@ -51,7 +51,7 @@ async function handleSubmit(data: {
       class="mb-4 inline-flex items-center gap-1
         text-sm text-text-muted hover:text-text"
     >
-      <i class="pi pi-arrow-left text-xs" />
+      <i class="pi pi-arrow-left" />
       Ігри
     </NuxtLink>
 

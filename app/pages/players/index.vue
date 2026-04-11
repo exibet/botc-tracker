@@ -179,14 +179,14 @@ function toggleExpand(playerId: string) {
             >
               <i
                 v-if="col.icon"
-                :class="`pi ${col.icon} text-[10px]`"
+                :class="`pi ${col.icon}`"
               />
               <template v-else>
                 {{ col.label }}
               </template>
               <i
                 v-if="sortKey === col.key"
-                class="pi text-[10px]"
+                class="pi"
                 :class="sortAsc
                   ? 'pi-arrow-up' : 'pi-arrow-down'"
               />
@@ -261,7 +261,7 @@ function toggleExpand(playerId: string) {
           bg-white/[0.03]"
       >
         <i
-          class="pi pi-users text-4xl text-text-subtle"
+          class="pi pi-users text-text-subtle"
         />
       </div>
       <p class="font-heading text-lg font-semibold">

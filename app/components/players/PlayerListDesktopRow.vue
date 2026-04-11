@@ -133,7 +133,7 @@ defineEmits<{
           rounded-full bg-accent/10 px-2 py-0.5
           text-xs font-semibold tabular-nums text-accent"
       >
-        <i class="pi pi-star-fill text-[9px]" />
+        <i class="pi pi-star-fill" />
         {{ player.mvpCount }}
       </span>
       <span

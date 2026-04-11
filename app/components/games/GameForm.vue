@@ -91,7 +91,7 @@ function handleSubmit() {
           class="text-sm font-semibold tracking-wide
             text-text-muted"
         >
-          <i class="pi pi-calendar mr-1.5 text-xs" />
+          <i class="pi pi-calendar mr-1.5" />
           Дата
         </label>
         <DatePicker
@@ -111,7 +111,7 @@ function handleSubmit() {
           class="text-sm font-semibold tracking-wide
             text-text-muted"
         >
-          <i class="pi pi-book mr-1.5 text-xs" />
+          <i class="pi pi-book mr-1.5" />
           Скрипт
         </label>
         <Select
@@ -151,7 +151,7 @@ function handleSubmit() {
           class="text-sm font-semibold tracking-wide
             text-text-muted"
         >
-          <i class="pi pi-user mr-1.5 text-xs" />
+          <i class="pi pi-user mr-1.5" />
           Оповідач
         </label>
         <Select
@@ -174,7 +174,7 @@ function handleSubmit() {
         class="mb-3 block text-sm font-semibold
           tracking-wide text-text-muted"
       >
-        <i class="pi pi-flag mr-1.5 text-xs" />
+        <i class="pi pi-flag mr-1.5" />
         Переможець
       </label>
       <WinnerSelector
@@ -190,7 +190,7 @@ function handleSubmit() {
         class="text-sm font-semibold tracking-wide
           text-text-muted"
       >
-        <i class="pi pi-pencil mr-1.5 text-xs" />
+        <i class="pi pi-pencil mr-1.5" />
         Нотатки
       </label>
       <Textarea

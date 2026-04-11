@@ -283,7 +283,7 @@ function handleHide() {
           <template v-if="showEndingRole">
             <div class="flex justify-center pr-10">
               <i
-                class="pi pi-arrow-down text-xs
+                class="pi pi-arrow-down
                   text-text-subtle"
               />
             </div>
@@ -325,7 +325,7 @@ function handleHide() {
                   text-text-muted"
                 @click="activePicker = 'ending'"
               >
-                <i class="pi pi-plus text-xs" />
+                <i class="pi pi-plus" />
                 <span class="text-sm">
                   Обрати кінцеву роль
                 </span>

@@ -206,7 +206,7 @@ function handleSelect(role: Role) {
           </div>
           <i
             v-if="selectedId === role.id"
-            class="pi pi-check text-sm text-primary"
+            class="pi pi-check text-primary"
           />
         </button>
       </div>

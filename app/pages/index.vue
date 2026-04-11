@@ -262,10 +262,10 @@ const recentFinished = computed(() => {
             <span class="text-center">W / L</span>
             <span class="text-center">MVP</span>
             <span class="text-center">
-              <i class="pi pi-sun text-[10px]" />
+              <i class="pi pi-sun" />
             </span>
             <span class="text-center">
-              <i class="pi pi-moon text-[10px]" />
+              <i class="pi pi-moon" />
             </span>
           </div>
         </div>
@@ -417,7 +417,7 @@ const recentFinished = computed(() => {
           bg-white/[0.03]"
       >
         <i
-          class="pi pi-inbox text-4xl text-text-subtle"
+          class="pi pi-inbox text-text-subtle"
         />
       </div>
       <p class="font-heading text-xl font-semibold">

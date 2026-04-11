@@ -143,7 +143,7 @@ function confirmDelete() {
           text-primary transition-colors
           hover:text-primary-hover"
       >
-        <i class="pi pi-arrow-left text-sm" />
+        <i class="pi pi-arrow-left" />
         Повернутися до списку ігор
       </NuxtLink>
     </div>
@@ -159,7 +159,7 @@ function confirmDelete() {
             text-sm text-text-muted transition-colors
             hover:text-text"
         >
-          <i class="pi pi-arrow-left text-xs" />
+          <i class="pi pi-arrow-left" />
           Ігри
         </NuxtLink>
         <ClientOnly>
@@ -271,7 +271,7 @@ function confirmDelete() {
                   text-sm text-accent transition-opacity
                   hover:opacity-80 lg:hidden"
               >
-                <i class="pi pi-star-fill text-xs" />
+                <i class="pi pi-star-fill" />
                 {{ mvpPlayer.nickname }}
               </NuxtLink>
             </div>

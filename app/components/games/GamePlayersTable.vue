@@ -245,7 +245,7 @@ function entryPoints(
 
               <!-- Arrow -->
               <i
-                class="pi pi-arrow-right shrink-0 text-xs
+                class="pi pi-arrow-right shrink-0
                   text-text-subtle"
               />
 
@@ -306,7 +306,7 @@ function entryPoints(
                 muted
               />
               <i
-                class="pi pi-arrow-right text-xs
+                class="pi pi-arrow-right
                   text-text-subtle"
               />
               <AlignmentTag :alignment="finalAlignment(entry)!" />

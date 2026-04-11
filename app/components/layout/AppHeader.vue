@@ -44,7 +44,7 @@ const userInitials = computed(() => {
     <div class="mx-auto max-w-[1600px]">
       <Menubar
         :model="menuItems"
-        class="border-b border-surface-border"
+        class="border-b border-surface-border min-h-[60px]"
         :breakpoint="'768px'"
       >
         <template #start>

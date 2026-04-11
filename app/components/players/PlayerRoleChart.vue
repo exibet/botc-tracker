@@ -133,7 +133,7 @@ const rightColumn = computed(() => {
           justify-center gap-2"
       >
         <i
-          class="pi pi-users text-3xl text-text-subtle"
+          class="pi pi-users text-text-subtle"
         />
         <p class="text-sm text-text-muted">
           Немає даних для відображення

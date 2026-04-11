@@ -189,7 +189,7 @@ const evilPct = computed(() =>
         text-center text-text-muted"
     >
       <i
-        class="pi pi-inbox mb-4 text-5xl
+        class="pi pi-inbox mb-4
           text-text-subtle"
       />
       <p class="font-heading text-xl">

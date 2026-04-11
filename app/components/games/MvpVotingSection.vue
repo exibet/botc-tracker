@@ -133,7 +133,7 @@ function barWidth(voteCount: number): string {
     <!-- Section header -->
     <div class="mb-4 flex items-center gap-2 px-4 sm:px-6">
       <i
-        class="pi pi-trophy text-lg text-accent"
+        class="pi pi-trophy text-accent"
       />
       <h2
         class="font-heading text-xl font-semibold
@@ -237,7 +237,7 @@ function barWidth(voteCount: number): string {
             text-center"
         >
           <i
-            class="pi pi-star mb-3 text-4xl
+            class="pi pi-star mb-3
               text-text-subtle"
           />
           <p class="text-sm text-text-muted">

@@ -83,7 +83,7 @@ const evilPct = computed(() =>
           text-sm text-text-muted transition-colors
           hover:text-text"
       >
-        <i class="pi pi-arrow-left text-xs" />
+        <i class="pi pi-arrow-left" />
         Гравці
       </NuxtLink>
 
@@ -177,7 +177,7 @@ const evilPct = computed(() =>
           bg-white/[0.03]"
       >
         <i
-          class="pi pi-user text-4xl text-text-subtle"
+          class="pi pi-user text-text-subtle"
         />
       </div>
       <p class="font-heading text-lg font-semibold">
@@ -281,7 +281,7 @@ const evilPct = computed(() =>
                   text-accent sm:text-3xl"
               >
                 <i
-                  class="pi pi-star-fill text-sm"
+                  class="pi pi-star-fill"
                 />
                 {{ stats.mvpCount }}
               </p>
@@ -318,7 +318,7 @@ const evilPct = computed(() =>
                   gap-1 font-heading text-lg font-bold
                   text-win"
               >
-                <i class="pi pi-trophy text-[11px]" />
+                <i class="pi pi-trophy" />
                 {{ stats.wins }}
               </p>
               <p class="text-[11px] text-text-muted">
@@ -367,7 +367,7 @@ const evilPct = computed(() =>
                   text-xs font-semibold uppercase justify-center
                   tracking-wide text-good sm:flex"
               >
-                <i class="pi pi-sun text-[10px]" />
+                <i class="pi pi-sun" />
                 Добро
               </span>
               <p
@@ -415,7 +415,7 @@ const evilPct = computed(() =>
                   text-xs font-semibold uppercase justify-center
                   tracking-wide text-evil sm:flex"
               >
-                <i class="pi pi-moon text-[10px]" />
+                <i class="pi pi-moon" />
                 Зло
               </span>
               <p
