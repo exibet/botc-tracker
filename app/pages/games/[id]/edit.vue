@@ -10,7 +10,7 @@ const router = useRouter()
 const { success: toastSuccess, error: toastError } = useAppToast()
 const gameId = route.params.id as string
 
-const { getById, update } = useGames()
+const { getById, update } = useGameActions()
 const { players: allPlayers } = usePlayers()
 
 const { data: game, status: gameStatus } = useAsyncData(

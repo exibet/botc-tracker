@@ -51,6 +51,9 @@ mockNuxtImport('useAuth', () => () => ({
   isAuthenticated: computed(() => true),
   isAdmin: computed(() => true),
 }))
+mockNuxtImport('useGameStats', () => () => ({
+  refreshStats: vi.fn(),
+}))
 
 mockNuxtImport('useAsyncData', () => (_key: string, _fn: () => Promise<unknown>) => {
   // Return mock data directly — the fetcher logic is tested via getById/create/remove
@@ -70,12 +73,19 @@ describe('useGames', () => {
       expect(status.value).toBe('success')
     })
   })
+})
+
+describe('useGameActions', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockQueryResult = { data: mockGames, error: null }
+  })
 
   describe('getById', () => {
     it('fetches a single game by id', async () => {
       mockQueryResult = { data: mockGames[0], error: null }
 
-      const { getById } = useGames()
+      const { getById } = useGameActions()
       const result = await getById('game-1')
       expect(result).toEqual(mockGames[0])
     })
@@ -83,13 +93,13 @@ describe('useGames', () => {
     it('throws on error', async () => {
       mockQueryResult = { data: null, error: { message: 'Not found' } }
 
-      const { getById } = useGames()
+      const { getById } = useGameActions()
       await expect(getById('bad-id')).rejects.toThrow()
     })
   })
 
   describe('create', () => {
-    it('inserts a new game and refreshes', async () => {
+    it('inserts a new game', async () => {
       const newGame = {
         id: 'game-3',
         date: '2026-04-07',
@@ -98,25 +108,22 @@ describe('useGames', () => {
       }
       mockQueryResult = { data: newGame, error: null }
 
-      const { create } = useGames()
+      const { create } = useGameActions()
       const result = await create({
         date: '2026-04-07',
         script: 'trouble_brewing',
-        winner: 'good',
       })
 
       expect(result).toEqual(newGame)
-      expect(mockRefresh).toHaveBeenCalled()
     })
   })
 
   describe('remove', () => {
-    it('deletes a game and refreshes', async () => {
+    it('deletes a game', async () => {
       mockQueryResult = { data: null, error: null }
 
-      const { remove } = useGames()
+      const { remove } = useGameActions()
       await remove('game-1')
-      expect(mockRefresh).toHaveBeenCalled()
     })
   })
 })

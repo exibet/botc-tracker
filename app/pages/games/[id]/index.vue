@@ -16,7 +16,7 @@ import { formatDateLong } from '~/utils/date'
 const route = useRoute()
 const gameId = route.params.id as string
 
-const { getById, update, remove } = useGames()
+const { getById, update, remove } = useGameActions()
 const { isAdmin } = useAuth()
 const confirm = useConfirm()
 const { success: toastSuccess, error: toastError } = useAppToast()

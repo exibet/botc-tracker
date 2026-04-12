@@ -6,7 +6,7 @@ definePageMeta({ middleware: ['admin'] })
 
 const router = useRouter()
 const { success: toastSuccess, error: toastError } = useAppToast()
-const { create } = useGames()
+const { create } = useGameActions()
 const { players } = usePlayers()
 
 const gameFormRef = ref()

@@ -34,7 +34,6 @@ export default defineNuxtPlugin(async () => {
       if (currentSession) {
         await client.auth.refreshSession()
       }
-      refreshNuxtData()
     }
   }
   document.addEventListener('visibilitychange', handleVisibility)
