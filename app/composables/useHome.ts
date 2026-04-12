@@ -4,13 +4,6 @@ import { mapLeaderboardRow } from '~/utils/stats'
 
 const TOP_PLAYERS_COUNT = 5
 
-interface HomeStats {
-  totalGames: number
-  goodWins: number
-  evilWins: number
-  totalPlayers: number
-}
-
 export function useHome() {
   const client = useSupabaseClient()
 
@@ -18,12 +11,10 @@ export function useHome() {
     'home',
     async () => {
       const [
-        statsRes,
         activeGamesRes,
         recentGamesRes,
         leaderboardRes,
       ] = await Promise.all([
-        client.rpc('get_home_stats'),
         client
           .from('games')
           .select(GAME_DETAIL_SELECT)
@@ -43,12 +34,10 @@ export function useHome() {
         }),
       ])
 
-      if (statsRes.error) throw statsRes.error
       if (activeGamesRes.error) throw activeGamesRes.error
       if (recentGamesRes.error) throw recentGamesRes.error
       if (leaderboardRes.error) throw leaderboardRes.error
 
-      const stats = statsRes.data as HomeStats
       const activeGames
         = activeGamesRes.data as GameWithDetails[]
 
@@ -73,10 +62,6 @@ export function useHome() {
         inProgressGames,
         upcomingGames,
         recentGames,
-        totalGames: stats.totalGames,
-        totalPlayers: stats.totalPlayers,
-        goodWins: stats.goodWins,
-        evilWins: stats.evilWins,
         topPlayers,
       }
     },

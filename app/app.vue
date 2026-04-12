@@ -6,7 +6,8 @@ useHead({
 // Fetch global data once at app level — SSR suspense ensures data is in payload
 const { initRoles } = useRoles()
 const { initPlayers } = usePlayers()
-await Promise.all([initRoles(), initPlayers()]).catch(() => {})
+const { initStats } = useGameStats()
+await Promise.all([initRoles(), initPlayers(), initStats()]).catch(() => {})
 </script>
 
 <template>

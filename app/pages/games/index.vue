@@ -4,6 +4,7 @@ import GameCard from '~/components/games/GameCard.vue'
 
 const { games, status } = useGames()
 const { isAdmin } = useAuth()
+const { stats, goodPct, evilPct } = useGameStats()
 
 interface MonthGroup {
   key: string
@@ -37,31 +38,6 @@ const groupedGames = computed<MonthGroup[]>(() => {
 
   return Array.from(groups.values())
 })
-
-const finishedGames = computed(() =>
-  games.value?.filter(g => g.status === 'finished') ?? [],
-)
-
-const stats = computed(() => {
-  if (!finishedGames.value.length) {
-    return { total: 0, goodWins: 0, evilWins: 0 }
-  }
-  const total = finishedGames.value.length
-  const goodWins = finishedGames.value.filter(
-    g => g.winner === 'good',
-  ).length
-  const evilWins = total - goodWins
-  return { total, goodWins, evilWins }
-})
-
-const goodPct = computed(() =>
-  stats.value.total
-    ? Math.round((stats.value.goodWins / stats.value.total) * 100)
-    : 0,
-)
-const evilPct = computed(() =>
-  stats.value.total ? 100 - goodPct.value : 0,
-)
 </script>
 
 <template>
@@ -111,7 +87,7 @@ const evilPct = computed(() =>
     <template v-else-if="games?.length">
       <!-- Stats (finished games only) -->
       <section
-        v-if="stats.total"
+        v-if="stats?.totalGames"
         class="mt-8 grid grid-cols-3 gap-3"
       >
         <StatCard
@@ -121,7 +97,7 @@ const evilPct = computed(() =>
           color="good"
         />
         <StatCard
-          :value="stats.total"
+          :value="stats.totalGames"
           label="Всього"
           icon="pi pi-flag"
         />
@@ -135,7 +111,7 @@ const evilPct = computed(() =>
 
       <!-- Win ratio bar -->
       <div
-        v-if="stats.total"
+        v-if="stats?.totalGames"
         class="mt-3"
       >
         <GoodEvilBar

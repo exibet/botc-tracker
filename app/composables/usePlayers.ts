@@ -32,7 +32,6 @@ export function usePlayers() {
     const { data, error } = await client
       .from('profiles')
       .insert({
-        id: crypto.randomUUID(),
         nickname,
         is_manual: true,
       })

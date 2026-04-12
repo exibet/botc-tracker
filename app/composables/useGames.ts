@@ -4,6 +4,7 @@ import { GAME_LIST_SELECT, GAME_DETAIL_SELECT } from '~/utils/queries'
 export function useGames() {
   const client = useSupabaseClient()
   const { profile } = useAuth()
+  const { refreshStats } = useGameStats()
 
   const { data: games, status, refresh } = useAsyncData('games', async () => {
     const { data, error } = await client
@@ -71,6 +72,7 @@ export function useGames() {
 
     if (error) throw error
     await refresh()
+    refreshStats()
     return data as Game
   }
 
@@ -82,6 +84,7 @@ export function useGames() {
 
     if (error) throw error
     await refresh()
+    refreshStats()
   }
 
   return {

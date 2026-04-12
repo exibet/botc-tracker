@@ -10,6 +10,7 @@ mockNuxtImport('navigateTo', () => mockNavigateTo)
 mockNuxtImport('useAuth', () => () => ({
   isAuthenticated: { get value() { return mockIsAuthenticatedValue } },
   isAdmin: { get value() { return mockIsAdminValue } },
+  waitForProfile: () => Promise.resolve(),
 }))
 
 describe('admin middleware', () => {
@@ -17,7 +18,7 @@ describe('admin middleware', () => {
     mockIsAuthenticatedValue = false
     mockNavigateTo.mockClear()
     const { default: middleware } = await import('~/middleware/admin')
-    middleware({} as never, {} as never)
+    await middleware({} as never, {} as never)
     expect(mockNavigateTo).toHaveBeenCalledWith('/')
   })
 
@@ -26,7 +27,7 @@ describe('admin middleware', () => {
     mockIsAdminValue = false
     mockNavigateTo.mockClear()
     const { default: middleware } = await import('~/middleware/admin')
-    middleware({} as never, {} as never)
+    await middleware({} as never, {} as never)
     expect(mockNavigateTo).toHaveBeenCalledWith('/')
   })
 
@@ -35,7 +36,7 @@ describe('admin middleware', () => {
     mockIsAdminValue = true
     mockNavigateTo.mockClear()
     const { default: middleware } = await import('~/middleware/admin')
-    middleware({} as never, {} as never)
+    await middleware({} as never, {} as never)
     expect(mockNavigateTo).not.toHaveBeenCalled()
   })
 })

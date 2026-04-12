@@ -15,12 +15,24 @@ export function useAuth() {
   async function loadProfile(userId: string) {
     loading.value = true
     try {
-      const { data } = await client
+      // Try global players state first (loaded in app.vue via initPlayers)
+      const players = useState<Profile[] | null>('players')
+      const cached = players.value?.find(p => p.id === userId)
+      if (cached) {
+        profile.value = cached
+        return
+      }
+
+      // Fallback: fetch from Supabase (new user after sign-up)
+      const { data, error } = await client
         .from('profiles')
         .select(PROFILE_SELECT)
         .eq('id', userId)
         .maybeSingle()
 
+      if (error) {
+        console.error('Failed to load profile:', error.message)
+      }
       profile.value = data as Profile | null
     }
     finally {
@@ -64,6 +76,16 @@ export function useAuth() {
     }
   }
 
+  async function waitForProfile(timeout = 5000) {
+    if (profileReady.value) return
+    await new Promise<void>((resolve) => {
+      const stop = watch(profileReady, (ready) => {
+        if (ready) { stop(); resolve() }
+      }, { immediate: true })
+      setTimeout(() => { stop(); resolve() }, timeout)
+    })
+  }
+
   return {
     user,
     profile,
@@ -73,6 +95,7 @@ export function useAuth() {
     isAdmin,
     loadProfile,
     clearProfile,
+    waitForProfile,
     signInWithGoogle,
     signOut,
   }

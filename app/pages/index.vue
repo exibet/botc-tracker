@@ -11,6 +11,7 @@ import { podiumRank } from '~/utils/stats'
 import { formatDateWithWeekday } from '~/utils/date'
 
 const { data, status, refresh: refreshHome } = useHome()
+const { stats, goodPct, evilPct } = useGameStats()
 
 const defaultExpandedId = computed(
   () => data.value?.inProgressGames?.[0]?.id ?? null,
@@ -45,17 +46,6 @@ function onPlayerCountChanged(gameId: string, count: number) {
     upcomingGames: updateList(data.value.upcomingGames),
   }
 }
-
-const goodPct = computed(() => {
-  if (!data.value?.totalGames) return 0
-  return Math.round(
-    (data.value.goodWins / data.value.totalGames) * 100,
-  )
-})
-const evilPct = computed(() => {
-  if (!data.value?.totalGames) return 0
-  return 100 - goodPct.value
-})
 
 const recentFinished = computed(() => {
   const games = data.value?.recentGames
@@ -114,35 +104,36 @@ const recentFinished = computed(() => {
       />
     </div>
 
-    <template v-else-if="data?.totalGames">
+    <template v-else-if="stats?.totalGames || data?.topPlayers?.length">
       <!-- Quick Stats -->
       <section
+        v-if="stats?.totalGames"
         class="mt-6 grid grid-cols-2 gap-3
           sm:grid-cols-4 sm:gap-4"
       >
         <StatCard
-          :value="data.goodWins"
+          :value="stats.goodWins"
           label="Добро"
           icon="pi pi-sun"
           color="good"
           class="order-3 sm:order-none"
         />
         <StatCard
-          :value="data.totalGames"
+          :value="stats.totalGames"
           label="Ігор"
           icon="pi pi-flag"
           to="/games"
           class="order-2 sm:order-none"
         />
         <StatCard
-          :value="data.totalPlayers"
+          :value="stats.totalPlayers"
           label="Гравців"
           icon="pi pi-users"
           to="/players"
           class="order-1 sm:order-none"
         />
         <StatCard
-          :value="data.evilWins"
+          :value="stats.evilWins"
           label="Зло"
           icon="pi pi-moon"
           color="evil"

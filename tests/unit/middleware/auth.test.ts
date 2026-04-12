@@ -8,13 +8,14 @@ let mockIsAuthenticatedValue = false
 mockNuxtImport('navigateTo', () => mockNavigateTo)
 mockNuxtImport('useAuth', () => () => ({
   isAuthenticated: { get value() { return mockIsAuthenticatedValue } },
+  waitForProfile: () => Promise.resolve(),
 }))
 
 describe('auth middleware', () => {
   it('redirects to / when no user', async () => {
     mockIsAuthenticatedValue = false
     const { default: middleware } = await import('~/middleware/auth')
-    middleware({} as never, {} as never)
+    await middleware({} as never, {} as never)
     expect(mockNavigateTo).toHaveBeenCalledWith('/')
   })
 
@@ -22,7 +23,7 @@ describe('auth middleware', () => {
     mockIsAuthenticatedValue = true
     mockNavigateTo.mockClear()
     const { default: middleware } = await import('~/middleware/auth')
-    middleware({} as never, {} as never)
+    await middleware({} as never, {} as never)
     expect(mockNavigateTo).not.toHaveBeenCalled()
   })
 })
