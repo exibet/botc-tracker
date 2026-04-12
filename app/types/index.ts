@@ -112,6 +112,7 @@ export interface GameWithDetails extends Game {
   created_by_profile: { id: string, nickname: string }
   mvp_player: { id: string, nickname: string, avatar_url: string | null } | null
   game_players?: (GamePlayerLight | GamePlayerInline)[]
+  mvp_votes?: MvpVote[]
 }
 
 export interface PlayerEntry {

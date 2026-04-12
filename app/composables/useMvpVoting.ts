@@ -12,24 +12,40 @@ export interface VoteTallyEntry {
 
 export function useMvpVoting(
   gameId: Ref<string> | string,
+  initialVotes?: MvpVote[] | null,
 ) {
   const client = useSupabaseClient()
   const id = toRef(gameId)
 
-  const { data: votes, refresh } = useAsyncData(
-    () => `mvp-votes-${id.value}`,
-    async () => {
-      if (!id.value) return [] as MvpVote[]
-      const { data, error } = await client
-        .from('mvp_votes')
-        .select('*')
-        .eq('game_id', id.value)
+  const votes = ref<MvpVote[] | null>(initialVotes ?? null)
+  const loaded = ref(!!initialVotes)
 
-      if (error) throw error
-      return data as MvpVote[]
-    },
-    { watch: [id] },
-  )
+  async function fetchVotes() {
+    if (!id.value) {
+      votes.value = []
+      return
+    }
+    const { data, error } = await client
+      .from('mvp_votes')
+      .select('*')
+      .eq('game_id', id.value)
+
+    if (error) throw error
+    votes.value = data as MvpVote[]
+    loaded.value = true
+  }
+
+  if (!initialVotes) {
+    fetchVotes()
+  }
+
+  async function refresh() {
+    await fetchVotes()
+  }
+
+  function setVotes(data: MvpVote[]) {
+    votes.value = data
+  }
 
   function myVote(
     userId: string | null,
@@ -64,12 +80,10 @@ export function useMvpVoting(
         { onConflict: 'game_id,voter_id' },
       )
     if (error) throw error
-    await refresh()
   }
 
   async function removeVote(voterId: string) {
     await deleteVote(voterId)
-    await refresh()
   }
 
   function voteTally(
@@ -99,6 +113,7 @@ export function useMvpVoting(
   return {
     votes,
     refresh,
+    setVotes,
     myVote,
     castVote,
     removeVote,

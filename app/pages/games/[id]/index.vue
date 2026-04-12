@@ -403,7 +403,8 @@ function confirmDelete() {
         :winner="game.winner"
         :game-status="game.status"
         :initial-players="game.game_players ?? null"
-        @mvp-changed="refreshGame"
+        :initial-votes="game.mvp_votes ?? null"
+        @game-updated="(g) => game = g"
         @player-count-changed="onPlayerCountChanged"
       />
     </template>

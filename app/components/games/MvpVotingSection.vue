@@ -1,17 +1,21 @@
 <script setup lang="ts">
+import type { MvpVote } from '~/types'
 import type { GamePlayerWithDetails }
   from '~/composables/useGamePlayers'
 import PlayerAvatar
   from '~/components/players/PlayerAvatar.vue'
 import { pluralizeUa } from '~/utils/display'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   gameId: string
   players: GamePlayerWithDetails[]
   currentUserId: string | null
   isParticipant: boolean
   votingOpen?: boolean
-}>()
+  initialVotes?: MvpVote[] | null
+}>(), {
+  initialVotes: null,
+})
 
 const emit = defineEmits<{
   'vote-changed': []
@@ -20,10 +24,13 @@ const emit = defineEmits<{
 const {
   votes,
   myVote,
+  setVotes,
   castVote,
   removeVote,
   voteTally,
-} = useMvpVoting(props.gameId)
+} = useMvpVoting(props.gameId, props.initialVotes)
+
+defineExpose({ setVotes })
 
 const totalVoters = computed(() => {
   if (!votes.value) return 0

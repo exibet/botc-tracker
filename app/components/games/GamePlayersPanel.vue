@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import type { Alignment, GamePlayerInline } from '~/types'
+import type {
+  Alignment,
+  GamePlayerInline,
+  MvpVote,
+} from '~/types'
 import type { GamePlayerWithDetails }
   from '~/composables/useGamePlayers'
 import GamePlayersTable
@@ -19,11 +23,13 @@ const props = withDefaults(defineProps<{
   showHeader?: boolean
   gameStatus?: string
   initialPlayers?: GamePlayerInline[] | null
+  initialVotes?: MvpVote[] | null
 }>(), {
   winner: null,
   showHeader: true,
   gameStatus: 'upcoming',
   initialPlayers: null,
+  initialVotes: null,
 })
 
 const {
@@ -42,7 +48,7 @@ const confirm = useConfirm()
 const {
   players,
   status,
-  refresh: refreshPlayers,
+  refreshFromGame,
   add: addPlayer,
   update: updatePlayer,
   remove: removePlayer,
@@ -51,14 +57,18 @@ const {
   props.initialPlayers,
 )
 
+const mvpSectionRef = ref<InstanceType<typeof MvpVotingSection> | null>(null)
+
 const emit = defineEmits<{
-  'mvp-changed': []
+  'game-updated': [game: import('~/types').GameWithDetails]
   'player-count-changed': [count: number]
 }>()
 
-async function refreshAfterVote() {
-  await refreshPlayers()
-  emit('mvp-changed')
+async function refreshGameData() {
+  const result = await refreshFromGame()
+  if (!result) return
+  mvpSectionRef.value?.setVotes(result.votes)
+  emit('game-updated', result.game)
 }
 
 const playerCount = computed(
@@ -202,6 +212,8 @@ async function doDelete(entryId: string) {
   try {
     await removePlayer(entryId)
     emit('player-count-changed', players.value?.length ?? 0)
+    // Refresh votes — trigger deletes votes for removed player
+    await refreshGameData()
     showSuccess('Гравця видалено')
   }
   catch {
@@ -294,16 +306,17 @@ async function doDelete(entryId: string) {
     />
 
     <!-- MVP Voting -->
-    <ClientOnly v-if="players && players.length > 1 && gameStatus !== 'upcoming'">
-      <MvpVotingSection
-        :game-id="gameId"
-        :players="players"
-        :current-user-id="profile?.id ?? null"
-        :is-participant="isPlayerInGame"
-        :voting-open="gameStatus === 'in_progress'"
-        @vote-changed="refreshAfterVote"
-      />
-    </ClientOnly>
+    <MvpVotingSection
+      v-if="players && players.length > 1 && gameStatus !== 'upcoming'"
+      ref="mvpSectionRef"
+      :game-id="gameId"
+      :players="players"
+      :current-user-id="profile?.id ?? null"
+      :is-participant="isPlayerInGame"
+      :voting-open="gameStatus === 'in_progress'"
+      :initial-votes="initialVotes"
+      @vote-changed="refreshGameData"
+    />
 
     <!-- Dialogs -->
     <JoinGameDialog

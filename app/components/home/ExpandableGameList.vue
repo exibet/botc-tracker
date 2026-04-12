@@ -12,7 +12,6 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   'toggle': [gameId: string]
-  'mvp-changed': []
   'player-count-changed': [gameId: string, count: number]
 }>()
 
@@ -72,7 +71,7 @@ function isExpanded(gameId: string) {
             :winner="game.winner"
             :game-status="game.status"
             :initial-players="game.game_players ?? null"
-            @mvp-changed="emit('mvp-changed')"
+            :initial-votes="game.mvp_votes ?? null"
             @player-count-changed="(count: number) => emit('player-count-changed', game.id, count)"
           />
         </div>

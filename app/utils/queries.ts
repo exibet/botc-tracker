@@ -14,7 +14,7 @@ export const GAME_LIST_SELECT = `
   )
 `
 
-// Full select for active games — includes all game_player fields for inline editing
+// Full select for active games — includes all game_player fields and votes
 export const GAME_DETAIL_SELECT = `
   *,
   storyteller:profiles!storyteller_id(id, nickname),
@@ -26,5 +26,6 @@ export const GAME_DETAIL_SELECT = `
     alignment_start, alignment_end,
     is_alive, is_mvp, added_by, created_at,
     player:profiles!player_id(id, nickname, avatar_url)
-  )
+  ),
+  mvp_votes(id, game_id, voter_id, candidate_id, created_at)
 `

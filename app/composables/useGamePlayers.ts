@@ -1,4 +1,5 @@
-import type { GamePlayer, GamePlayerInline, Role } from '~/types'
+import type { GamePlayer, GamePlayerInline, GameWithDetails, MvpVote, Role } from '~/types'
+import { GAME_DETAIL_SELECT } from '~/utils/queries'
 
 interface RoleRef {
   id: string
@@ -105,6 +106,26 @@ export function useGamePlayers(
     await fetchPlayers()
   }
 
+  function setFromInline(data: GamePlayerInline[]) {
+    players.value = data.map(e => resolveRoles(e, rolesMap.value))
+  }
+
+  async function refreshFromGame(): Promise<{ game: GameWithDetails, votes: MvpVote[] } | null> {
+    const { data, error } = await client
+      .from('games')
+      .select(GAME_DETAIL_SELECT)
+      .eq('id', id.value)
+      .single()
+
+    if (error) return null
+
+    const game = data as GameWithDetails
+    if (game.game_players) {
+      setFromInline(game.game_players as GamePlayerInline[])
+    }
+    return { game, votes: game.mvp_votes ?? [] }
+  }
+
   async function add(entry: {
     player_id: string
     starting_role_id?: string | null
@@ -171,6 +192,8 @@ export function useGamePlayers(
     players,
     status,
     refresh,
+    setFromInline,
+    refreshFromGame,
     add,
     update,
     remove,

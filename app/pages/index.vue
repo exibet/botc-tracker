@@ -160,7 +160,6 @@ const recentFinished = computed(() => {
           :games="data.inProgressGames"
           :expanded-game-id="expandedGameId"
           @toggle="toggleGame"
-          @mvp-changed="refreshHome"
           @player-count-changed="onPlayerCountChanged"
         />
       </section>
@@ -265,7 +264,6 @@ const recentFinished = computed(() => {
           :games="data.upcomingGames"
           :expanded-game-id="expandedGameId"
           @toggle="toggleGame"
-          @mvp-changed="refreshHome"
           @player-count-changed="onPlayerCountChanged"
         />
       </section>
