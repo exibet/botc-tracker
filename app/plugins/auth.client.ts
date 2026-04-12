@@ -12,7 +12,7 @@ export default defineNuxtPlugin(async () => {
   }
 
   // React to all auth changes (login, logout, token refresh)
-  client.auth.onAuthStateChange(async (event, newSession) => {
+  const { data: { subscription } } = client.auth.onAuthStateChange(async (event, newSession) => {
     if (event === 'SIGNED_OUT') {
       clearProfile()
     }
@@ -27,7 +27,7 @@ export default defineNuxtPlugin(async () => {
   })
 
   // Refresh Supabase session when tab becomes visible after inactivity
-  document.addEventListener('visibilitychange', async () => {
+  const handleVisibility = async () => {
     if (document.visibilityState === 'visible') {
       const { data: { session: currentSession } }
         = await client.auth.getSession()
@@ -36,5 +36,13 @@ export default defineNuxtPlugin(async () => {
       }
       refreshNuxtData()
     }
+  }
+  document.addEventListener('visibilitychange', handleVisibility)
+
+  // Cleanup on app unmount
+  const nuxtApp = useNuxtApp()
+  nuxtApp.hook('app:unmount', () => {
+    subscription.unsubscribe()
+    document.removeEventListener('visibilitychange', handleVisibility)
   })
 })

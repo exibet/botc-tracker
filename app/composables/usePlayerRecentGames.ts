@@ -33,11 +33,14 @@ export function usePlayerRecentGames(playerId: string, limit = 5) {
           starting_role:roles!starting_role_id(
             name_ua, image_url, type
           ),
-          game:games!game_id(
+          game:games!inner!game_id(
             id, date, script, status, winner, created_at
           )
         `)
         .eq('player_id', playerId)
+        .eq('game.status', 'finished')
+        .order('game(date)', { ascending: false })
+        .limit(limit)
 
       if (error) throw error
 
@@ -67,12 +70,6 @@ export function usePlayerRecentGames(playerId: string, limit = 5) {
       }[]
 
       games.value = rows
-        .filter(r => r.game.status === 'finished')
-        .sort((a, b) =>
-          b.game.date.localeCompare(a.game.date)
-          || b.game.created_at.localeCompare(a.game.created_at),
-        )
-        .slice(0, limit)
         .map((r) => {
           const role = r.ending_role ?? r.starting_role
           const alignment = r.alignment_end ?? r.alignment_start

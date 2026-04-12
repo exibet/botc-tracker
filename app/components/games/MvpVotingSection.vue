@@ -77,6 +77,8 @@ const candidates = computed(() =>
 const popoverRef = ref()
 const isSubmitting = ref(false)
 
+const { error: showError } = useAppToast()
+
 async function handleVote(candidateId: string) {
   if (!props.currentUserId) return
   popoverRef.value?.hide()
@@ -87,6 +89,9 @@ async function handleVote(candidateId: string) {
       candidateId,
     )
     emit('vote-changed')
+  }
+  catch {
+    showError('Не вдалося проголосувати')
   }
   finally {
     isSubmitting.value = false
@@ -99,6 +104,9 @@ async function handleRemoveVote() {
   try {
     await removeVote(props.currentUserId)
     emit('vote-changed')
+  }
+  catch {
+    showError('Не вдалося скасувати голос')
   }
   finally {
     isSubmitting.value = false

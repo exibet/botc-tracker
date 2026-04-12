@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import GameForm from '~/components/games/GameForm.vue'
+import { extractErrorMessage } from '~/utils/error'
 
 definePageMeta({ middleware: ['admin'] })
 
@@ -34,7 +35,7 @@ async function handleSubmit(data: {
     router.push('/games')
   }
   catch (err) {
-    toastError(String(err))
+    toastError(extractErrorMessage(err, 'Не вдалося створити гру'))
   }
   finally {
     saving.value = false

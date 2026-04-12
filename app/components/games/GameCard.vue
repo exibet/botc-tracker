@@ -36,29 +36,6 @@ const mvpPlayer = computed(
   () => props.game.mvp_player ?? null,
 )
 
-const MAX_AVATARS = 10
-
-const allPlayers = computed(() => {
-  const mvpId = mvpPlayer.value?.id
-  return props.game.game_players
-    ?.map(gp => gp.player)
-    .filter((p): p is NonNullable<typeof p> =>
-      !!p && p.id !== mvpId,
-    ) ?? []
-})
-
-const visiblePlayers = computed(
-  () => allPlayers.value.slice(0, MAX_AVATARS),
-)
-
-const overflowPlayers = computed(
-  () => allPlayers.value.slice(MAX_AVATARS),
-)
-
-const overflowTooltip = computed(() =>
-  overflowPlayers.value
-    .map(p => p.nickname).join(', '),
-)
 
 const hoverShadowClass = computed(() => {
   if (props.game.winner === 'good')
@@ -198,42 +175,6 @@ const hoverShadowClass = computed(() => {
           </NuxtLink>
         </div>
 
-      </div>
-
-      <!-- Player avatars (desktop) — hidden feature, enable by removing `&& false` -->
-      <div
-        v-if="allPlayers.length && false"
-        class="hidden shrink-0 self-center lg:flex"
-      >
-        <span
-          v-for="(p, i) in visiblePlayers"
-          :key="p.id"
-          v-tooltip.top="p.nickname"
-          :class="[
-            i > 0 ? '-ml-2' : '',
-            'transition-transform duration-200',
-            'hover:scale-150 hover:z-10',
-          ]"
-        >
-          <PlayerAvatar
-            :avatar-url="p.avatar_url"
-            :nickname="p.nickname"
-            size="sm"
-            ring-class="ring-1 ring-white/35"
-          />
-        </span>
-        <span
-          v-if="overflowPlayers.length"
-          v-tooltip.top="overflowTooltip"
-          class="-ml-2 flex size-8 items-center
-            justify-center rounded-full text-xs font-semibold
-            text-text-muted  bg-black ring-1
-            ring-[var(--surface-ground)]/35
-            transition-transform duration-200
-            hover:scale-150 hover:z-10"
-        >
-          +{{ overflowPlayers.length }}
-        </span>
       </div>
 
       <!-- MVP: desktop -->

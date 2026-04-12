@@ -5,7 +5,7 @@ const { profileReady } = useAuth()
 
 const returnTo = computed(() => {
   const path = route.query.returnTo as string | undefined
-  return path && path.startsWith('/') ? path : '/'
+  return path && path.startsWith('/') && !path.startsWith('//') ? path : '/'
 })
 
 // Plugin handles profile loading via onAuthStateChange.

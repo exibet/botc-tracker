@@ -14,11 +14,13 @@ export function pluralizeUa(
   few: string,
   many: string,
 ): string {
-  return count === 1
-    ? one
-    : count >= 2 && count <= 4
-      ? few
-      : many
+  const abs = Math.abs(count)
+  const mod10 = abs % 10
+  const mod100 = abs % 100
+  if (mod100 >= 11 && mod100 <= 19) return many
+  if (mod10 === 1) return one
+  if (mod10 >= 2 && mod10 <= 4) return few
+  return many
 }
 
 export function effectiveAlignment(

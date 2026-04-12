@@ -53,14 +53,16 @@ export function useMvpVoting(
     voterId: string,
     candidateId: string,
   ) {
-    await deleteVote(voterId)
     const { error } = await client
       .from('mvp_votes')
-      .insert({
-        game_id: id.value,
-        voter_id: voterId,
-        candidate_id: candidateId,
-      })
+      .upsert(
+        {
+          game_id: id.value,
+          voter_id: voterId,
+          candidate_id: candidateId,
+        },
+        { onConflict: 'game_id,voter_id' },
+      )
     if (error) throw error
     await refresh()
   }
