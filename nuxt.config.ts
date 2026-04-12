@@ -69,7 +69,7 @@ export default defineNuxtConfig({
       title: 'BotC Tracker - Blood on the Clocktower Community Stats',
       meta: [
         { charset: 'utf-8' },
-        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' },
         { name: 'description', content: 'Track Blood on the Clocktower games, player stats, win rates & MVP votes. Join the community game tracker now ✓' },
         { name: 'referrer', content: 'no-referrer' },
         { name: 'theme-color', content: '#ef4444' },

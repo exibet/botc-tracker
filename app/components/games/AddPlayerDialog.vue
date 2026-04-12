@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import type { Profile } from '~/types'
+import PlayerAvatar
+  from '~/components/players/PlayerAvatar.vue'
 
 const props = defineProps<{
   visible: boolean
@@ -90,15 +92,25 @@ watch(() => props.visible, (val) => {
         </label>
         <Select
           v-model="selectedPlayerId"
-          :options="availablePlayers.map(p => ({
-            label: p.nickname,
-            value: p.id,
-          }))"
-          option-label="label"
-          option-value="value"
+          :options="availablePlayers"
+          option-label="nickname"
+          option-value="id"
           placeholder="Оберіть гравця"
+          filter
+          filter-placeholder="Пошук..."
           fluid
-        />
+        >
+          <template #option="{ option }">
+            <div class="flex items-center gap-2">
+              <PlayerAvatar
+                :avatar-url="option.avatar_url"
+                :nickname="option.nickname"
+                size="sm"
+              />
+              <span>{{ option.nickname }}</span>
+            </div>
+          </template>
+        </Select>
       </div>
 
       <!-- New player name -->

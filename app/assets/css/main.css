@@ -171,6 +171,16 @@ h6 {
   border: 1px solid color-mix(in srgb, var(--color-good) 30%, transparent);
 }
 
+/* Prevent iOS auto-zoom on input focus (requires font-size >= 16px) */
+input,
+select,
+textarea,
+.p-inputtext,
+.p-select-label,
+.p-autocomplete-input {
+  font-size: 16px !important;
+}
+
 .p-tag-evil {
   background-color: color-mix(in srgb, var(--color-evil) 15%, transparent);
   color: var(--color-evil);
