@@ -44,32 +44,7 @@ export function usePlayerRecentGames(playerId: string, limit = 5) {
 
       if (error) throw error
 
-      const rows = data as unknown as {
-        game_id: string
-        is_mvp: boolean
-        alignment_start: string | null
-        alignment_end: string | null
-        ending_role: {
-          name_ua: string
-          image_url: string | null
-          type: string
-        } | null
-        starting_role: {
-          name_ua: string
-          image_url: string | null
-          type: string
-        } | null
-        game: {
-          id: string
-          date: string
-          script: Script
-          status: string
-          winner: Winner | null
-          created_at: string
-        }
-      }[]
-
-      games.value = rows
+      games.value = (data as any[])
         .map((r) => {
           const role = r.ending_role ?? r.starting_role
           const alignment = r.alignment_end ?? r.alignment_start

@@ -16,7 +16,8 @@
     "typecheck": "nuxt typecheck",
     "seed:roles": "tsx scripts/seed-roles.ts",
     "optimize:images": "tsx scripts/optimize-role-images.ts",
-    "build": "nuxt build"
+    "build": "nuxt build",
+    "db:types": "supabase gen types typescript --linked 2>/dev/null > app/types/database.types.ts"
   },
   "dependencies": {
     "@nuxtjs/supabase": "^2.0.4",

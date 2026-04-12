@@ -1,3 +1,6 @@
+import type { Tables } from '~/types/database.types'
+
+// --- Domain aliases (narrower than DB strings) ---
 export type RoleType
   = | 'townsfolk'
     | 'outsider'
@@ -25,62 +28,38 @@ export type Winner = 'good' | 'evil'
 export type GameStatus = 'upcoming' | 'in_progress' | 'finished'
 export type UserRole = 'player' | 'admin'
 
-export interface Role {
-  id: string
-  name_en: string
-  name_ua: string
-  description_en: string
-  description_ua: string
+// --- DB row types with domain narrowing ---
+export type RoleRow = Tables<'roles'>
+export type ProfileRow = Tables<'profiles'>
+export type GameRow = Tables<'games'>
+export type GamePlayerRow = Tables<'game_players'>
+export type MvpVoteRow = Tables<'mvp_votes'>
+
+export interface Role extends Omit<RoleRow, 'type' | 'edition' | 'meta'> {
   type: RoleType
   edition: Edition
-  image_url: string | null
   meta: Record<string, unknown> | null
-  created_at: string
 }
 
-export interface Profile {
-  id: string
-  nickname: string
-  avatar_url: string | null
+export interface Profile extends Omit<ProfileRow, 'role' | 'created_at'> {
   role: UserRole
-  is_manual: boolean
   created_at: string
 }
 
-export interface Game {
-  id: string
-  date: string
+export interface Game extends Omit<GameRow, 'script' | 'status' | 'winner' | 'created_at'> {
   script: Script
-  custom_script_name: string | null
   status: GameStatus
   winner: Winner | null
-  storyteller_id: string | null
-  mvp_player_id: string | null
-  notes: string | null
-  player_count: number | null
-  created_by: string
   created_at: string
 }
 
-export interface GamePlayer {
-  id: string
-  game_id: string
-  player_id: string
-  starting_role_id: string | null
-  ending_role_id: string | null
+export interface GamePlayer extends Omit<GamePlayerRow, 'alignment_start' | 'alignment_end' | 'created_at'> {
   alignment_start: Alignment | null
   alignment_end: Alignment | null
-  is_alive: boolean | null
-  is_mvp: boolean
-  added_by: string
   created_at: string
 }
 
-export interface MvpVote {
-  id: string
-  game_id: string
-  voter_id: string
-  candidate_id: string
+export interface MvpVote extends Omit<MvpVoteRow, 'created_at'> {
   created_at: string
 }
 
@@ -194,20 +173,4 @@ export interface PlayerWithStats extends Profile {
   evilGames: number
   points: number
   winStreak: number
-}
-
-export interface LeaderboardRow {
-  id: string
-  nickname: string
-  avatar_url: string | null
-  role: 'player' | 'admin'
-  is_manual: boolean
-  created_at: string
-  games_played: number
-  wins: number
-  mvp_count: number
-  good_games: number
-  evil_games: number
-  points: number
-  win_streak: number
 }

@@ -20,7 +20,7 @@ export function useGameStats() {
       console.error('Failed to load game stats:', error.message)
       return
     }
-    stats.value = data as GameStats
+    stats.value = data as unknown as GameStats
   }
 
   const goodPct = computed(() => {

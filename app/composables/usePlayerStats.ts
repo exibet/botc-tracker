@@ -174,7 +174,7 @@ export function usePlayerStats(playerId: Ref<string> | string) {
         .eq('player_id', id.value)
 
       if (error) throw error
-      return data as unknown as GamePlayerRow[]
+      return data as any as GamePlayerRow[]
     },
   )
 

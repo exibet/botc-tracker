@@ -1,4 +1,5 @@
 import type { PlayerStats, RoleType } from '~/types'
+import type { Database } from '~/types/database.types'
 import { effectiveAlignment } from '~/utils/display'
 
 /**
@@ -223,8 +224,10 @@ export function computeWinStreaks(
   return streaks
 }
 
+type LeaderboardRpcRow = Database['public']['Functions']['get_player_leaderboard']['Returns'][number]
+
 export function mapLeaderboardRow(
-  row: import('~/types').LeaderboardRow,
+  row: LeaderboardRpcRow,
 ): import('~/types').PlayerWithStats {
   const games = Number(row.games_played)
   const wins = Number(row.wins)

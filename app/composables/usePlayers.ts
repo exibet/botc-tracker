@@ -1,4 +1,4 @@
-import type { Profile, PlayerWithStats, LeaderboardRow } from '~/types'
+import type { Profile } from '~/types'
 import { PROFILE_SELECT } from '~/utils/queries'
 import { mapLeaderboardRow } from '~/utils/stats'
 
@@ -65,7 +65,7 @@ export function usePlayers() {
     })
     if (error) throw error
     await refreshPlayers()
-    return data as string
+    return data as unknown as string
   }
 
   return {
@@ -89,7 +89,7 @@ export function usePlayersWithStats() {
       )
 
       if (error) throw error
-      return (data as LeaderboardRow[]).map(mapLeaderboardRow)
+      return (data ?? []).map(mapLeaderboardRow)
     },
   )
 

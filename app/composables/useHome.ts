@@ -1,4 +1,4 @@
-import type { GameWithDetails, PlayerWithStats, LeaderboardRow } from '~/types'
+import type { GameWithDetails, PlayerWithStats } from '~/types'
 import { GAME_LIST_SELECT, GAME_DETAIL_SELECT } from '~/utils/queries'
 import { mapLeaderboardRow } from '~/utils/stats'
 
@@ -28,7 +28,6 @@ export function useHome() {
           .order('date', { ascending: false })
           .order('created_at', { ascending: false })
           .limit(10),
-        // @ts-expect-error -- untyped Supabase client (no generated Database types)
         client.rpc('get_player_leaderboard', {
           result_limit: TOP_PLAYERS_COUNT,
         }),
@@ -55,7 +54,7 @@ export function useHome() {
         = recentGamesRes.data as GameWithDetails[]
 
       const topPlayers: PlayerWithStats[]
-        = (leaderboardRes.data as LeaderboardRow[])
+        = (leaderboardRes.data ?? [])
           .map(mapLeaderboardRow)
 
       return {

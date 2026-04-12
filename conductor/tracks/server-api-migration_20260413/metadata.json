@@ -1,0 +1,16 @@
+{
+  "id": "server-api-migration_20260413",
+  "title": "Server API Migration",
+  "type": "refactor",
+  "status": "pending",
+  "created": "2026-04-13T00:00:00Z",
+  "updated": "2026-04-13T00:00:00Z",
+  "phases": {
+    "total": 7,
+    "completed": 0
+  },
+  "tasks": {
+    "total": 73,
+    "completed": 0
+  }
+}
