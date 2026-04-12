@@ -84,15 +84,34 @@ export interface MvpVote {
   created_at: string
 }
 
+// Light game_player data from GAME_LIST_SELECT (for cards)
+export interface GamePlayerLight {
+  is_mvp: boolean
+  starting_role: { type: string } | null
+  player: { id: string, nickname: string, avatar_url: string | null } | null
+}
+
+// Full game_player data from GAME_DETAIL_SELECT (for editing, role IDs resolved from global roles)
+export interface GamePlayerInline {
+  id: string
+  game_id: string
+  player_id: string
+  starting_role_id: string | null
+  ending_role_id: string | null
+  alignment_start: Alignment | null
+  alignment_end: Alignment | null
+  is_alive: boolean | null
+  is_mvp: boolean
+  added_by: string
+  created_at: string
+  player: { id: string, nickname: string, avatar_url: string | null }
+}
+
 export interface GameWithDetails extends Game {
   storyteller: { id: string, nickname: string } | null
   created_by_profile: { id: string, nickname: string }
   mvp_player: { id: string, nickname: string, avatar_url: string | null } | null
-  game_players?: {
-    is_mvp: boolean
-    starting_role: { type: string } | null
-    player: { id: string, nickname: string, avatar_url: string | null } | null
-  }[]
+  game_players?: (GamePlayerLight | GamePlayerInline)[]
 }
 
 export interface PlayerEntry {
@@ -174,4 +193,20 @@ export interface PlayerWithStats extends Profile {
   evilGames: number
   points: number
   winStreak: number
+}
+
+export interface LeaderboardRow {
+  id: string
+  nickname: string
+  avatar_url: string | null
+  role: 'player' | 'admin'
+  is_manual: boolean
+  created_at: string
+  games_played: number
+  wins: number
+  mvp_count: number
+  good_games: number
+  evil_games: number
+  points: number
+  win_streak: number
 }

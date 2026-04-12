@@ -30,8 +30,6 @@ async function handleSubmit(data: {
       player_count: 0,
     })
 
-    clearNuxtData('games')
-
     toastSuccess('Гру створено')
     router.push('/games')
   }

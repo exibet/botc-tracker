@@ -12,21 +12,38 @@ import { formatDateWithWeekday } from '~/utils/date'
 
 const { data, status, refresh: refreshHome } = useHome()
 
-const expandedGameId = ref<string | null>(null)
+const defaultExpandedId = computed(
+  () => data.value?.inProgressGames?.[0]?.id ?? null,
+)
+const manualExpandedId = ref<string | undefined>()
 
-watch(() => data.value?.inProgressGames, (games) => {
-  if (games?.length && !expandedGameId.value) {
-    expandedGameId.value = games[0]!.id
-  }
-}, { immediate: true })
+const expandedGameId = computed(
+  () => manualExpandedId.value !== undefined
+    ? manualExpandedId.value || null
+    : defaultExpandedId.value,
+)
 
 function toggleGame(gameId: string) {
-  expandedGameId.value
-    = expandedGameId.value === gameId ? null : gameId
+  manualExpandedId.value
+    = expandedGameId.value === gameId ? '' : gameId
 }
 
 function isExpanded(gameId: string) {
   return expandedGameId.value === gameId
+}
+
+function onPlayerCountChanged(gameId: string, count: number) {
+  if (!data.value) return
+  const updateList = (list: typeof data.value.inProgressGames) =>
+    list.map(g => g.id === gameId
+      ? { ...g, player_count: count || null }
+      : g,
+    )
+  data.value = {
+    ...data.value,
+    inProgressGames: updateList(data.value.inProgressGames),
+    upcomingGames: updateList(data.value.upcomingGames),
+  }
 }
 
 const goodPct = computed(() => {
@@ -204,7 +221,9 @@ const recentFinished = computed(() => {
                   :game-id="game.id"
                   :winner="game.winner"
                   :game-status="game.status"
+                  :initial-players="game.game_players ?? null"
                   @mvp-changed="refreshHome"
+                  @player-count-changed="(count: number) => onPlayerCountChanged(game.id, count)"
                 />
               </div>
             </Transition>
@@ -359,7 +378,9 @@ const recentFinished = computed(() => {
                   :game-id="game.id"
                   :winner="game.winner"
                   :game-status="game.status"
+                  :initial-players="game.game_players ?? null"
                   @mvp-changed="refreshHome"
+                  @player-count-changed="(count: number) => onPlayerCountChanged(game.id, count)"
                 />
               </div>
             </Transition>

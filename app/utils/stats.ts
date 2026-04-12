@@ -118,6 +118,30 @@ export function computeWinStreaks(
   return streaks
 }
 
+export function mapLeaderboardRow(
+  row: import('~/types').LeaderboardRow,
+): import('~/types').PlayerWithStats {
+  const games = Number(row.games_played)
+  const wins = Number(row.wins)
+  return {
+    id: row.id,
+    nickname: row.nickname,
+    avatar_url: row.avatar_url,
+    role: row.role,
+    is_manual: row.is_manual ?? false,
+    created_at: row.created_at ?? '',
+    gamesPlayed: games,
+    wins,
+    losses: games - wins,
+    winRate: games > 0 ? Math.round((wins / games) * 100) : 0,
+    mvpCount: Number(row.mvp_count),
+    goodGames: Number(row.good_games),
+    evilGames: Number(row.evil_games),
+    points: Number(row.points),
+    winStreak: Number(row.win_streak),
+  }
+}
+
 export function podiumRank(
   index: number,
   minPlayers = 3,

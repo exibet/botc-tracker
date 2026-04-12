@@ -1,14 +1,14 @@
 <script setup lang="ts">
 const {
+  roles,
   filteredRoles,
   groupedRoles,
   filterType,
   filterEdition,
   searchQuery,
-  status,
 } = useRoles()
 
-const isLoading = computed(() => status.value === 'pending')
+const isLoading = computed(() => !roles.value)
 </script>
 
 <template>

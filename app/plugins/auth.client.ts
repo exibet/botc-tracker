@@ -2,10 +2,10 @@ export default defineNuxtPlugin(async () => {
   const client = useSupabaseClient()
   const { loadProfile, clearProfile, profileReady } = useAuth()
 
-  // Load profile for existing session on page load
-  const { data: { session } } = await client.auth.getSession()
-  if (session?.user) {
-    await loadProfile(session.user.id)
+  // Load profile for existing session on page load (getUser() validates JWT server-side)
+  const { data: { user } } = await client.auth.getUser()
+  if (user) {
+    await loadProfile(user.id)
   }
   else {
     profileReady.value = true

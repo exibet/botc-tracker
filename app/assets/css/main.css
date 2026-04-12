@@ -171,6 +171,22 @@ h6 {
   border: 1px solid color-mix(in srgb, var(--color-good) 30%, transparent);
 }
 
+/* Constrain toast width on small screens */
+.p-toast {
+  max-width: calc(100vw - 2.5rem);
+}
+
+/* Hide menubar nav items on mobile before JS hydration to prevent flash */
+@media (max-width: 767px) {
+  .p-menubar-root-list {
+    display: none !important;
+  }
+
+  .p-menubar-mobile-active .p-menubar-root-list {
+    display: flex !important;
+  }
+}
+
 /* Prevent iOS auto-zoom on input focus (requires font-size >= 16px) */
 input,
 select,

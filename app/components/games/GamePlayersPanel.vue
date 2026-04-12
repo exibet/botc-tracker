@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Alignment } from '~/types'
+import type { Alignment, GamePlayerInline } from '~/types'
 import type { GamePlayerWithDetails }
   from '~/composables/useGamePlayers'
 import GamePlayersTable
@@ -18,10 +18,12 @@ const props = withDefaults(defineProps<{
   winner?: 'good' | 'evil' | null
   showHeader?: boolean
   gameStatus?: string
+  initialPlayers?: GamePlayerInline[] | null
 }>(), {
   winner: null,
   showHeader: true,
   gameStatus: 'upcoming',
+  initialPlayers: null,
 })
 
 const {
@@ -46,6 +48,7 @@ const {
   remove: removePlayer,
 } = useGamePlayers(
   computed(() => props.gameId),
+  props.initialPlayers,
 )
 
 const emit = defineEmits<{
@@ -129,7 +132,6 @@ async function handleCreatePlayer(
       player_id: id,
       added_by: profile.value.id,
     })
-    clearNuxtData('players')
     emit('player-count-changed', players.value?.length ?? 0)
     showSuccess(
       `Гравця "${nickname}" створено та додано`,
@@ -149,7 +151,7 @@ function handleEditEntry(
   entry: GamePlayerWithDetails,
 ) {
   if (!isAdmin.value && props.gameStatus !== 'in_progress') return
-  editingEntry.value = entry
+  editingEntry.value = { ...entry }
   showEditDialog.value = true
 }
 

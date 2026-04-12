@@ -1,4 +1,5 @@
 import type { Profile } from '~/types'
+import { PROFILE_SELECT } from '~/utils/queries'
 
 export function useAuth() {
   const user = useSupabaseUser()
@@ -16,7 +17,7 @@ export function useAuth() {
     try {
       const { data } = await client
         .from('profiles')
-        .select('*')
+        .select(PROFILE_SELECT)
         .eq('id', userId)
         .maybeSingle()
 

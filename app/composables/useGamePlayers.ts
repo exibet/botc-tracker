@@ -1,4 +1,4 @@
-import type { GamePlayer } from '~/types'
+import type { GamePlayer, GamePlayerInline, Role } from '~/types'
 
 interface RoleRef {
   id: string
@@ -18,9 +18,47 @@ export interface GamePlayerWithDetails extends GamePlayer {
   ending_role: RoleRef | null
 }
 
-export function useGamePlayers(gameId: Ref<string> | string) {
+function roleToRef(role: Role | undefined): RoleRef | null {
+  if (!role) return null
+  return {
+    id: role.id,
+    name_ua: role.name_ua,
+    name_en: role.name_en,
+    image_url: role.image_url,
+    type: role.type,
+  }
+}
+
+function resolveRoles(
+  entry: GamePlayerInline,
+  rolesMap: Map<string, Role>,
+): GamePlayerWithDetails {
+  return {
+    ...entry,
+    starting_role: entry.starting_role_id
+      ? roleToRef(rolesMap.get(entry.starting_role_id))
+      : null,
+    ending_role: entry.ending_role_id
+      ? roleToRef(rolesMap.get(entry.ending_role_id))
+      : null,
+  }
+}
+
+export function useGamePlayers(
+  gameId: Ref<string> | string,
+  initialData?: GamePlayerInline[] | null,
+) {
   const client = useSupabaseClient()
+  const { roles } = useRoles()
   const id = toRef(gameId)
+
+  const rolesMap = computed(() => {
+    const map = new Map<string, Role>()
+    if (roles.value) {
+      for (const r of roles.value) map.set(r.id, r)
+    }
+    return map
+  })
 
   const SELECT_WITH_DETAILS = `
     *,
@@ -29,20 +67,43 @@ export function useGamePlayers(gameId: Ref<string> | string) {
     ending_role:roles!ending_role_id(id, name_ua, name_en, image_url, type)
   `
 
-  const { data: players, status, refresh } = useAsyncData(
-    () => `game-players-${id.value}`,
-    async () => {
-      if (!id.value) return [] as GamePlayerWithDetails[]
-      const { data, error } = await client
-        .from('game_players')
-        .select(SELECT_WITH_DETAILS)
-        .eq('game_id', id.value)
-
-      if (error) throw error
-      return data as GamePlayerWithDetails[]
-    },
-    { watch: [id] },
+  const players = ref<GamePlayerWithDetails[] | null>(
+    initialData
+      ? initialData.map(e => resolveRoles(e, rolesMap.value))
+      : null,
   )
+  const status = ref<'idle' | 'pending' | 'success' | 'error'>(
+    initialData ? 'success' : 'idle',
+  )
+
+  async function fetchPlayers() {
+    if (!id.value) {
+      players.value = []
+      status.value = 'success'
+      return
+    }
+    status.value = 'pending'
+    const { data, error } = await client
+      .from('game_players')
+      .select(SELECT_WITH_DETAILS)
+      .eq('game_id', id.value)
+
+    if (error) {
+      status.value = 'error'
+      throw error
+    }
+    players.value = data as GamePlayerWithDetails[]
+    status.value = 'success'
+  }
+
+  // Only fetch if no initial data was provided
+  if (!initialData) {
+    fetchPlayers()
+  }
+
+  async function refresh() {
+    await fetchPlayers()
+  }
 
   async function add(entry: {
     player_id: string

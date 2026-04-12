@@ -1,5 +1,5 @@
 import type { Game, GameWithDetails } from '~/types'
-import { GAME_SELECT } from '~/utils/queries'
+import { GAME_LIST_SELECT, GAME_DETAIL_SELECT } from '~/utils/queries'
 
 export function useGames() {
   const client = useSupabaseClient()
@@ -8,7 +8,7 @@ export function useGames() {
   const { data: games, status, refresh } = useAsyncData('games', async () => {
     const { data, error } = await client
       .from('games')
-      .select(GAME_SELECT)
+      .select(GAME_LIST_SELECT)
       .order('date', { ascending: false })
       .order('created_at', { ascending: false })
 
@@ -19,7 +19,7 @@ export function useGames() {
   async function getById(id: string) {
     const { data, error } = await client
       .from('games')
-      .select(GAME_SELECT)
+      .select(GAME_DETAIL_SELECT)
       .eq('id', id)
       .single()
 
@@ -35,12 +35,14 @@ export function useGames() {
     notes?: string | null
     player_count?: number | null
   }) {
+    if (!profile.value) throw new Error('Профіль не завантажено')
+
     const { data, error } = await client
       .from('games')
       .insert({
         ...game,
         status: 'upcoming',
-        created_by: profile.value!.id,
+        created_by: profile.value.id,
       })
       .select()
       .single()

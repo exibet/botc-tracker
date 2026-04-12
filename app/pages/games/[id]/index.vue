@@ -402,6 +402,7 @@ function confirmDelete() {
         :game-id="gameId"
         :winner="game.winner"
         :game-status="game.status"
+        :initial-players="game.game_players ?? null"
         @mvp-changed="refreshGame"
         @player-count-changed="onPlayerCountChanged"
       />

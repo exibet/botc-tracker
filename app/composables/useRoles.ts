@@ -9,12 +9,11 @@ export interface RoleGrouped {
 
 export function useRoles() {
   const client = useSupabaseClient()
+  const roles = useState<Role[] | null>('roles', () => null)
 
-  const filterType = ref<string | null>(null)
-  const filterEdition = ref<string | null>(null)
-  const searchQuery = ref('')
+  async function initRoles() {
+    if (roles.value) return
 
-  const { data: roles, status } = useAsyncData('roles', async () => {
     const { data, error } = await client
       .from('roles')
       .select('id, name_en, name_ua, description_en, description_ua, type, edition, image_url')
@@ -22,12 +21,12 @@ export function useRoles() {
       .order('name_en')
 
     if (error) throw error
-    return data as Role[]
-  }, {
-    getCachedData(key, nuxtApp) {
-      return nuxtApp.payload.data[key] || nuxtApp.static.data[key]
-    },
-  })
+    roles.value = data as Role[]
+  }
+
+  const filterType = ref<string | null>(null)
+  const filterEdition = ref<string | null>(null)
+  const searchQuery = ref('')
 
   const filteredRoles = computed(() => {
     if (!roles.value) return []
@@ -68,11 +67,11 @@ export function useRoles() {
 
   return {
     roles,
+    initRoles,
     filteredRoles,
     groupedRoles,
     filterType,
     filterEdition,
     searchQuery,
-    status,
   }
 }

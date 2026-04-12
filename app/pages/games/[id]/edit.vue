@@ -39,7 +39,6 @@ async function handleRevertStatus() {
   saving.value = true
   try {
     await update(gameId, updates)
-    clearNuxtData(`game-${gameId}`)
 
     const info = getGameStatusInfo(target)
     toastSuccess(`Статус: ${info?.labelUa}`)
@@ -64,8 +63,6 @@ async function handleSubmit(data: {
   saving.value = true
   try {
     await update(gameId, data)
-
-    clearNuxtData(`game-${gameId}`)
 
     toastSuccess('Гру оновлено')
     router.push(`/games/${gameId}`)
