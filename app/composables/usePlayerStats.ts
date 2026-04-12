@@ -7,10 +7,12 @@ import type {
   Script,
   Winner,
 } from '~/types'
-import { winPoints } from '~/utils/stats'
+import { computeSinglePlayerStats } from '~/utils/stats'
+import { effectiveAlignment } from '~/utils/display'
 
 interface GamePlayerRow {
   game_id: string
+  player_id?: string
   alignment_start: Alignment | null
   alignment_end: Alignment | null
   is_alive: boolean | null
@@ -35,115 +37,6 @@ interface GamePlayerRow {
     winner: Winner | null
     created_at: string
   }
-}
-
-function computeStats(allRows: GamePlayerRow[]): PlayerStats {
-  const rows = allRows.filter(
-    r => r.game.status === 'finished' && r.game.winner,
-  )
-  const total = rows.length
-  if (total === 0) {
-    return {
-      totalGames: 0,
-      wins: 0,
-      losses: 0,
-      winRate: 0,
-      mvpCount: 0,
-      survivalRate: 0,
-      goodGames: 0,
-      goodWins: 0,
-      goodWinRate: 0,
-      evilGames: 0,
-      evilWins: 0,
-      evilWinRate: 0,
-      points: 0,
-      roleDistribution: {
-        townsfolk: 0,
-        outsider: 0,
-        minion: 0,
-        demon: 0,
-        traveller: 0,
-        fabled: 0,
-      },
-    }
-  }
-
-  let wins = 0
-  let points = 0
-  let mvpCount = 0
-  let aliveCount = 0
-  let goodGames = 0
-  let goodWins = 0
-  let evilGames = 0
-  let evilWins = 0
-  const roleDist: Record<RoleType, number> = {
-    townsfolk: 0,
-    outsider: 0,
-    minion: 0,
-    demon: 0,
-    traveller: 0,
-    fabled: 0,
-  }
-
-  for (const row of rows) {
-    const alignment = row.alignment_end ?? row.alignment_start
-    const won = didWin(alignment, row.game.winner)
-
-    if (won) {
-      wins++
-      points += winPoints(
-        row.ending_role?.type ?? row.starting_role?.type ?? null,
-      )
-    }
-    if (row.is_mvp) mvpCount++
-    if (row.is_alive === true) aliveCount++
-
-    if (alignment === 'good') {
-      goodGames++
-      if (won) goodWins++
-    }
-    else if (alignment === 'evil') {
-      evilGames++
-      if (won) evilWins++
-    }
-
-    const roleType = (
-      row.ending_role?.type
-      ?? row.starting_role?.type
-    ) as RoleType | undefined
-    if (roleType && roleType in roleDist) {
-      roleDist[roleType]++
-    }
-  }
-
-  return {
-    totalGames: total,
-    wins,
-    losses: total - wins,
-    winRate: Math.round((wins / total) * 100),
-    mvpCount,
-    survivalRate: Math.round((aliveCount / total) * 100),
-    goodGames,
-    goodWins,
-    goodWinRate: goodGames > 0
-      ? Math.round((goodWins / goodGames) * 100)
-      : 0,
-    evilGames,
-    evilWins,
-    evilWinRate: evilGames > 0
-      ? Math.round((evilWins / evilGames) * 100)
-      : 0,
-    points,
-    roleDistribution: roleDist,
-  }
-}
-
-function didWin(
-  alignment: Alignment | null,
-  winner: Winner | null,
-): boolean {
-  if (!alignment || !winner) return false
-  return alignment === winner
 }
 
 function incrementRole(
@@ -203,7 +96,9 @@ function toGameHistory(rows: GamePlayerRow[]): PlayerGameHistory[] {
     )
     .map((row) => {
       const role = row.ending_role ?? row.starting_role
-      const alignment = row.alignment_end ?? row.alignment_start
+      const alignment = effectiveAlignment(
+        row.alignment_end, row.alignment_start,
+      ) as Alignment | null
 
       const hasRoleChange = !!(
         row.starting_role
@@ -215,6 +110,10 @@ function toGameHistory(rows: GamePlayerRow[]): PlayerGameHistory[] {
         row.alignment_end
         && row.alignment_end !== row.alignment_start
       )
+
+      const won = alignment && row.game.winner
+        ? alignment === row.game.winner
+        : null
 
       return {
         gameId: row.game.id,
@@ -228,21 +127,17 @@ function toGameHistory(rows: GamePlayerRow[]): PlayerGameHistory[] {
         isAlive: row.is_alive,
         isMvp: row.is_mvp,
         winner: row.game.winner,
-        won: didWin(alignment, row.game.winner),
-        // Starting role data
+        won,
         startingRoleName: row.starting_role?.name_ua ?? null,
         startingRoleNameEn: row.starting_role?.name_en ?? null,
         startingRoleImageUrl: row.starting_role?.image_url ?? null,
         startingRoleType: (row.starting_role?.type ?? null) as RoleType | null,
-        // Ending role data
         endingRoleName: row.ending_role?.name_ua ?? null,
         endingRoleNameEn: row.ending_role?.name_en ?? null,
         endingRoleImageUrl: row.ending_role?.image_url ?? null,
         endingRoleType: (row.ending_role?.type ?? null) as RoleType | null,
-        // Alignment timeline
         alignmentStart: row.alignment_start,
         alignmentEnd: row.alignment_end,
-        // Flags
         hasRoleChange,
         hasAlignmentChange,
       }
@@ -284,7 +179,12 @@ export function usePlayerStats(playerId: Ref<string> | string) {
   )
 
   const stats = computed<PlayerStats>(() =>
-    computeStats(rawData.value ?? []),
+    computeSinglePlayerStats(
+      (rawData.value ?? []).map(r => ({
+        ...r,
+        player_id: id.value,
+      })),
+    ),
   )
 
   const gameHistory = computed<PlayerGameHistory[]>(() =>

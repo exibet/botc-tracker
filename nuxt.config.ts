@@ -60,6 +60,7 @@ export default defineNuxtConfig({
     '@primevue/nuxt-module',
     '@nuxtjs/supabase',
     '@nuxt/eslint',
+    '@nuxtjs/google-fonts',
   ],
 
   devtools: { enabled: false },
@@ -99,20 +100,6 @@ export default defineNuxtConfig({
         {
           rel: 'manifest',
           href: '/site.webmanifest',
-        },
-        {
-          rel: 'preconnect',
-          href: 'https://fonts.googleapis.com',
-        },
-        {
-          rel: 'preconnect',
-          href: 'https://fonts.gstatic.com',
-          crossorigin: '',
-        },
-        {
-          rel: 'stylesheet',
-          // eslint-disable-next-line vue/max-len
-          href: 'https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap',
         },
       ],
     },
@@ -154,6 +141,16 @@ export default defineNuxtConfig({
         'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
       },
     },
+  },
+
+  googleFonts: {
+    families: {
+      Cinzel: [400, 500, 600, 700],
+      Inter: [300, 400, 500, 600, 700],
+    },
+    display: 'swap',
+    download: true,
+    preload: true,
   },
 
   supabase: {
