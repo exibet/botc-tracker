@@ -112,8 +112,7 @@ const isFinished = computed(
       class="py-12 text-center text-text-muted"
     >
       <i
-        class="pi pi-users mb-2 text-text-subtle"
-        style="font-size: 3.5rem"
+        class="pi pi-users mb-2 text-6xl text-text-subtle"
       />
       <p>Немає гравців</p>
     </div>

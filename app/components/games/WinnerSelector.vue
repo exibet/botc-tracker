@@ -26,10 +26,8 @@ const emit = defineEmits<{
           : 'px-6 py-4 sm:flex-none sm:min-w-48',
         modelValue === w.value
           ? w.value === 'good'
-            ? `border-good shadow-[0_0_20px_-4px_var(--color-good)]
-               bg-[color-mix(in_srgb,var(--color-good)_12%,transparent)]`
-            : `border-evil shadow-[0_0_20px_-4px_var(--color-evil)]
-               bg-[color-mix(in_srgb,var(--color-evil)_12%,transparent)]`
+            ? 'border-good shadow-[0_0_20px_-4px_var(--color-good)] badge-good'
+            : 'border-evil shadow-[0_0_20px_-4px_var(--color-evil)] badge-evil'
           : 'border-white/[0.08] bg-white/[0.02] hover:border-white/[0.15] hover:bg-white/[0.04]',
       ]"
       data-testid="game-winner"

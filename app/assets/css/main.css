@@ -128,47 +128,50 @@ h6 {
   --p-primary-active-color: var(--botc-red-600);
 }
 
-/* Role type & alignment tag overrides — !important to beat PrimeVue inline styles */
-.p-tag-townsfolk {
-  background-color: color-mix(in srgb, var(--color-townsfolk) 15%, transparent);
-  color: var(--color-townsfolk);
-  border: 1px solid color-mix(in srgb, var(--color-townsfolk) 30%, transparent);
+/* Role type & alignment tag overrides — single pattern with --tag-color */
+.p-tag-townsfolk { --tag-color: var(--color-townsfolk); }
+.p-tag-outsider  { --tag-color: var(--color-outsider); }
+.p-tag-minion    { --tag-color: var(--color-minion); }
+.p-tag-demon     { --tag-color: var(--color-demon); }
+.p-tag-traveller { --tag-color: var(--color-traveller); }
+.p-tag-fabled    { --tag-color: var(--color-fabled); }
+.p-tag-good      { --tag-color: var(--color-good); }
+
+.p-tag-townsfolk,
+.p-tag-outsider,
+.p-tag-minion,
+.p-tag-demon,
+.p-tag-traveller,
+.p-tag-fabled,
+.p-tag-good,
+.p-tag-evil {
+  background-color: color-mix(in srgb, var(--tag-color) 15%, transparent);
+  color: var(--tag-color);
+  border: 1px solid color-mix(in srgb, var(--tag-color) 30%, transparent);
 }
 
-.p-tag-outsider {
-  background-color: color-mix(in srgb, var(--color-outsider) 15%, transparent);
-  color: var(--color-outsider);
-  border: 1px solid color-mix(in srgb, var(--color-outsider) 30%, transparent);
+/* Semantic badge/banner utilities for good/evil theming */
+.badge-good {
+  background: color-mix(in srgb, var(--color-good) 12%, transparent);
+  --tw-ring-color: color-mix(in srgb, var(--color-good) 25%, transparent);
 }
-
-.p-tag-minion {
-  background-color: color-mix(in srgb, var(--color-minion) 15%, transparent);
-  color: var(--color-minion);
-  border: 1px solid color-mix(in srgb, var(--color-minion) 30%, transparent);
+.badge-evil {
+  background: color-mix(in srgb, var(--color-evil) 12%, transparent);
+  --tw-ring-color: color-mix(in srgb, var(--color-evil) 25%, transparent);
 }
-
-.p-tag-demon {
-  background-color: color-mix(in srgb, var(--color-demon) 15%, transparent);
-  color: var(--color-demon);
-  border: 1px solid color-mix(in srgb, var(--color-demon) 30%, transparent);
+.banner-good {
+  border-color: color-mix(in srgb, var(--color-good) 20%, transparent);
+  background: color-mix(in srgb, var(--color-good) 6%, transparent);
 }
-
-.p-tag-traveller {
-  background-color: color-mix(in srgb, var(--color-traveller) 15%, transparent);
-  color: var(--color-traveller);
-  border: 1px solid color-mix(in srgb, var(--color-traveller) 30%, transparent);
+.banner-evil {
+  border-color: color-mix(in srgb, var(--color-evil) 20%, transparent);
+  background: color-mix(in srgb, var(--color-evil) 6%, transparent);
 }
-
-.p-tag-fabled {
-  background-color: color-mix(in srgb, var(--color-fabled) 15%, transparent);
-  color: var(--color-fabled);
-  border: 1px solid color-mix(in srgb, var(--color-fabled) 30%, transparent);
+.bg-good-subtle {
+  background: color-mix(in srgb, var(--color-good) 15%, transparent);
 }
-
-.p-tag-good {
-  background-color: color-mix(in srgb, var(--color-good) 15%, transparent);
-  color: var(--color-good);
-  border: 1px solid color-mix(in srgb, var(--color-good) 30%, transparent);
+.bg-evil-subtle {
+  background: color-mix(in srgb, var(--color-evil) 15%, transparent);
 }
 
 /* Constrain toast width on small screens */
@@ -197,8 +200,4 @@ textarea,
   font-size: 16px !important;
 }
 
-.p-tag-evil {
-  background-color: color-mix(in srgb, var(--color-evil) 15%, transparent);
-  color: var(--color-evil);
-  border: 1px solid color-mix(in srgb, var(--color-evil) 30%, transparent);
-}
+.p-tag-evil { --tag-color: var(--color-evil); }

@@ -68,15 +68,14 @@ const hoverShadowClass = computed(() => {
           items-center justify-center rounded-lg
           sm:size-16 gap-1"
         :class="[
+          'ring-1',
           game.winner === 'good'
-            ? `bg-[color-mix(in_srgb,var(--color-good)_12%,transparent)]
-               ring-1 ring-[color-mix(in_srgb,var(--color-good)_25%,transparent)]`
-            : `bg-[color-mix(in_srgb,var(--color-evil)_12%,transparent)]
-               ring-1 ring-[color-mix(in_srgb,var(--color-evil)_25%,transparent)]`,
+            ? 'badge-good'
+            : 'badge-evil',
         ]"
       >
         <i
-          style="font-size: 20px;"
+          class="text-xl"
           :class="[
             winnerInfo?.icon,
             game.winner === 'good'
@@ -99,7 +98,7 @@ const hoverShadowClass = computed(() => {
         ]"
       >
         <i
-          style="font-size: 20px;"
+          class="text-xl"
           :class="[
             statusInfo?.icon,
             game.status === 'in_progress'

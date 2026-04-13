@@ -10,6 +10,10 @@ import LinkProfileDialog
   from '~/components/players/LinkProfileDialog.vue'
 import UnlinkProfileDialog
   from '~/components/players/UnlinkProfileDialog.vue'
+import HeroStat
+  from '~/components/players/HeroStat.vue'
+import PlayerAlignmentSide
+  from '~/components/players/PlayerAlignmentSide.vue'
 
 const route = useRoute()
 const playerId = route.params.id as string
@@ -214,68 +218,29 @@ const evilPct = computed(() =>
       >
         <!-- Left column: numbers -->
         <div class="flex flex-col gap-3">
-          <!-- Hero stats: Points, Win Rate, Games -->
+          <!-- Hero stats: Points, Win Rate, MVP -->
           <div class="grid grid-cols-3 gap-3">
-            <div
-              class="rounded-xl border
-                border-white/10
-                px-3 py-3 text-center"
+            <HeroStat
+              label="Бали"
+              color-class="text-accent"
             >
-              <p
-                class="font-heading text-2xl font-bold
-                  text-accent sm:text-3xl"
-              >
-                {{ stats.points }}
-              </p>
-              <p
-                class="mt-0.5 text-[11px]
-                  text-text-muted"
-              >
-                Бали
-              </p>
-            </div>
-            <div
-              class="rounded-xl border
-                border-white/10
-                px-3 py-3 text-center"
+              {{ stats.points }}
+            </HeroStat>
+            <HeroStat
+              label="Перемог"
+              color-class="text-win"
             >
-              <p
-                class="font-heading text-2xl font-bold
-                  text-win sm:text-3xl"
-              >
-                {{ stats.winRate }}<span
-                  class="text-base font-semibold"
-                >%</span>
-              </p>
-              <p
-                class="mt-0.5 text-[11px]
-                  text-text-muted"
-              >
-                Перемог
-              </p>
-            </div>
-            <div
-              class="rounded-xl border
-                border-white/10
-                px-3 py-3 text-center"
+              {{ stats.winRate }}<span
+                class="text-base font-semibold"
+              >%</span>
+            </HeroStat>
+            <HeroStat
+              label="MVP"
+              color-class="text-accent"
             >
-              <p
-                class="flex items-center justify-center
-                  gap-1 font-heading text-2xl font-bold
-                  text-accent sm:text-3xl"
-              >
-                <i
-                  class="pi pi-star-fill"
-                />
-                {{ stats.mvpCount }}
-              </p>
-              <p
-                class="mt-0.5 text-[11px]
-                  text-text-muted"
-              >
-                MVP
-              </p>
-            </div>
+              <i class="pi pi-star-fill" />
+              {{ stats.mvpCount }}
+            </HeroStat>
           </div>
 
           <!-- Secondary: Wins, Losses, MVP, Survival -->
@@ -344,101 +309,20 @@ const evilPct = computed(() =>
             px-4 py-3 sm:px-5"
         >
           <div class="grid grid-cols-2 gap-4">
-            <!-- Good side -->
-            <div class="flex flex-col gap-2">
-              <span
-                class="hidden items-center gap-1.5
-                  text-xs font-semibold uppercase justify-center
-                  tracking-wide text-good sm:flex"
-              >
-                <i class="pi pi-sun" />
-                Добро
-              </span>
-              <p
-                class="font-heading text-2xl
-                  font-bold leading-none text-good"
-              >
-                {{ stats.goodGames }}
-                <span
-                  class="text-xs font-medium
-                  text-good/60"
-                >ігор</span>
-              </p>
-              <div class="flex flex-col gap-1">
-                <div
-                  class="flex items-center
-                    justify-between text-[11px]"
-                >
-                  <span class="text-text-muted">
-                    Вінрейт
-                  </span>
-                  <span
-                    class="font-semibold text-good"
-                  >{{ stats.goodWinRate }}%</span>
-                </div>
-                <div
-                  class="h-1.5 overflow-hidden
-                    rounded-full bg-white/[0.06]"
-                >
-                  <div
-                    class="h-full rounded-full
-                      bg-good transition-all
-                      duration-500"
-                    :style="{
-                      width: `${stats.goodWinRate}%`,
-                    }"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <!-- Evil side -->
-            <div class="flex flex-col gap-2">
-              <span
-                class="hidden items-center gap-1.5
-                  text-xs font-semibold uppercase justify-center
-                  tracking-wide text-evil sm:flex"
-              >
-                <i class="pi pi-moon" />
-                Зло
-              </span>
-              <p
-                class="font-heading text-2xl
-                  font-bold leading-none text-evil"
-              >
-                {{ stats.evilGames }}
-                <span
-                  class="text-xs font-medium
-                  text-evil/60"
-                >ігор</span>
-              </p>
-              <div class="flex flex-col gap-1">
-                <div
-                  class="flex items-center
-                    justify-between text-[11px]"
-                >
-                  <span class="text-text-muted">
-                    Вінрейт
-                  </span>
-                  <span
-                    class="font-semibold text-evil"
-                  >{{ stats.evilWinRate }}%</span>
-                </div>
-                <div
-                  class="h-1.5 overflow-hidden
-                    rounded-full bg-white/[0.06]"
-                >
-                  <div
-                    class="h-full rounded-full
-                      bg-evil transition-all
-                      duration-500"
-                    :style="{
-                      width: `${stats.evilWinRate}%`,
-                    }"
-                  />
-                </div>
-              </div>
-            </div>
+            <PlayerAlignmentSide
+              label="Добро"
+              icon="pi pi-sun"
+              color="good"
+              :games="stats.goodGames"
+              :win-rate="stats.goodWinRate"
+            />
+            <PlayerAlignmentSide
+              label="Зло"
+              icon="pi pi-moon"
+              color="evil"
+              :games="stats.evilGames"
+              :win-rate="stats.evilWinRate"
+            />
           </div>
 
           <!-- Good/Evil ratio bar -->

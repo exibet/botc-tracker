@@ -53,10 +53,9 @@ const colorClass = {
       </p>
       <p class="mt-1 text-xs text-text-muted sm:text-sm">
         <i
-          style="font-size: 14px;"
           :class="[
             icon,
-            'mr-1',
+            'mr-1 text-sm',
             colorClass[color ?? 'accent'],
           ]"
         />

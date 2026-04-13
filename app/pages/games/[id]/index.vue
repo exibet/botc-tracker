@@ -190,11 +190,9 @@ function confirmDelete() {
         class="mb-8 overflow-hidden rounded-xl border p-6"
         :class="[
           game.status === 'finished' && game.winner === 'good'
-            ? `border-[color-mix(in_srgb,var(--color-good)_20%,transparent)]
-               bg-[color-mix(in_srgb,var(--color-good)_6%,transparent)]`
+            ? 'banner-good'
             : game.status === 'finished' && game.winner === 'evil'
-              ? `border-[color-mix(in_srgb,var(--color-evil)_20%,transparent)]
-                 bg-[color-mix(in_srgb,var(--color-evil)_6%,transparent)]`
+              ? 'banner-evil'
               : game.status === 'in_progress'
                 ? 'border-amber-500/20 bg-amber-500/[0.06]'
                 : 'border-green-500/20 bg-green-500/[0.06]',
@@ -313,8 +311,8 @@ function confirmDelete() {
                 gap-3 rounded-xl px-5 py-3"
               :class="[
                 game.winner === 'good'
-                  ? 'bg-[color-mix(in_srgb,var(--color-good)_15%,transparent)]'
-                  : 'bg-[color-mix(in_srgb,var(--color-evil)_15%,transparent)]',
+                  ? 'bg-good-subtle'
+                  : 'bg-evil-subtle',
               ]"
             >
               <div>
