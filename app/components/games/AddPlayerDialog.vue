@@ -13,7 +13,7 @@ const emit = defineEmits<{
   'create': [nickname: string]
 }>()
 
-const { players, initPlayers } = usePlayers()
+const { players, playersLoading, initPlayers } = usePlayers()
 
 const mode = ref<'existing' | 'new'>('existing')
 const selectedPlayerId = ref<string | null>(null)
@@ -91,7 +91,16 @@ watch(() => props.visible, (val) => {
         <label class="text-sm font-medium">
           Гравець
         </label>
+        <div
+          v-if="playersLoading"
+          class="flex justify-center py-4"
+        >
+          <ProgressSpinner
+            style="width: 2rem; height: 2rem"
+          />
+        </div>
         <Select
+          v-else
           v-model="selectedPlayerId"
           :options="availablePlayers"
           option-label="nickname"

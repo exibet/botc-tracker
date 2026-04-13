@@ -38,8 +38,8 @@ const {
   profile,
 } = useAuth()
 const { roles } = useRoles()
-const { createManual } = usePlayers()
-const { success: showSuccess, error: showError } = useAppToast()
+const { createManual, refreshPlayers } = usePlayers()
+const { success: showSuccess } = useAppToast()
 const confirm = useConfirm()
 
 const {
@@ -101,7 +101,7 @@ async function handleJoin() {
     showSuccess('Ви приєдналися до гри')
   }
   catch {
-    showError('Не вдалося приєднатися до гри')
+    // Error toast shown by $api
   }
 }
 
@@ -124,7 +124,7 @@ async function handleAddPlayer(playerId: string) {
     showSuccess('Гравця додано')
   }
   catch {
-    showError('Не вдалося додати гравця')
+    // Error toast shown by $api
   }
 }
 
@@ -135,6 +135,7 @@ async function handleCreatePlayer(
   showAddPlayerDialog.value = false
   try {
     const { id } = await createManual(nickname)
+    await refreshPlayers()
     await addPlayer({
       player_id: id,
       added_by: profile.value.id,
@@ -145,7 +146,7 @@ async function handleCreatePlayer(
     )
   }
   catch {
-    showError('Не вдалося створити гравця')
+    // Error toast shown by $api
   }
 }
 
@@ -182,7 +183,7 @@ async function handleUpdated(data: {
     showSuccess('Запис оновлено')
   }
   catch {
-    showError('Не вдалося оновити запис')
+    // Error toast shown by $api
   }
 }
 
@@ -214,7 +215,7 @@ async function doDelete(entryId: string) {
     showSuccess('Гравця видалено')
   }
   catch {
-    showError('Не вдалося видалити гравця')
+    // Error toast shown by $api
   }
 }
 </script>

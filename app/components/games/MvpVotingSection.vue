@@ -84,7 +84,7 @@ const candidates = computed(() =>
 const popoverRef = ref()
 const isSubmitting = ref(false)
 
-const { error: showError } = useAppToast()
+const { success: showSuccess } = useAppToast()
 
 async function handleVote(candidateId: string) {
   if (!props.currentUserId) return
@@ -96,9 +96,10 @@ async function handleVote(candidateId: string) {
       candidateId,
     )
     emit('vote-changed')
+    showSuccess('Голос враховано')
   }
   catch {
-    showError('Не вдалося проголосувати')
+    // Error toast shown by $api
   }
   finally {
     isSubmitting.value = false
@@ -111,9 +112,10 @@ async function handleRemoveVote() {
   try {
     await removeVote(props.currentUserId)
     emit('vote-changed')
+    showSuccess('Голос скасовано')
   }
   catch {
-    showError('Не вдалося скасувати голос')
+    // Error toast shown by $api
   }
   finally {
     isSubmitting.value = false

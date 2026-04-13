@@ -13,7 +13,7 @@ const emit = defineEmits<{
   'unlinked': [manualId: string]
 }>()
 
-const { unlinkProfile, refreshPlayers } = usePlayers()
+const { unlinkProfile } = usePlayers()
 const unlinking = ref(false)
 const errorMsg = ref('')
 const nicknameInput = ref(props.profile.nickname)
@@ -32,7 +32,6 @@ async function handleUnlink() {
       props.profile.id,
       nicknameInput.value.trim(),
     )
-    await refreshPlayers()
     emit('unlinked', manualId)
     emit('update:visible', false)
   }

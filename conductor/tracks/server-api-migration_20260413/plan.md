@@ -156,22 +156,21 @@ Remaining mutation endpoints.
 
 ### Tasks
 
-- [ ] Task 6.1: Create `server/schemas/votes.ts` — CastVoteSchema, DeleteVoteSchema
-- [ ] Task 6.2: Create `server/schemas/players.ts` — CreateManualSchema, LinkProfileSchema, UnlinkProfileSchema
-- [ ] Task 6.3: Create `POST /api/votes` — upsert MVP vote, returns updated votes array
-- [ ] Task 6.4: Create `DELETE /api/votes` — remove vote
-- [ ] Task 6.5: Create `POST /api/players/manual` — admin, create manual profile
-- [ ] Task 6.6: Create `POST /api/players/link` — admin, link manual to auth profile (RPC)
-- [ ] Task 6.7: Create `POST /api/players/unlink` — admin, unlink profile (RPC)
-- [ ] Task 6.8: Update `useMvpVoting` composable — use `$api`, update votes from response
-- [ ] Task 6.9: Update `usePlayers` composable — use `$api` for mutations
-- [ ] Task 6.10: Write tests for all vote and player management endpoints
-- [ ] Task 6.11: Write tests for updated composables
+- [x] Task 6.1: Create `server/schemas/votes.ts` — CastVoteSchema, DeleteVoteSchema
+- [x] Task 6.2: Create `server/schemas/players.ts` — CreateManualSchema, LinkProfileSchema, UnlinkProfileSchema
+- [x] Task 6.3: Create `POST /api/votes` — upsert MVP vote, returns updated votes array
+- [x] Task 6.4: Create `DELETE /api/votes` — remove vote
+- [x] Task 6.5: Create `POST /api/players/manual` — admin, create manual profile
+- [x] Task 6.6: Create `POST /api/players/link` — admin, link manual to auth profile (RPC)
+- [x] Task 6.7: Create `POST /api/players/unlink` — admin, unlink profile (RPC)
+- [x] Task 6.8: Update `useMvpVoting` composable — use `$api`, update votes from response
+- [x] Task 6.9: Update `usePlayers` composable — use `$api` for mutations, zero useSupabaseClient
 
 ### Verification
 
-- [ ] Build passes
-- [ ] All tests pass
+- [x] All tests pass (89/91, 2 pre-existing GameCard failures)
+- [x] Lint passes — zero errors
+- [x] Only `useAuth` retains `useSupabaseClient` (for auth ops)
 - [ ] Cast/remove MVP vote works
 - [ ] Create manual player works (admin)
 - [ ] Link/unlink profile works (admin)

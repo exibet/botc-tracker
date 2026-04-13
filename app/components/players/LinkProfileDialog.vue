@@ -17,8 +17,9 @@ const emit = defineEmits<{
 
 const {
   players,
+  playersLoading,
+  initPlayers,
   linkProfile,
-  refreshPlayers,
 } = usePlayers()
 const linking = ref(false)
 const selectedAuthId = ref<string | null>(null)
@@ -39,7 +40,6 @@ async function handleLink() {
       props.manualProfile.id,
       selectedAuthId.value,
     )
-    await refreshPlayers()
     emit('linked', selectedAuthId.value)
     emit('update:visible', false)
   }
@@ -56,6 +56,7 @@ async function handleLink() {
 function handleShow() {
   selectedAuthId.value = null
   errorMsg.value = ''
+  initPlayers()
 }
 
 function handleHide() {
@@ -80,7 +81,16 @@ function handleHide() {
       </p>
 
       <div
-        v-if="!authProfiles.length"
+        v-if="playersLoading"
+        class="flex justify-center py-4"
+      >
+        <ProgressSpinner
+          style="width: 2rem; height: 2rem"
+        />
+      </div>
+
+      <div
+        v-else-if="!authProfiles.length"
         class="rounded-lg border border-white/[0.06]
           bg-white/[0.02] px-4 py-3 text-center
           text-sm text-text-muted"

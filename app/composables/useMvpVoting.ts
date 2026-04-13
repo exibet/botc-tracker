@@ -1,6 +1,7 @@
 import type { MvpVote } from '~/types'
 import type { GamePlayerWithDetails }
   from '~/composables/useGamePlayers'
+import { API } from '#shared/api'
 
 export interface VoteTallyEntry {
   candidateId: string
@@ -14,7 +15,6 @@ export function useMvpVoting(
   gameId: Ref<string> | string,
   initialVotes?: MvpVote[] | null,
 ) {
-  const client = useSupabaseClient()
   const id = toRef(gameId)
 
   const votes = ref<MvpVote[] | null>(initialVotes ?? null)
@@ -25,13 +25,10 @@ export function useMvpVoting(
       votes.value = []
       return
     }
-    const { data, error } = await client
-      .from('mvp_votes')
-      .select('*')
-      .eq('game_id', id.value)
-
-    if (error) throw error
-    votes.value = data as MvpVote[]
+    // Votes come from the game detail endpoint
+    const game = await $fetch(API.GAME(id.value))
+    votes.value = (game as { mvp_votes?: MvpVote[] })
+      .mvp_votes ?? []
     loaded.value = true
   }
 
@@ -56,34 +53,29 @@ export function useMvpVoting(
     ) ?? null
   }
 
-  async function deleteVote(voterId: string) {
-    const { error } = await client
-      .from('mvp_votes')
-      .delete()
-      .eq('game_id', id.value)
-      .eq('voter_id', voterId)
-    if (error) throw error
-  }
-
   async function castVote(
-    voterId: string,
+    _voterId: string,
     candidateId: string,
   ) {
-    const { error } = await client
-      .from('mvp_votes')
-      .upsert(
-        {
-          game_id: id.value,
-          voter_id: voterId,
-          candidate_id: candidateId,
-        },
-        { onConflict: 'game_id,voter_id' },
-      )
-    if (error) throw error
+    const updatedVotes = await $api<MvpVote[]>(API.VOTES, {
+      method: 'POST',
+      body: { game_id: id.value, candidate_id: candidateId },
+    })
+    votes.value = updatedVotes
   }
 
-  async function removeVote(voterId: string) {
-    await deleteVote(voterId)
+  async function removeVote(_voterId: string) {
+    await $api(API.VOTES, {
+      method: 'DELETE',
+      body: { game_id: id.value },
+    })
+    // Remove the voter's vote from local state
+    if (votes.value) {
+      const user = useSupabaseUser()
+      votes.value = votes.value.filter(
+        v => v.voter_id !== user.value?.sub,
+      )
+    }
   }
 
   function voteTally(

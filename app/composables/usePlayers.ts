@@ -5,8 +5,8 @@ import { mapLeaderboardRow } from '~/utils/stats'
 import type { LeaderboardRpcRow } from '~/utils/stats'
 
 export function usePlayers() {
-  const client = useSupabaseClient()
   const players = useState<Profile[] | null>('players', () => null)
+  const playersLoading = useState('players-loading', () => false)
 
   async function initPlayers() {
     if (players.value) return
@@ -14,52 +14,46 @@ export function usePlayers() {
   }
 
   async function refreshPlayers() {
-    players.value = await $fetch<Profile[]>(API.PLAYERS_LIST)
+    playersLoading.value = true
+    try {
+      players.value = await $fetch<Profile[]>(API.PLAYERS_LIST)
+    }
+    finally {
+      playersLoading.value = false
+    }
   }
 
-  // Mutations stay client-side until Phase 6
   async function createManual(nickname: string) {
-    const { data, error } = await client
-      .from('profiles')
-      .insert({
-        nickname,
-        is_manual: true,
-      })
-      .select('id')
-      .single()
-
-    if (error) throw error
-    await refreshPlayers()
-    return data
+    return $api<{ id: string }>(API.PLAYER_MANUAL, {
+      method: 'POST',
+      body: { nickname },
+    })
   }
 
   async function linkProfile(
     manualId: string,
     authId: string,
   ) {
-    const { error } = await client.rpc('link_manual_profile', {
-      manual_id: manualId,
-      auth_id: authId,
+    await $api(API.PLAYER_LINK, {
+      method: 'POST',
+      body: { manual_id: manualId, auth_id: authId },
     })
-    if (error) throw error
-    await refreshPlayers()
   }
 
   async function unlinkProfile(
     authId: string,
     nickname: string,
   ) {
-    const { data, error } = await client.rpc('unlink_profile', {
-      auth_id: authId,
-      manual_nickname: nickname,
-    })
-    if (error) throw error
-    await refreshPlayers()
-    return data as unknown as string
+    const { manualId } = await $api<{ manualId: string }>(
+      API.PLAYER_UNLINK,
+      { method: 'POST', body: { auth_id: authId, nickname } },
+    )
+    return manualId
   }
 
   return {
     players,
+    playersLoading,
     initPlayers,
     refreshPlayers,
     createManual,
