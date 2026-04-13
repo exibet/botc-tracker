@@ -7,7 +7,7 @@ import type {
   RoleType,
   Script,
   Winner,
-} from '~/types'
+} from '#shared/types'
 import { API } from '#shared/api'
 import { FETCH_KEY } from '#shared/fetch-keys'
 import { computeSinglePlayerStats } from '~/utils/stats'

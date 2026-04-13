@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { MvpVote } from '~/types'
+import type { MvpVote } from '#shared/types'
 import type { GamePlayerWithDetails }
   from '~/composables/useGamePlayers'
 import PlayerAvatar

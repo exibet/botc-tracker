@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { RolePlayCount } from '~/types'
+import type { RolePlayCount } from '#shared/types'
 import PlayerRoleItem
   from '~/components/players/PlayerRoleItem.vue'
 

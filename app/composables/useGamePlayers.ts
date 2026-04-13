@@ -1,4 +1,4 @@
-import type { GamePlayerInline, GameWithDetails, MvpVote, Role } from '~/types'
+import type { GamePlayerInline, GameWithDetails, MvpVote, Role } from '#shared/types'
 import { API } from '#shared/api'
 
 interface RoleRef {

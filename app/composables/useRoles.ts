@@ -1,4 +1,4 @@
-import type { Role } from '~/types'
+import type { Role } from '#shared/types'
 import { ROLE_TYPES } from '~/composables/useRoleTypes'
 import type { RoleTypeInfo } from '~/composables/useRoleTypes'
 import { API } from '#shared/api'

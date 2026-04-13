@@ -155,5 +155,6 @@ export default defineNuxtConfig({
 
   supabase: {
     redirect: false,
+    types: '~~/shared/types/database.types.ts',
   },
 })

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Profile } from '~/types'
+import type { Profile } from '#shared/types'
 import { formatDate } from '~/utils/date'
 import PlayerAvatar
   from '~/components/players/PlayerAvatar.vue'

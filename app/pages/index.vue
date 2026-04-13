@@ -9,7 +9,7 @@ import PlayerListMobileRow
   from '~/components/players/PlayerListMobileRow.vue'
 import { podiumRank } from '~/utils/stats'
 
-const { data, status, refresh: refreshHome } = useHome()
+const { data, status } = useHome()
 const { stats, goodPct, evilPct } = useGameStats()
 
 const defaultExpandedId = computed(
@@ -47,7 +47,6 @@ const recentFinished = computed(() => {
   if (!games?.length) return []
   return games
     .filter(g => g.status === 'finished')
-    .slice(0, 4)
 })
 </script>
 

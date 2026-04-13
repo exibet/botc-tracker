@@ -1,4 +1,4 @@
-import type { Profile } from '~/types'
+import type { Profile } from '#shared/types'
 import { API } from '#shared/api'
 
 export function useAuth() {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Profile } from '~/types'
+import type { Profile } from '#shared/types'
 import { usePlayers } from '~/composables/usePlayers'
 import { extractErrorMessage } from '~/utils/error'
 import PlayerAvatar

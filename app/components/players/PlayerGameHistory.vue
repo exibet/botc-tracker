@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { PlayerGameHistory } from '~/types'
+import type { PlayerGameHistory } from '#shared/types'
 import { formatDate, formatDateShort } from '~/utils/date'
 import {
   getScriptLabel,

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Alignment } from '~/types'
+import type { Alignment } from '#shared/types'
 
 const props = defineProps<{
   alignment: Alignment

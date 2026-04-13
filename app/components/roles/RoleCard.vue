@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Role } from '~/types'
+import type { Role } from '#shared/types'
 import {
   EDITIONS,
   getRoleTypeColor,

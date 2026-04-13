@@ -5,7 +5,7 @@ import PlayerAvatar
   from '~/components/players/PlayerAvatar.vue'
 import WinnerSelector
   from '~/components/games/WinnerSelector.vue'
-import type { Winner } from '~/types'
+import type { Winner } from '#shared/types'
 import {
   getGameStatusInfo,
   getScriptLabel,

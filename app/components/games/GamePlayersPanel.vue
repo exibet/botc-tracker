@@ -3,7 +3,7 @@ import type {
   Alignment,
   GamePlayerInline,
   MvpVote,
-} from '~/types'
+} from '#shared/types'
 import type { GamePlayerWithDetails }
   from '~/composables/useGamePlayers'
 import GamePlayersTable
@@ -57,7 +57,7 @@ const {
 const mvpSectionRef = ref<InstanceType<typeof MvpVotingSection> | null>(null)
 
 const emit = defineEmits<{
-  'game-updated': [game: import('~/types').GameWithDetails]
+  'game-updated': [game: import('#shared/types').GameWithDetails]
   'player-count-changed': [count: number]
 }>()
 

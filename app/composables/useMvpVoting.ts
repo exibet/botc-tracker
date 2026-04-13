@@ -1,4 +1,4 @@
-import type { MvpVote } from '~/types'
+import type { MvpVote } from '#shared/types'
 import type { GamePlayerWithDetails }
   from '~/composables/useGamePlayers'
 import { API } from '#shared/api'

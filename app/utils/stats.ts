@@ -1,5 +1,5 @@
-import type { PlayerStats, RoleType } from '~/types'
-import type { Database } from '~/types/database.types'
+import type { PlayerStats, RoleType } from '#shared/types'
+import type { Database } from '#shared/types/database.types'
 import { effectiveAlignment } from '~/utils/display'
 
 /**
@@ -228,7 +228,7 @@ export type LeaderboardRpcRow = Database['public']['Functions']['get_player_lead
 
 export function mapLeaderboardRow(
   row: LeaderboardRpcRow,
-): import('~/types').PlayerWithStats {
+): import('#shared/types').PlayerWithStats {
   const games = Number(row.games_played)
   const wins = Number(row.wins)
   return {

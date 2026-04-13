@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { PlayerWithStats } from '~/types'
+import type { PlayerWithStats } from '#shared/types'
 import { rankDisplay } from '~/utils/display'
 import PlayerAvatar
   from '~/components/players/PlayerAvatar.vue'

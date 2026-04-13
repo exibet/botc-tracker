@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Role, Alignment } from '~/types'
+import type { Role, Alignment } from '#shared/types'
 import type { GamePlayerWithDetails }
   from '~/composables/useGamePlayers'
 import {

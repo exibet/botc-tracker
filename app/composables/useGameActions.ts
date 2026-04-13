@@ -1,4 +1,4 @@
-import type { Game, GameWithDetails } from '~/types'
+import type { Game, GameWithDetails } from '#shared/types'
 import { API } from '#shared/api'
 
 export function useGameActions() {

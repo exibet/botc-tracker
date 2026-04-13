@@ -1,4 +1,4 @@
-import type { Script, Winner } from '~/types'
+import type { Script, Winner } from '#shared/types'
 import { API } from '#shared/api'
 import { FETCH_KEY } from '#shared/fetch-keys'
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GameWithDetails } from '~/types'
+import type { GameWithDetails } from '#shared/types'
 import GameCard from '~/components/games/GameCard.vue'
 
 const { games, status } = useGames()

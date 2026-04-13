@@ -1,4 +1,4 @@
-import type { GameWithDetails } from '~/types'
+import type { GameWithDetails } from '#shared/types'
 import { API } from '#shared/api'
 import { FETCH_KEY } from '#shared/fetch-keys'
 import { mapLeaderboardRow } from '~/utils/stats'
