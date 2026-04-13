@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import type { Profile } from '~/types'
 import PlayerAvatar
   from '~/components/players/PlayerAvatar.vue'
 
 const props = defineProps<{
   visible: boolean
-  players: Profile[]
   existingPlayerIds: string[]
 }>()
 
@@ -15,13 +13,15 @@ const emit = defineEmits<{
   'create': [nickname: string]
 }>()
 
+const { players, initPlayers } = usePlayers()
+
 const mode = ref<'existing' | 'new'>('existing')
 const selectedPlayerId = ref<string | null>(null)
 const newPlayerName = ref('')
 const saving = ref(false)
 
 const availablePlayers = computed(() =>
-  props.players.filter(
+  (players.value ?? []).filter(
     p => !props.existingPlayerIds.includes(p.id),
   ),
 )
@@ -56,7 +56,8 @@ function handleHide() {
 }
 
 watch(() => props.visible, (val) => {
-  if (!val) resetState()
+  if (val) initPlayers()
+  else resetState()
 })
 </script>
 

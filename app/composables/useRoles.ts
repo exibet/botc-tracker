@@ -1,6 +1,7 @@
 import type { Role } from '~/types'
 import { ROLE_TYPES } from '~/composables/useRoleTypes'
 import type { RoleTypeInfo } from '~/composables/useRoleTypes'
+import { API } from '#shared/api'
 
 export interface RoleGrouped {
   type: RoleTypeInfo
@@ -8,20 +9,11 @@ export interface RoleGrouped {
 }
 
 export function useRoles() {
-  const client = useSupabaseClient()
   const roles = useState<Role[] | null>('roles', () => null)
 
   async function initRoles() {
     if (roles.value) return
-
-    const { data, error } = await client
-      .from('roles')
-      .select('id, name_en, name_ua, description_en, description_ua, type, edition, image_url')
-      .order('type')
-      .order('name_en')
-
-    if (error) throw error
-    roles.value = data as Role[]
+    roles.value = await $fetch<Role[]>(API.ROLES)
   }
 
   const filterType = ref<string | null>(null)

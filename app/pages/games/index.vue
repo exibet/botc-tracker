@@ -52,19 +52,17 @@ const groupedGames = computed<MonthGroup[]>(() => {
       >
         Ігри
       </h1>
-      <ClientOnly>
-        <NuxtLink
-          v-if="isAdmin"
-          to="/games/new"
-        >
-          <Button
-            label="Створити гру"
-            variant="outlined"
-            icon="pi pi-plus"
-            data-testid="create-game-btn"
-          />
-        </NuxtLink>
-      </ClientOnly>
+      <NuxtLink
+        v-if="isAdmin"
+        to="/games/new"
+      >
+        <Button
+          label="Створити гру"
+          variant="outlined"
+          icon="pi pi-plus"
+          data-testid="create-game-btn"
+        />
+      </NuxtLink>
     </div>
 
     <!-- Loading -->

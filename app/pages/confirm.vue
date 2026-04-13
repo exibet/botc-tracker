@@ -1,17 +1,20 @@
 <script setup lang="ts">
 const router = useRouter()
 const route = useRoute()
-const { profileReady } = useAuth()
+const { profile } = useAuth()
 
 const returnTo = computed(() => {
   const path = route.query.returnTo as string | undefined
-  return path && path.startsWith('/') && !path.startsWith('//') ? path : '/'
+  return path && path.startsWith('/') && !path.startsWith('//')
+    ? path
+    : '/'
 })
 
-// Plugin handles profile loading via onAuthStateChange.
-// Just wait for it to finish, then redirect.
-watch(profileReady, (ready) => {
-  if (ready) {
+// SSR auth loads profile via server middleware.
+// Client plugin handles SIGNED_IN event and calls loadProfile().
+// Watch for profile to appear, then redirect.
+watch(profile, (p) => {
+  if (p) {
     router.replace(returnTo.value)
   }
 }, { immediate: true })

@@ -1,5 +1,5 @@
 import type { Profile } from '~/types'
-import { PROFILE_SELECT } from '~/utils/queries'
+import { API } from '#shared/api'
 
 export function useAuth() {
   const user = useSupabaseUser()
@@ -7,43 +7,27 @@ export function useAuth() {
 
   const profile = useState<Profile | null>('auth-profile', () => null)
   const loading = useState('auth-loading', () => false)
-  const profileReady = useState('auth-profile-ready', () => false)
 
   const isAuthenticated = computed(() => !!user.value)
   const isAdmin = computed(() => profile.value?.role === 'admin')
 
-  async function loadProfile(userId: string) {
+  function setProfile(p: Profile | null) {
+    profile.value = p
+  }
+
+  async function loadProfile() {
     loading.value = true
     try {
-      // Try global players state first (loaded in app.vue via initPlayers)
-      const players = useState<Profile[] | null>('players')
-      const cached = players.value?.find(p => p.id === userId)
-      if (cached) {
-        profile.value = cached
-        return
-      }
-
-      // Fallback: fetch from Supabase (new user after sign-up)
-      const { data, error } = await client
-        .from('profiles')
-        .select(PROFILE_SELECT)
-        .eq('id', userId)
-        .maybeSingle()
-
-      if (error) {
-        console.error('Failed to load profile:', error.message)
-      }
-      profile.value = data as Profile | null
+      profile.value = await $fetch<Profile>(API.AUTH_PROFILE)
+        .catch(() => null)
     }
     finally {
       loading.value = false
-      profileReady.value = true
     }
   }
 
   function clearProfile() {
     profile.value = null
-    profileReady.value = false
   }
 
   async function signInWithGoogle() {
@@ -76,26 +60,15 @@ export function useAuth() {
     }
   }
 
-  async function waitForProfile(timeout = 5000) {
-    if (profileReady.value) return
-    await new Promise<void>((resolve) => {
-      const stop = watch(profileReady, (ready) => {
-        if (ready) { stop(); resolve() }
-      }, { immediate: true })
-      setTimeout(() => { stop(); resolve() }, timeout)
-    })
-  }
-
   return {
     user,
     profile,
     loading,
-    profileReady,
     isAuthenticated,
     isAdmin,
+    setProfile,
     loadProfile,
     clearProfile,
-    waitForProfile,
     signInWithGoogle,
     signOut,
   }

@@ -1,32 +1,22 @@
 import type { Tables } from '~/types/database.types'
+import type {
+  ALIGNMENTS,
+  EDITIONS,
+  GAME_STATUSES,
+  ROLE_TYPES,
+  SCRIPTS,
+  USER_ROLES,
+  WINNERS,
+} from '#shared/constants'
 
-// --- Domain aliases (narrower than DB strings) ---
-export type RoleType
-  = | 'townsfolk'
-    | 'outsider'
-    | 'minion'
-    | 'demon'
-    | 'traveller'
-    | 'fabled'
-
-export type Edition
-  = | 'tb'
-    | 'bmr'
-    | 'snv'
-    | 'experimental'
-    | 'ks'
-    | 'base3'
-
-export type Script
-  = | 'trouble_brewing'
-    | 'bad_moon_rising'
-    | 'sects_and_violets'
-    | 'custom'
-
-export type Alignment = 'good' | 'evil'
-export type Winner = 'good' | 'evil'
-export type GameStatus = 'upcoming' | 'in_progress' | 'finished'
-export type UserRole = 'player' | 'admin'
+// --- Domain aliases (derived from shared constants) ---
+export type RoleType = typeof ROLE_TYPES[number]
+export type Edition = typeof EDITIONS[number]
+export type Script = typeof SCRIPTS[number]
+export type Alignment = typeof ALIGNMENTS[number]
+export type Winner = typeof WINNERS[number]
+export type GameStatus = typeof GAME_STATUSES[number]
+export type UserRole = typeof USER_ROLES[number]
 
 // --- DB row types with domain narrowing ---
 export type RoleRow = Tables<'roles'>

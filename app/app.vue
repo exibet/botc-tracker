@@ -3,11 +3,9 @@ useHead({
   htmlAttrs: { class: 'dark' },
 })
 
-// Fetch global data once at app level — SSR suspense ensures data is in payload
 const { initRoles } = useRoles()
-const { initPlayers } = usePlayers()
 const { initStats } = useGameStats()
-await Promise.all([initRoles(), initPlayers(), initStats()]).catch(() => {})
+await Promise.all([initRoles(), initStats()]).catch(() => {})
 </script>
 
 <template>

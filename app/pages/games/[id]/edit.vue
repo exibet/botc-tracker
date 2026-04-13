@@ -11,7 +11,8 @@ const { success: toastSuccess, error: toastError } = useAppToast()
 const gameId = route.params.id as string
 
 const { getById, update } = useGameActions()
-const { players: allPlayers } = usePlayers()
+const { players: allPlayers, initPlayers } = usePlayers()
+await initPlayers()
 
 const { data: game, status: gameStatus } = useAsyncData(
   `game-edit-${gameId}`,

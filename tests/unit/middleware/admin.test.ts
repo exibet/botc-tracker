@@ -10,7 +10,6 @@ mockNuxtImport('navigateTo', () => mockNavigateTo)
 mockNuxtImport('useAuth', () => () => ({
   isAuthenticated: { get value() { return mockIsAuthenticatedValue } },
   isAdmin: { get value() { return mockIsAdminValue } },
-  waitForProfile: () => Promise.resolve(),
 }))
 
 describe('admin middleware', () => {

@@ -8,7 +8,6 @@ let mockIsAuthenticatedValue = false
 mockNuxtImport('navigateTo', () => mockNavigateTo)
 mockNuxtImport('useAuth', () => () => ({
   isAuthenticated: { get value() { return mockIsAuthenticatedValue } },
-  waitForProfile: () => Promise.resolve(),
 }))
 
 describe('auth middleware', () => {

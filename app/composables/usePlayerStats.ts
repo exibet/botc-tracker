@@ -7,6 +7,8 @@ import type {
   Script,
   Winner,
 } from '~/types'
+import { API } from '#shared/api'
+import { FETCH_KEY } from '#shared/fetch-keys'
 import { computeSinglePlayerStats } from '~/utils/stats'
 import { effectiveAlignment } from '~/utils/display'
 
@@ -41,7 +43,12 @@ interface GamePlayerRow {
 
 function incrementRole(
   counts: Map<string, RolePlayCount>,
-  role: { name_ua: string, name_en: string, type: string, image_url: string | null },
+  role: {
+    name_ua: string
+    name_en: string
+    type: string
+    image_url: string | null
+  },
 ) {
   const key = role.name_en
   const existing = counts.get(key)
@@ -59,16 +66,15 @@ function incrementRole(
   }
 }
 
-function computeRolePlayCounts(rows: GamePlayerRow[]): RolePlayCount[] {
+function computeRolePlayCounts(
+  rows: GamePlayerRow[],
+): RolePlayCount[] {
   const counts = new Map<string, RolePlayCount>()
 
   for (const row of rows) {
-    // Always count the starting role
     if (row.starting_role) {
       incrementRole(counts, row.starting_role)
     }
-
-    // If ending role exists AND is different from starting role, count it too
     if (
       row.ending_role
       && row.starting_role
@@ -76,8 +82,6 @@ function computeRolePlayCounts(rows: GamePlayerRow[]): RolePlayCount[] {
     ) {
       incrementRole(counts, row.ending_role)
     }
-
-    // If only ending role exists (no starting role), count it
     if (row.ending_role && !row.starting_role) {
       incrementRole(counts, row.ending_role)
     }
@@ -87,7 +91,9 @@ function computeRolePlayCounts(rows: GamePlayerRow[]): RolePlayCount[] {
     .sort((a, b) => b.count - a.count)
 }
 
-function toGameHistory(rows: GamePlayerRow[]): PlayerGameHistory[] {
+function toGameHistory(
+  rows: GamePlayerRow[],
+): PlayerGameHistory[] {
   return [...rows]
     .filter(r => r.game.status === 'finished')
     .sort((a, b) =>
@@ -131,11 +137,13 @@ function toGameHistory(rows: GamePlayerRow[]): PlayerGameHistory[] {
         startingRoleName: row.starting_role?.name_ua ?? null,
         startingRoleNameEn: row.starting_role?.name_en ?? null,
         startingRoleImageUrl: row.starting_role?.image_url ?? null,
-        startingRoleType: (row.starting_role?.type ?? null) as RoleType | null,
+        startingRoleType:
+          (row.starting_role?.type ?? null) as RoleType | null,
         endingRoleName: row.ending_role?.name_ua ?? null,
         endingRoleNameEn: row.ending_role?.name_en ?? null,
         endingRoleImageUrl: row.ending_role?.image_url ?? null,
-        endingRoleType: (row.ending_role?.type ?? null) as RoleType | null,
+        endingRoleType:
+          (row.ending_role?.type ?? null) as RoleType | null,
         alignmentStart: row.alignment_start,
         alignmentEnd: row.alignment_end,
         hasRoleChange,
@@ -144,43 +152,22 @@ function toGameHistory(rows: GamePlayerRow[]): PlayerGameHistory[] {
     })
 }
 
-const SELECT_PLAYER_GAMES = `
-  game_id,
-  alignment_start,
-  alignment_end,
-  is_alive,
-  is_mvp,
-  starting_role:roles!starting_role_id(
-    name_ua, name_en, type, image_url
-  ),
-  ending_role:roles!ending_role_id(
-    name_ua, name_en, type, image_url
-  ),
-  game:games!game_id(
-    id, date, script, status, winner, created_at
-  )
-`
-
 export function usePlayerStats(playerId: Ref<string> | string) {
-  const client = useSupabaseClient()
   const id = toRef(playerId)
 
-  const { data: rawData, status } = useAsyncData(
-    `player-stats-${id.value}`,
-    async () => {
-      const { data, error } = await client
-        .from('game_players')
-        .select(SELECT_PLAYER_GAMES)
-        .eq('player_id', id.value)
+  const { data, status } = useFetch(
+    () => API.PLAYER(id.value),
+    { key: FETCH_KEY.PLAYER(id.value) },
+  )
 
-      if (error) throw error
-      return data as any as GamePlayerRow[]
-    },
+  const rawGames = computed<GamePlayerRow[]>(
+    () => (data.value as { games: GamePlayerRow[] } | null)
+      ?.games ?? [],
   )
 
   const stats = computed<PlayerStats>(() =>
     computeSinglePlayerStats(
-      (rawData.value ?? []).map(r => ({
+      rawGames.value.map(r => ({
         ...r,
         player_id: id.value,
       })),
@@ -188,11 +175,11 @@ export function usePlayerStats(playerId: Ref<string> | string) {
   )
 
   const gameHistory = computed<PlayerGameHistory[]>(() =>
-    toGameHistory(rawData.value ?? []),
+    toGameHistory(rawGames.value),
   )
 
   const rolePlayCounts = computed<RolePlayCount[]>(() =>
-    computeRolePlayCounts(rawData.value ?? []),
+    computeRolePlayCounts(rawGames.value),
   )
 
   const winStreak = computed(() => {

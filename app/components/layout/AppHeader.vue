@@ -79,63 +79,61 @@ const userInitials = computed(() => {
           </NuxtLink>
         </template>
         <template #end>
-          <ClientOnly>
-            <div class="flex items-center gap-2">
-              <Button
-                v-if="!isAuthenticated"
-                label="Увійти"
-                icon="pi pi-sign-in"
-                severity="contrast"
-                text
-                :loading="loading"
-                data-testid="sign-in-btn"
-                @click="signInWithGoogle()"
+          <div class="flex items-center gap-2">
+            <Button
+              v-if="!isAuthenticated"
+              label="Увійти"
+              icon="pi pi-sign-in"
+              severity="contrast"
+              text
+              :loading="loading"
+              data-testid="sign-in-btn"
+              @click="signInWithGoogle()"
+            />
+            <div
+              v-else
+              class="relative"
+            >
+              <Avatar
+                v-if="profile?.avatar_url"
+                :image="profile.avatar_url"
+                shape="circle"
+                class="cursor-pointer"
+                :pt="{
+                  image: {
+                    referrerpolicy: 'no-referrer',
+                  },
+                }"
+                data-testid="user-avatar"
+                @click="toggleUserMenu"
               />
-              <div
+              <Avatar
                 v-else
-                class="relative"
-              >
-                <Avatar
-                  v-if="profile?.avatar_url"
-                  :image="profile.avatar_url"
-                  shape="circle"
-                  class="cursor-pointer"
-                  :pt="{
-                    image: {
-                      referrerpolicy: 'no-referrer',
-                    },
-                  }"
-                  data-testid="user-avatar"
-                  @click="toggleUserMenu"
-                />
-                <Avatar
-                  v-else
-                  :label="userInitials"
-                  shape="circle"
-                  class="cursor-pointer"
-                  data-testid="user-avatar"
-                  @click="toggleUserMenu"
-                />
-                <span
-                  v-if="isAdmin"
-                  class="absolute -right-1 -top-1
+                :label="userInitials"
+                shape="circle"
+                class="cursor-pointer"
+                data-testid="user-avatar"
+                @click="toggleUserMenu"
+              />
+              <span
+                v-if="isAdmin"
+                class="absolute -right-1 -top-1
                     flex h-4 w-4 items-center
                     justify-center rounded-full
                     bg-primary text-[10px]
                     font-bold text-white"
-                  data-testid="admin-badge"
-                >
-                  A
-                </span>
-                <Menu
-                  ref="userMenu"
-                  :model="userMenuItems"
-                  :popup="true"
-                  data-testid="user-menu"
-                />
-              </div>
+                data-testid="admin-badge"
+              >
+                A
+              </span>
+              <Menu
+                ref="userMenu"
+                :model="userMenuItems"
+                :popup="true"
+                data-testid="user-menu"
+              />
             </div>
-          </ClientOnly>
+          </div>
         </template>
       </Menubar>
     </div>

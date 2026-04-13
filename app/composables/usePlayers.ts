@@ -1,6 +1,8 @@
 import type { Profile } from '~/types'
-import { PROFILE_SELECT } from '~/utils/queries'
+import { API } from '#shared/api'
+import { FETCH_KEY } from '#shared/fetch-keys'
 import { mapLeaderboardRow } from '~/utils/stats'
+import type { LeaderboardRpcRow } from '~/utils/stats'
 
 export function usePlayers() {
   const client = useSupabaseClient()
@@ -8,26 +10,14 @@ export function usePlayers() {
 
   async function initPlayers() {
     if (players.value) return
-
-    const { data, error } = await client
-      .from('profiles')
-      .select(PROFILE_SELECT)
-      .order('nickname')
-
-    if (error) throw error
-    players.value = data as Profile[]
+    await refreshPlayers()
   }
 
   async function refreshPlayers() {
-    const { data, error } = await client
-      .from('profiles')
-      .select(PROFILE_SELECT)
-      .order('nickname')
-
-    if (error) throw error
-    players.value = data as Profile[]
+    players.value = await $fetch<Profile[]>(API.PLAYERS_LIST)
   }
 
+  // Mutations stay client-side until Phase 6
   async function createManual(nickname: string) {
     const { data, error } = await client
       .from('profiles')
@@ -79,17 +69,11 @@ export function usePlayers() {
 }
 
 export function usePlayersWithStats() {
-  const client = useSupabaseClient()
-
   const { data: players, status } = useAsyncData(
-    'players-with-stats',
+    FETCH_KEY.PLAYERS_LEADERBOARD,
     async () => {
-      const { data, error } = await client.rpc(
-        'get_player_leaderboard',
-      )
-
-      if (error) throw error
-      return (data ?? []).map(mapLeaderboardRow)
+      const rows = await $fetch(API.PLAYERS)
+      return (rows as LeaderboardRpcRow[]).map(mapLeaderboardRow)
     },
   )
 

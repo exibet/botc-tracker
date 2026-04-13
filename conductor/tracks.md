@@ -10,6 +10,6 @@
 | [x] | player-self-service_20260407 | Player Self-Service | 2026-04-07 | 2026-04-07 |
 | [x] | player-profiles-stats_20260408 | Player Profiles & Stats | 2026-04-08 | 2026-04-08 |
 
-| [ ] | server-api-migration_20260413 | Server API Migration | 2026-04-13 | 2026-04-13 |
+| [~] | server-api-migration_20260413 | Server API Migration | 2026-04-13 | 2026-04-13 |
 
 <!-- Tracks registered by /conductor:new-track -->

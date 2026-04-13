@@ -1,3 +1,5 @@
+import { API } from '#shared/api'
+
 export interface GameStats {
   totalGames: number
   goodWins: number
@@ -6,7 +8,6 @@ export interface GameStats {
 }
 
 export function useGameStats() {
-  const client = useSupabaseClient()
   const stats = useState<GameStats | null>('game-stats', () => null)
 
   async function initStats() {
@@ -15,12 +16,7 @@ export function useGameStats() {
   }
 
   async function refreshStats() {
-    const { data, error } = await client.rpc('get_home_stats')
-    if (error) {
-      console.error('Failed to load game stats:', error.message)
-      return
-    }
-    stats.value = data as unknown as GameStats
+    stats.value = await $fetch<GameStats>(API.STATS)
   }
 
   const goodPct = computed(() => {

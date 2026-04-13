@@ -22,9 +22,9 @@ mockNuxtImport('useAuth', () => () => ({
         }
       : null),
   loading: ref(false),
-  profileReady: ref(true),
   signInWithGoogle: vi.fn(),
   signOut: vi.fn(),
+  setProfile: vi.fn(),
   loadProfile: vi.fn(),
   clearProfile: vi.fn(),
 }))

@@ -1,46 +1,34 @@
-export default defineNuxtPlugin(async () => {
+import { AUTH_EVENTS } from '#shared/constants'
+
+export default defineNuxtPlugin(() => {
   const client = useSupabaseClient()
-  const { loadProfile, clearProfile, profileReady } = useAuth()
+  const { clearProfile, loadProfile, profile } = useAuth()
 
-  // Load profile for existing session on page load (getUser() validates JWT server-side)
-  const { data: { user } } = await client.auth.getUser()
-  if (user) {
-    await loadProfile(user.id)
-  }
-  else {
-    profileReady.value = true
-  }
-
-  // React to all auth changes (login, logout, token refresh)
-  const { data: { subscription } } = client.auth.onAuthStateChange(async (event, newSession) => {
-    if (event === 'SIGNED_OUT') {
-      clearProfile()
-    }
-    else if (
-      newSession?.user
-      && (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')
-    ) {
-      if (!profileReady.value) {
-        await loadProfile(newSession.user.id)
+  // Profile already loaded by server middleware → auth.server.ts plugin.
+  // Client plugin only handles runtime auth changes.
+  const { data: { subscription } } = client.auth.onAuthStateChange(
+    async (event) => {
+      if (event === AUTH_EVENTS.SIGNED_OUT) {
+        clearProfile()
       }
-    }
-  })
+      else if (event === AUTH_EVENTS.SIGNED_IN && !profile.value) {
+        // Guard: SSR already resolved the profile on page load.
+        // Only fetch on actual login (OAuth redirect to /confirm).
+        await loadProfile()
+      }
+    },
+  )
 
-  // Refresh Supabase session when tab becomes visible after inactivity
+  // Refresh JWT on tab visibility change
   const handleVisibility = async () => {
     if (document.visibilityState === 'visible') {
-      const { data: { session: currentSession } }
-        = await client.auth.getSession()
-      if (currentSession) {
-        await client.auth.refreshSession()
-      }
+      await client.auth.refreshSession()
     }
   }
   document.addEventListener('visibilitychange', handleVisibility)
 
-  // Cleanup on app unmount
   const nuxtApp = useNuxtApp()
-  nuxtApp.hook('app:unmount', () => {
+  nuxtApp.hook('app:unmount' as never, () => {
     subscription.unsubscribe()
     document.removeEventListener('visibilitychange', handleVisibility)
   })

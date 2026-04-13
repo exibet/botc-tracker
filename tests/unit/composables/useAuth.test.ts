@@ -5,7 +5,10 @@ import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 const mockUser = ref<{ id: string } | null>(null)
 const mockSignInWithOAuth = vi.fn().mockResolvedValue({ error: null })
 const mockSignOut = vi.fn().mockResolvedValue({ error: null })
-const mockMaybeSingle = vi.fn().mockResolvedValue({ data: null, error: null })
+
+const { mockFetch } = vi.hoisted(() => ({
+  mockFetch: vi.fn(),
+}))
 
 mockNuxtImport('useSupabaseUser', () => () => mockUser)
 mockNuxtImport('useSupabaseClient', () => () => ({
@@ -13,18 +16,15 @@ mockNuxtImport('useSupabaseClient', () => () => ({
     signInWithOAuth: mockSignInWithOAuth,
     signOut: mockSignOut,
   },
-  from: () => ({
-    select: () => ({
-      eq: () => ({ maybeSingle: mockMaybeSingle }),
-    }),
-  }),
 }))
+
+vi.stubGlobal('$fetch', mockFetch)
 
 describe('useAuth', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockUser.value = null
-    mockMaybeSingle.mockResolvedValue({ data: null, error: null })
+    mockFetch.mockResolvedValue(null)
   })
 
   describe('reactive state', () => {
@@ -45,48 +45,48 @@ describe('useAuth', () => {
     })
   })
 
+  describe('setProfile', () => {
+    it('sets profile directly', () => {
+      const { setProfile, profile, isAdmin } = useAuth()
+      setProfile({
+        id: 'user-1',
+        nickname: 'Admin',
+        avatar_url: null,
+        role: 'admin',
+        is_manual: false,
+        created_at: '2026-01-01',
+      })
+      expect(profile.value?.nickname).toBe('Admin')
+      expect(isAdmin.value).toBe(true)
+    })
+  })
+
   describe('loadProfile', () => {
-    it('fetches and sets profile for given user id', async () => {
+    it('fetches profile from API', async () => {
       const mockProfile = {
         id: 'user-1',
         nickname: 'Test',
         avatar_url: null,
         role: 'player',
+        is_manual: false,
         created_at: '2026-01-01',
       }
-      mockMaybeSingle.mockResolvedValue({ data: mockProfile, error: null })
+      mockFetch.mockResolvedValue(mockProfile)
 
-      const { loadProfile, profile, profileReady } = useAuth()
-      await loadProfile('user-1')
+      const { loadProfile, profile } = useAuth()
+      await loadProfile()
 
       expect(profile.value).toEqual(mockProfile)
-      expect(profileReady.value).toBe(true)
+      expect(mockFetch).toHaveBeenCalledWith('/api/auth/profile')
     })
 
-    it('sets profileReady even when profile not found', async () => {
-      mockMaybeSingle.mockResolvedValue({ data: null, error: null })
+    it('sets profile to null on fetch error', async () => {
+      mockFetch.mockRejectedValue(new Error('Unauthorized'))
 
-      const { loadProfile, profile, profileReady } = useAuth()
-      await loadProfile('user-1')
+      const { loadProfile, profile } = useAuth()
+      await loadProfile()
 
       expect(profile.value).toBeNull()
-      expect(profileReady.value).toBe(true)
-    })
-
-    it('sets isAdmin true for admin profile', async () => {
-      const adminProfile = {
-        id: 'admin-1',
-        nickname: 'Admin',
-        avatar_url: null,
-        role: 'admin',
-        created_at: '2026-01-01',
-      }
-      mockMaybeSingle.mockResolvedValue({ data: adminProfile, error: null })
-
-      const { loadProfile, isAdmin } = useAuth()
-      await loadProfile('admin-1')
-
-      expect(isAdmin.value).toBe(true)
     })
   })
 
@@ -106,12 +106,17 @@ describe('useAuth', () => {
 
   describe('signOut', () => {
     it('calls supabase signOut and clears profile', async () => {
-      const { signOut, profile, profileReady } = useAuth()
+      const { signOut, profile } = useAuth()
       await signOut()
 
       expect(mockSignOut).toHaveBeenCalled()
       expect(profile.value).toBeNull()
-      expect(profileReady.value).toBe(false)
     })
+  })
+
+  it('does not export profileReady or waitForProfile', () => {
+    const result = useAuth()
+    expect(result).not.toHaveProperty('profileReady')
+    expect(result).not.toHaveProperty('waitForProfile')
   })
 })

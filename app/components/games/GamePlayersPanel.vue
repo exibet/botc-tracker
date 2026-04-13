@@ -38,10 +38,7 @@ const {
   profile,
 } = useAuth()
 const { roles } = useRoles()
-const {
-  players: allPlayers,
-  createManual,
-} = usePlayers()
+const { createManual } = usePlayers()
 const { success: showSuccess, error: showError } = useAppToast()
 const confirm = useConfirm()
 
@@ -236,50 +233,48 @@ async function doDelete(entryId: string) {
       >
         Гравці
       </h2>
-      <ClientOnly>
-        <div
-          v-if="isAuthenticated"
-          class="flex gap-4"
-        >
-          <Button
-            v-if="!isPlayerInGame && canJoinOrLeave"
-            icon="pi pi-plus"
-            severity="success"
-            size="small"
-            class="min-w-[50px] sm:!hidden"
-            @click="showJoinDialog = true"
-          />
-          <Button
-            v-if="!isPlayerInGame && canJoinOrLeave"
-            label="Приєднатися"
-            icon="pi pi-plus"
-            severity="success"
-            variant="outlined"
-            size="small"
-            class="!hidden sm:!inline-flex"
-            @click="showJoinDialog = true"
-          />
-          <Button
-            v-if="isAdmin && canJoinOrLeave"
-            icon="pi pi-user-plus"
-            severity="secondary"
-            outlined
-            size="small"
-            class="min-w-[50px] sm:!hidden"
-            @click="showAddPlayerDialog = true"
-          />
-          <Button
-            v-if="isAdmin && canJoinOrLeave"
-            label="Додати гравця"
-            icon="pi pi-user-plus"
-            severity="secondary"
-            outlined
-            size="small"
-            class="!hidden sm:!inline-flex"
-            @click="showAddPlayerDialog = true"
-          />
-        </div>
-      </ClientOnly>
+      <div
+        v-if="isAuthenticated"
+        class="flex gap-4"
+      >
+        <Button
+          v-if="!isPlayerInGame && canJoinOrLeave"
+          icon="pi pi-plus"
+          severity="success"
+          size="small"
+          class="min-w-[50px] sm:!hidden"
+          @click="showJoinDialog = true"
+        />
+        <Button
+          v-if="!isPlayerInGame && canJoinOrLeave"
+          label="Приєднатися"
+          icon="pi pi-plus"
+          severity="success"
+          variant="outlined"
+          size="small"
+          class="!hidden sm:!inline-flex"
+          @click="showJoinDialog = true"
+        />
+        <Button
+          v-if="isAdmin && canJoinOrLeave"
+          icon="pi pi-user-plus"
+          severity="secondary"
+          outlined
+          size="small"
+          class="min-w-[50px] sm:!hidden"
+          @click="showAddPlayerDialog = true"
+        />
+        <Button
+          v-if="isAdmin && canJoinOrLeave"
+          label="Додати гравця"
+          icon="pi pi-user-plus"
+          severity="secondary"
+          outlined
+          size="small"
+          class="!hidden sm:!inline-flex"
+          @click="showAddPlayerDialog = true"
+        />
+      </div>
     </div>
 
     <!-- Loading (initial only) -->
@@ -326,7 +321,6 @@ async function doDelete(entryId: string) {
 
     <AddPlayerDialog
       v-model:visible="showAddPlayerDialog"
-      :players="allPlayers ?? []"
       :existing-player-ids="existingPlayerIds"
       @add="handleAddPlayer"
       @create="handleCreatePlayer"

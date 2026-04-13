@@ -162,29 +162,27 @@ function confirmDelete() {
           <i class="pi pi-arrow-left" />
           Ігри
         </NuxtLink>
-        <ClientOnly>
-          <div
-            v-if="isAdmin"
-            class="flex gap-1"
-          >
-            <NuxtLink :to="`/games/${game.id}/edit`">
-              <Button
-                label="Редагувати"
-                icon="pi pi-pencil"
-                severity="secondary"
-                text
-                size="small"
-              />
-            </NuxtLink>
+        <div
+          v-if="isAdmin"
+          class="flex gap-1"
+        >
+          <NuxtLink :to="`/games/${game.id}/edit`">
             <Button
-              icon="pi pi-trash"
-              severity="danger"
+              label="Редагувати"
+              icon="pi pi-pencil"
+              severity="secondary"
               text
               size="small"
-              @click="confirmDelete"
             />
-          </div>
-        </ClientOnly>
+          </NuxtLink>
+          <Button
+            icon="pi pi-trash"
+            severity="danger"
+            text
+            size="small"
+            @click="confirmDelete"
+          />
+        </div>
       </div>
 
       <!-- Status banner -->
@@ -355,34 +353,32 @@ function confirmDelete() {
         </div>
 
         <!-- Admin status transition controls -->
-        <ClientOnly>
-          <div
-            v-if="isAdmin && game.status !== 'finished'"
-            class="mt-4 border-t border-white/[0.06] pt-6"
-          >
-            <div class="flex justify-end">
-              <!-- Upcoming -> In progress -->
-              <Button
-                v-if="game.status === 'upcoming'"
-                label="Гра відбулася"
-                icon="pi pi-play"
-                size="small"
-                severity="warn"
-                :loading="transitioning"
-                @click="transitionStatus('in_progress')"
-              />
+        <div
+          v-if="isAdmin && game.status !== 'finished'"
+          class="mt-4 border-t border-white/[0.06] pt-6"
+        >
+          <div class="flex justify-end">
+            <!-- Upcoming -> In progress -->
+            <Button
+              v-if="game.status === 'upcoming'"
+              label="Гра відбулася"
+              icon="pi pi-play"
+              size="small"
+              severity="warn"
+              :loading="transitioning"
+              @click="transitionStatus('in_progress')"
+            />
 
-              <!-- In progress -> Finish -->
-              <Button
-                v-if="game.status === 'in_progress'"
-                label="Завершити гру"
-                size="small"
-                icon="pi pi-lock"
-                @click="showFinishDialog = true"
-              />
-            </div>
+            <!-- In progress -> Finish -->
+            <Button
+              v-if="game.status === 'in_progress'"
+              label="Завершити гру"
+              size="small"
+              icon="pi pi-lock"
+              @click="showFinishDialog = true"
+            />
           </div>
-        </ClientOnly>
+        </div>
 
         <!-- Notes -->
         <p
