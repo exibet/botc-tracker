@@ -41,7 +41,7 @@ const isLoading = computed(
 
 const lastGameDate = computed(() =>
   gameHistory.value.length > 0
-    ? gameHistory.value[0].date
+    ? gameHistory.value[0]!.date
     : null,
 )
 

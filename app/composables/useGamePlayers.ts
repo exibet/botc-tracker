@@ -1,4 +1,4 @@
-import type { GamePlayerInline, GameWithDetails, MvpVote, Role } from '#shared/types'
+import type { Alignment, GamePlayerInline, GameWithDetails, MvpVote, Role } from '#shared/types'
 import { API } from '#shared/api'
 
 interface RoleRef {
@@ -15,8 +15,8 @@ export interface GamePlayerWithDetails {
   player_id: string
   starting_role_id: string | null
   ending_role_id: string | null
-  alignment_start: string | null
-  alignment_end: string | null
+  alignment_start: Alignment | null
+  alignment_end: Alignment | null
   is_alive: boolean | null
   is_mvp: boolean
   added_by: string
@@ -141,7 +141,7 @@ export function useGamePlayers(
     ending_role_id: string | null
     alignment_start: string
     alignment_end: string | null
-    is_alive: boolean
+    is_alive: boolean | null
     is_mvp: boolean
   }>) {
     const record = await $api<GamePlayerWithDetails>(

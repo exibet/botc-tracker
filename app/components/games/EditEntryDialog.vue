@@ -88,10 +88,9 @@ watch(() => props.entry, (entry) => {
     ? props.roles.find(r => r.id === entry.starting_role!.id) ?? null
     : null
 
-  const effectiveAlignment = entry.alignment_end
+  alignmentValue.value = entry.alignment_end
     ?? entry.alignment_start
     ?? 'good'
-  alignmentValue.value = effectiveAlignment
 
   const finalRole = (
     entry.ending_role
@@ -103,7 +102,7 @@ watch(() => props.entry, (entry) => {
   if (finalRole) {
     const derived = getAlignmentForRoleType(finalRole.type)
     alignmentManual.value = derived !== null
-      && effectiveAlignment !== derived
+      && alignmentValue.value !== derived
   }
   else {
     alignmentManual.value = false

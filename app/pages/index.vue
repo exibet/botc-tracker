@@ -98,7 +98,7 @@ const recentFinished = computed(() => {
       />
     </div>
 
-    <template v-else-if="stats?.totalGames || data?.topPlayers?.length">
+    <template v-else-if="data && (stats?.totalGames || data.topPlayers?.length)">
       <!-- Quick Stats -->
       <section
         v-if="stats?.totalGames"

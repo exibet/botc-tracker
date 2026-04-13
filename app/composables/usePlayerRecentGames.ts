@@ -59,13 +59,13 @@ export function usePlayerRecentGames(
   playerId: string,
   limit = 5,
 ) {
-  const { data: games, status } = useFetch<RawRow[]>(
+  const { data: games, status } = useFetch(
     API.PLAYER_RECENT(playerId),
     {
       key: FETCH_KEY.PLAYER_RECENT(playerId),
       query: { limit },
       transform: (rows: RawRow[]) => rows.map(mapRow),
-      default: () => [],
+      default: (): RecentGame[] => [],
     },
   )
 

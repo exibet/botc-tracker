@@ -28,7 +28,8 @@ export default defineNuxtPlugin(() => {
   document.addEventListener('visibilitychange', handleVisibility)
 
   const nuxtApp = useNuxtApp()
-  nuxtApp.hook('app:unmount' as never, () => {
+  // @ts-expect-error app:unmount hook not in Nuxt types yet
+  nuxtApp.hook('app:unmount', () => {
     subscription.unsubscribe()
     document.removeEventListener('visibilitychange', handleVisibility)
   })

@@ -48,8 +48,8 @@ const quorumReached = computed(
 const hasClearWinner = computed(() => {
   if (tally.value.length === 0) return false
   if (tally.value.length === 1) return true
-  return tally.value[0].voteCount
-    !== tally.value[1].voteCount
+  return tally.value[0]!.voteCount
+    !== tally.value[1]!.voteCount
 })
 
 const mvpElected = computed(

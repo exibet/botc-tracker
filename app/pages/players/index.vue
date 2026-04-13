@@ -64,7 +64,7 @@ const podiumMap = computed(() => {
   if (!players.value || players.value.length < 3) return map
   const ranks = ['gold', 'silver', 'bronze'] as const
   for (let i = 0; i < 3; i++) {
-    map.set(players.value[i].id, ranks[i])
+    map.set(players.value[i]!.id, ranks[i]!)
   }
   return map
 })

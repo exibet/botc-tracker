@@ -148,7 +148,7 @@ function confirmDelete() {
       </NuxtLink>
     </div>
 
-    <template v-else>
+    <template v-else-if="game">
       <!-- Back link + Edit -->
       <div
         class="mb-6 flex items-center justify-between"
