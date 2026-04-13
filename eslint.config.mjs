@@ -13,4 +13,6 @@ export default createConfigForNuxt({
     'no-console': 'error',
     'vue/max-len': ['warn', { code: 100 }],
   },
+}).append({
+  ignores: ['shared/types/database.types.ts'],
 })

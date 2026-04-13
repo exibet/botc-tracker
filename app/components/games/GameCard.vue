@@ -36,7 +36,6 @@ const mvpPlayer = computed(
   () => props.game.mvp_player ?? null,
 )
 
-
 const hoverShadowClass = computed(() => {
   if (props.game.winner === 'good')
     return 'hover:shadow-[0_0_24px_-6px_var(--color-good)]'
@@ -68,8 +67,10 @@ const hoverShadowClass = computed(() => {
           sm:size-16 gap-1"
         :class="[
           game.winner === 'good'
-            ? 'bg-[color-mix(in_srgb,var(--color-good)_12%,transparent)] ring-1 ring-[color-mix(in_srgb,var(--color-good)_25%,transparent)]'
-            : 'bg-[color-mix(in_srgb,var(--color-evil)_12%,transparent)] ring-1 ring-[color-mix(in_srgb,var(--color-evil)_25%,transparent)]',
+            ? `bg-[color-mix(in_srgb,var(--color-good)_12%,transparent)]
+               ring-1 ring-[color-mix(in_srgb,var(--color-good)_25%,transparent)]`
+            : `bg-[color-mix(in_srgb,var(--color-evil)_12%,transparent)]
+               ring-1 ring-[color-mix(in_srgb,var(--color-evil)_25%,transparent)]`,
         ]"
       >
         <i

@@ -43,7 +43,9 @@ export interface Game extends Omit<GameRow, 'script' | 'status' | 'winner' | 'cr
   created_at: string
 }
 
-export interface GamePlayer extends Omit<GamePlayerRow, 'alignment_start' | 'alignment_end' | 'created_at'> {
+export interface GamePlayer extends Omit<
+  GamePlayerRow, 'alignment_start' | 'alignment_end' | 'created_at'
+> {
   alignment_start: Alignment | null
   alignment_end: Alignment | null
   created_at: string

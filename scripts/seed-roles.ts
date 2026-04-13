@@ -10,8 +10,8 @@ import { writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import translations from './role-translations.json'
 
-const SOURCE_URL
-  = 'https://raw.githubusercontent.com/chizmw/json-on-the-clocktower/main/data/generated/roles-combined.json'
+// eslint-disable-next-line vue/max-len
+const SOURCE_URL = 'https://raw.githubusercontent.com/chizmw/json-on-the-clocktower/main/data/generated/roles-combined.json'
 
 const OUTPUT_PATH = resolve(import.meta.dirname, '../supabase/seed/roles.sql')
 
@@ -105,7 +105,9 @@ async function main() {
     `-- Generated: ${new Date().toISOString()}`,
     `-- Total roles: ${roles.length}`,
     '',
-    'INSERT INTO roles (id, name_en, name_ua, description_en, description_ua, type, edition, image_url, meta)',
+    'INSERT INTO roles (id, name_en, name_ua, '
+    + 'description_en, description_ua, '
+    + 'type, edition, image_url, meta)',
     'VALUES',
   ]
 
@@ -113,7 +115,10 @@ async function main() {
     const imageUrl = r.image_url ? `'${escapeSQL(r.image_url)}'` : 'NULL'
     const comma = i < roles.length - 1 ? ',' : ''
 
-    return `  ('${escapeSQL(r.id)}', '${escapeSQL(r.name_en)}', '${escapeSQL(r.name_ua)}', '${escapeSQL(r.description_en)}', '${escapeSQL(r.description_ua)}', '${r.type}', '${r.edition}', ${imageUrl}, '${JSON.stringify(r.meta).replace(/'/g, '\'\'')}')${comma}`
+    const esc = escapeSQL
+    const meta = JSON.stringify(r.meta).replace(/'/g, '\'\'')
+    // eslint-disable-next-line vue/max-len
+    return `  ('${esc(r.id)}', '${esc(r.name_en)}', '${esc(r.name_ua)}', '${esc(r.description_en)}', '${esc(r.description_ua)}', '${r.type}', '${r.edition}', ${imageUrl}, '${meta}')${comma}`
   })
 
   sqlLines.push(...valueLines)
@@ -142,6 +147,7 @@ async function main() {
 }
 
 main().catch((err) => {
+  // eslint-disable-next-line no-console
   console.error('Seed failed:', err)
   process.exit(1)
 })

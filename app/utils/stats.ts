@@ -224,7 +224,8 @@ export function computeWinStreaks(
   return streaks
 }
 
-export type LeaderboardRpcRow = Database['public']['Functions']['get_player_leaderboard']['Returns'][number]
+export type LeaderboardRpcRow
+  = Database['public']['Functions']['get_player_leaderboard']['Returns'][number]
 
 export function mapLeaderboardRow(
   row: LeaderboardRpcRow,

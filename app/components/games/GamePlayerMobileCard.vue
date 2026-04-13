@@ -20,7 +20,7 @@ import AlignmentTag from '~/components/games/AlignmentTag.vue'
 import PlayerAvatar
   from '~/components/players/PlayerAvatar.vue'
 
-const props = defineProps<{
+defineProps<{
   entry: GamePlayerWithDetails
   currentUserId?: string | null
   isAdmin?: boolean

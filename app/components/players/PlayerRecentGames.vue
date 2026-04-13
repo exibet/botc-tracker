@@ -21,10 +21,19 @@ const { games, loading } = usePlayerRecentGames(props.playerId)
         :key="j"
         class="flex items-center gap-3"
       >
-        <Skeleton shape="circle" size="1.75rem" />
-        <Skeleton width="6rem" height="0.875rem" />
+        <Skeleton
+          shape="circle"
+          size="1.75rem"
+        />
+        <Skeleton
+          width="6rem"
+          height="0.875rem"
+        />
         <div class="flex-1" />
-        <Skeleton width="3rem" height="0.875rem" />
+        <Skeleton
+          width="3rem"
+          height="0.875rem"
+        />
       </div>
     </div>
 

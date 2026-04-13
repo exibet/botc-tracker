@@ -70,15 +70,29 @@ export default defineNuxtConfig({
       title: 'BotC Tracker - Blood on the Clocktower Community Stats',
       meta: [
         { charset: 'utf-8' },
-        { name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' },
-        { name: 'description', content: 'Track Blood on the Clocktower games, player stats, win rates & MVP votes. Join the community game tracker now ✓' },
+        {
+          name: 'viewport',
+          content: 'width=device-width, initial-scale=1, '
+            + 'maximum-scale=1, user-scalable=no',
+        },
+        {
+          name: 'description',
+          content: 'Track Blood on the Clocktower games, '
+            + 'player stats, win rates & MVP votes. '
+            + 'Join the community game tracker now ✓',
+        },
         { name: 'referrer', content: 'no-referrer' },
         { name: 'theme-color', content: '#ef4444' },
         { name: 'apple-mobile-web-app-capable', content: 'yes' },
         { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
         { name: 'apple-mobile-web-app-title', content: 'BotC Tracker' },
         { property: 'og:title', content: 'BotC Tracker - Blood on the Clocktower Community Hub' },
-        { property: 'og:description', content: 'Track games, analyze player performance, discover top players & roles. Real-time stats for Blood on the Clocktower players.' },
+        {
+          property: 'og:description',
+          content: 'Track games, analyze player performance, '
+            + 'discover top players & roles. Real-time stats '
+            + 'for Blood on the Clocktower players.',
+        },
         { property: 'og:type', content: 'website' },
         { property: 'og:site_name', content: 'BotC Tracker' },
         { property: 'og:locale', content: 'uk_UA' },
@@ -89,7 +103,12 @@ export default defineNuxtConfig({
         { name: 'twitter:card', content: 'summary_large_image' },
         { name: 'twitter:image', content: 'https://botc-tracker.vercel.app/og-image.png' },
         { name: 'twitter:title', content: 'BotC Tracker - Game Stats & Community Analytics' },
-        { name: 'twitter:description', content: 'Real-time tracking of Blood on the Clocktower games, player stats, win rates, and MVP voting.' },
+        {
+          name: 'twitter:description',
+          content: 'Real-time tracking of Blood on the '
+            + 'Clocktower games, player stats, '
+            + 'win rates, and MVP voting.',
+        },
       ],
       link: [
         {
@@ -107,6 +126,17 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  routeRules: {
+    '/**': {
+      headers: {
+        'X-Content-Type-Options': 'nosniff',
+        'X-Frame-Options': 'DENY',
+        'Referrer-Policy': 'strict-origin-when-cross-origin',
+        'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+      },
+    },
+  },
+
   features: {
     inlineStyles: true,
   },
@@ -114,6 +144,16 @@ export default defineNuxtConfig({
 
   vite: {
     plugins: [tailwindcss()],
+  },
+
+  googleFonts: {
+    families: {
+      Cinzel: [400, 500, 600, 700],
+      Inter: [300, 400, 500, 600, 700],
+    },
+    display: 'swap',
+    download: true,
+    preload: true,
   },
 
   primevue: {
@@ -130,27 +170,6 @@ export default defineNuxtConfig({
         },
       },
     },
-  },
-
-  routeRules: {
-    '/**': {
-      headers: {
-        'X-Content-Type-Options': 'nosniff',
-        'X-Frame-Options': 'DENY',
-        'Referrer-Policy': 'strict-origin-when-cross-origin',
-        'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
-      },
-    },
-  },
-
-  googleFonts: {
-    families: {
-      Cinzel: [400, 500, 600, 700],
-      Inter: [300, 400, 500, 600, 700],
-    },
-    display: 'swap',
-    download: true,
-    preload: true,
   },
 
   supabase: {

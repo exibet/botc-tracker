@@ -1,6 +1,6 @@
 function safeDate(dateStr: string): Date | null {
   const d = new Date(dateStr)
-  return isNaN(d.getTime()) ? null : d
+  return Number.isNaN(d.getTime()) ? null : d
 }
 
 export function formatDate(dateStr: string): string {

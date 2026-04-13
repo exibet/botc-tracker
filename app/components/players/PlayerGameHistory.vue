@@ -42,7 +42,10 @@ function gamePoints(game: PlayerGameHistory): number {
       </div>
     </div>
 
-    <div v-if="!games.length" class="px-5 pb-8 text-center">
+    <div
+      v-if="!games.length"
+      class="px-5 pb-8 text-center"
+    >
       <div
         class="mx-auto flex size-16 items-center
           justify-center rounded-full

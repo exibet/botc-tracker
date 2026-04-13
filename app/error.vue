@@ -23,7 +23,10 @@ function handleError() {
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-col items-center justify-center bg-[var(--botc-night-950)] px-4 text-[var(--text)]">
+  <div
+    class="flex min-h-screen flex-col items-center justify-center
+           bg-[var(--botc-night-950)] px-4 text-[var(--text)]"
+  >
     <p class="font-heading text-7xl font-bold text-[var(--botc-red-500)]">
       {{ error.statusCode }}
     </p>
