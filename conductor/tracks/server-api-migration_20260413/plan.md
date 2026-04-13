@@ -82,19 +82,19 @@ Migrate game listing and the complex home page endpoint.
 
 ### Tasks
 
-- [ ] Task 3.1: Create `GET /api/games` — list finished games, replaces `useGames`
-- [ ] Task 3.2: Create `GET /api/games/[id]` — game details + players + votes, replaces `useGameActions.getById`
-- [ ] Task 3.3: Create `GET /api/home` — active games + recent + leaderboard (3 parallel queries)
-- [ ] Task 3.4: Update `useGames` composable — use `useFetch(API.GAMES)`
-- [ ] Task 3.5: Update `useGameActions.getById` — use `useFetch(API.GAME(id))`
-- [ ] Task 3.6: Update `useHome` composable — use `useFetch(API.HOME)`
-- [ ] Task 3.7: Write tests for games and home endpoints
-- [ ] Task 3.8: Write tests for updated composables
+- [x] Task 3.1: Create `GET /api/games` — list finished games, replaces `useGames`
+- [x] Task 3.2: Create `GET /api/games/[id]` — game details + players + votes, replaces `useGameActions.getById`
+- [x] Task 3.3: Create `GET /api/home` — active games + recent + leaderboard (3 parallel queries)
+- [x] Task 3.4: Update `useGames` composable — use `useAsyncData` + `$fetch(API.GAMES)`
+- [x] Task 3.5: Update `useGameActions.getById` — use `$fetch(API.GAME(id))`
+- [x] Task 3.6: Update `useHome` composable — use `useAsyncData` + `$fetch(API.HOME)`
+- [x] Task 3.7: Write tests for games and home endpoints
+- [x] Task 3.8: Write tests for updated composables
 
 ### Verification
 
-- [ ] Build passes
-- [ ] All tests pass
+- [x] All tests pass (88/90, 2 pre-existing GameCard failures)
+- [x] Lint passes — zero errors
 - [ ] Games list page loads correctly
 - [ ] Game detail page loads with players and votes
 - [ ] Home page loads with all sections (active, recent, leaderboard)

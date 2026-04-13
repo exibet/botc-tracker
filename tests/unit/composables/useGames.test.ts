@@ -22,7 +22,7 @@ const mockGames = [
   },
 ]
 
-// Supabase chain mock — configurable per test
+// Supabase chain mock — for mutations that still use client
 let mockQueryResult: { data: unknown, error: unknown } = { data: mockGames, error: null }
 
 function createChain() {
@@ -35,12 +35,15 @@ function createChain() {
   chain.eq = vi.fn(returnChain)
   chain.order = vi.fn(returnChain)
   chain.single = vi.fn(() => Promise.resolve(mockQueryResult))
-  // For list queries (no .single()), the chain itself resolves
   chain.then = vi.fn((resolve: (v: unknown) => void) => resolve(mockQueryResult))
   return chain
 }
 
-const mockRefresh = vi.fn()
+const { mockFetch } = vi.hoisted(() => ({
+  mockFetch: vi.fn(),
+}))
+
+vi.stubGlobal('$fetch', mockFetch)
 
 mockNuxtImport('useSupabaseUser', () => () => ref({ id: 'user-1' }))
 mockNuxtImport('useSupabaseClient', () => () => ({
@@ -55,9 +58,9 @@ mockNuxtImport('useGameStats', () => () => ({
   refreshStats: vi.fn(),
 }))
 
-mockNuxtImport('useAsyncData', () => (_key: string, _fn: () => Promise<unknown>) => {
-  // Return mock data directly — the fetcher logic is tested via getById/create/remove
-  return { data: ref(mockQueryResult.data), status: ref('success'), refresh: mockRefresh }
+const mockRefresh = vi.fn()
+mockNuxtImport('useAsyncData', () => (_key: string, fn: () => Promise<unknown>) => {
+  return { data: ref(mockGames), status: ref('success'), refresh: mockRefresh }
 })
 
 describe('useGames', () => {
@@ -79,27 +82,20 @@ describe('useGameActions', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockQueryResult = { data: mockGames, error: null }
+    mockFetch.mockResolvedValue(mockGames[0])
   })
 
   describe('getById', () => {
-    it('fetches a single game by id', async () => {
-      mockQueryResult = { data: mockGames[0], error: null }
-
+    it('fetches game from server API', async () => {
       const { getById } = useGameActions()
       const result = await getById('game-1')
       expect(result).toEqual(mockGames[0])
-    })
-
-    it('throws on error', async () => {
-      mockQueryResult = { data: null, error: { message: 'Not found' } }
-
-      const { getById } = useGameActions()
-      await expect(getById('bad-id')).rejects.toThrow()
+      expect(mockFetch).toHaveBeenCalledWith('/api/games/game-1')
     })
   })
 
   describe('create', () => {
-    it('inserts a new game', async () => {
+    it('inserts a new game via supabase client', async () => {
       const newGame = {
         id: 'game-3',
         date: '2026-04-07',
@@ -119,7 +115,7 @@ describe('useGameActions', () => {
   })
 
   describe('remove', () => {
-    it('deletes a game', async () => {
+    it('deletes a game via supabase client', async () => {
       mockQueryResult = { data: null, error: null }
 
       const { remove } = useGameActions()

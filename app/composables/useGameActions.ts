@@ -1,5 +1,5 @@
 import type { Game, GameWithDetails } from '~/types'
-import { GAME_DETAIL_SELECT } from '~/utils/queries'
+import { API } from '#shared/api'
 
 export function useGameActions() {
   const client = useSupabaseClient()
@@ -7,16 +7,10 @@ export function useGameActions() {
   const { refreshStats } = useGameStats()
 
   async function getById(id: string) {
-    const { data, error } = await client
-      .from('games')
-      .select(GAME_DETAIL_SELECT)
-      .eq('id', id)
-      .single()
-
-    if (error) throw error
-    return data as GameWithDetails
+    return $fetch<GameWithDetails>(API.GAME(id))
   }
 
+  // Mutations stay client-side until Phase 4
   async function create(game: {
     date: string
     script: string
