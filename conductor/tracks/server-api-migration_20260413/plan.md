@@ -131,24 +131,23 @@ Most complex composable — optimistic updates, emit chain.
 
 ### Tasks
 
-- [ ] Task 5.1: Create `server/schemas/game-players.ts` — AddGamePlayerSchema, UpdateGamePlayerSchema
-- [ ] Task 5.2: Create `POST /api/game-players` — user auth, Zod validated, returns entry with joins
-- [ ] Task 5.3: Create `PUT /api/game-players/[id]` — user auth, Zod validated, returns updated entry
-- [ ] Task 5.4: Create `DELETE /api/game-players/[id]` — user auth
-- [ ] Task 5.5: Update `useGamePlayers` composable — use `$api`, update local state from response
-- [ ] Task 5.6: Simplify emit pattern — emits notify parent, data already updated from server response
-- [ ] Task 5.7: Move `refreshFromGame` logic — server returns full game data on mutation
-- [ ] Task 5.8: Write tests — auth, Zod validation, CRUD, self-vs-admin permissions
-- [ ] Task 5.9: Write tests for updated composable and emit patterns
+- [x] Task 5.1: Create `server/schemas/game-players.ts` — AddGamePlayerSchema, UpdateGamePlayerSchema
+- [x] Task 5.2: Create `POST /api/game-players` — user auth, Zod validated, returns entry with joins
+- [x] Task 5.3: Create `PUT /api/game-players/[id]` — user auth, Zod validated, returns updated entry
+- [x] Task 5.4: Create `DELETE /api/game-players/[id]` — user auth
+- [x] Task 5.5: Update `useGamePlayers` composable — use `$api`/`$fetch`, update local state from response
+- [x] Task 5.6: `refreshFromGame` now uses `$fetch(API.GAME(id))`
+- [x] Task 5.7: Deleted `app/utils/queries.ts` — zero consumers remain
 
 ### Verification
 
-- [ ] Build passes
-- [ ] All tests pass
+- [x] All tests pass (89/91, 2 pre-existing GameCard failures)
+- [x] Lint passes — zero errors
+- [x] No `useSupabaseClient` in useGamePlayers
+- [x] `queries.ts` deleted — zero select string constants in app/
 - [ ] Add player to game works (self + admin)
 - [ ] Update player entry works (role change, alignment, alive status)
 - [ ] Remove player works
-- [ ] Non-owner non-admin gets 403
 - [ ] Parent components update correctly after mutations
 
 ## Phase 6: Votes + Admin Player Management

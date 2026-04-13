@@ -1,5 +1,5 @@
-import type { GamePlayer, GamePlayerInline, GameWithDetails, MvpVote, Role } from '~/types'
-import { GAME_DETAIL_SELECT } from '~/utils/queries'
+import type { GamePlayerInline, GameWithDetails, MvpVote, Role } from '~/types'
+import { API } from '#shared/api'
 
 interface RoleRef {
   id: string
@@ -9,12 +9,19 @@ interface RoleRef {
   type: string
 }
 
-export interface GamePlayerWithDetails extends GamePlayer {
-  player: {
-    id: string
-    nickname: string
-    avatar_url: string | null
-  }
+export interface GamePlayerWithDetails {
+  id: string
+  game_id: string
+  player_id: string
+  starting_role_id: string | null
+  ending_role_id: string | null
+  alignment_start: string | null
+  alignment_end: string | null
+  is_alive: boolean | null
+  is_mvp: boolean
+  added_by: string
+  created_at: string
+  player: { id: string, nickname: string, avatar_url: string | null }
   starting_role: RoleRef | null
   ending_role: RoleRef | null
 }
@@ -49,7 +56,6 @@ export function useGamePlayers(
   gameId: Ref<string> | string,
   initialData?: GamePlayerInline[] | null,
 ) {
-  const client = useSupabaseClient()
   const { roles } = useRoles()
   const id = toRef(gameId)
 
@@ -60,13 +66,6 @@ export function useGamePlayers(
     }
     return map
   })
-
-  const SELECT_WITH_DETAILS = `
-    *,
-    player:profiles!player_id(id, nickname, avatar_url),
-    starting_role:roles!starting_role_id(id, name_ua, name_en, image_url, type),
-    ending_role:roles!ending_role_id(id, name_ua, name_en, image_url, type)
-  `
 
   const players = ref<GamePlayerWithDetails[] | null>(
     initialData
@@ -84,20 +83,13 @@ export function useGamePlayers(
       return
     }
     status.value = 'pending'
-    const { data, error } = await client
-      .from('game_players')
-      .select(SELECT_WITH_DETAILS)
-      .eq('game_id', id.value)
-
-    if (error) {
-      status.value = 'error'
-      throw error
+    const game = await $fetch<GameWithDetails>(API.GAME(id.value))
+    if (game.game_players) {
+      setFromInline(game.game_players as GamePlayerInline[])
     }
-    players.value = data as GamePlayerWithDetails[]
     status.value = 'success'
   }
 
-  // Only fetch if no initial data was provided
   if (!initialData) {
     fetchPlayers()
   }
@@ -110,20 +102,20 @@ export function useGamePlayers(
     players.value = data.map(e => resolveRoles(e, rolesMap.value))
   }
 
-  async function refreshFromGame(): Promise<{ game: GameWithDetails, votes: MvpVote[] } | null> {
-    const { data, error } = await client
-      .from('games')
-      .select(GAME_DETAIL_SELECT)
-      .eq('id', id.value)
-      .single()
-
-    if (error) return null
-
-    const game = data as GameWithDetails
-    if (game.game_players) {
-      setFromInline(game.game_players as GamePlayerInline[])
+  async function refreshFromGame(): Promise<{
+    game: GameWithDetails
+    votes: MvpVote[]
+  } | null> {
+    try {
+      const game = await $fetch<GameWithDetails>(API.GAME(id.value))
+      if (game.game_players) {
+        setFromInline(game.game_players as GamePlayerInline[])
+      }
+      return { game, votes: game.mvp_votes ?? [] }
     }
-    return { game, votes: game.mvp_votes ?? [] }
+    catch {
+      return null
+    }
   }
 
   async function add(entry: {
@@ -136,14 +128,10 @@ export function useGamePlayers(
     is_mvp?: boolean
     added_by: string
   }) {
-    const { data, error } = await client
-      .from('game_players')
-      .insert({ ...entry, game_id: id.value })
-      .select(SELECT_WITH_DETAILS)
-      .single()
-
-    if (error) throw error
-    const record = data as GamePlayerWithDetails
+    const record = await $api<GamePlayerWithDetails>(
+      API.GAME_PLAYERS,
+      { method: 'POST', body: { ...entry, game_id: id.value } },
+    )
     players.value = [...(players.value ?? []), record]
     return record
   }
@@ -156,35 +144,21 @@ export function useGamePlayers(
     is_alive: boolean
     is_mvp: boolean
   }>) {
-    const { data, error } = await client
-      .from('game_players')
-      .update(updates)
-      .eq('id', entryId)
-      .select(SELECT_WITH_DETAILS)
-      .single()
-
-    if (error) throw error
-
-    if (data && players.value) {
+    const record = await $api<GamePlayerWithDetails>(
+      API.GAME_PLAYER(entryId),
+      { method: 'PUT', body: updates },
+    )
+    if (players.value) {
       players.value = players.value.map(p =>
-        p.id === entryId
-          ? data as GamePlayerWithDetails
-          : p,
+        p.id === entryId ? record : p,
       )
     }
   }
 
   async function remove(entryId: string) {
-    const { error } = await client
-      .from('game_players')
-      .delete()
-      .eq('id', entryId)
-
-    if (error) throw error
+    await $api(API.GAME_PLAYER(entryId), { method: 'DELETE' })
     if (players.value) {
-      players.value = players.value.filter(
-        p => p.id !== entryId,
-      )
+      players.value = players.value.filter(p => p.id !== entryId)
     }
   }
 
