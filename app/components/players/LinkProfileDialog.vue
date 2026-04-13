@@ -43,7 +43,7 @@ async function handleLink() {
     emit('linked', selectedAuthId.value)
     emit('update:visible', false)
   }
-  catch (err: unknown) {
+  catch (err) {
     errorMsg.value = extractErrorMessage(
       err, 'Помилка при зв\'язуванні профілів',
     )

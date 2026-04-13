@@ -35,7 +35,7 @@ async function handleUnlink() {
     emit('unlinked', manualId)
     emit('update:visible', false)
   }
-  catch (err: unknown) {
+  catch (err) {
     errorMsg.value = extractErrorMessage(
       err, 'Помилка при від\'єднанні профілю',
     )

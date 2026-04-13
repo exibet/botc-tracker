@@ -34,7 +34,7 @@ export function usePlayers() {
     manualId: string,
     authId: string,
   ) {
-    await $api(API.PLAYER_LINK, {
+    await $fetch(API.PLAYER_LINK, {
       method: 'POST',
       body: { manual_id: manualId, auth_id: authId },
     })
@@ -44,7 +44,7 @@ export function usePlayers() {
     authId: string,
     nickname: string,
   ) {
-    const { manualId } = await $api<{ manualId: string }>(
+    const { manualId } = await $fetch<{ manualId: string }>(
       API.PLAYER_UNLINK,
       { method: 'POST', body: { auth_id: authId, nickname } },
     )

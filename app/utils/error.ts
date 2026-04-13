@@ -2,15 +2,14 @@ export function extractErrorMessage(
   err: unknown,
   fallback: string,
 ): string {
-  if (err instanceof Error) return err.message
   if (
     typeof err === 'object'
     && err !== null
-    && 'message' in err
+    && 'data' in err
+    && typeof (err as { data?: { message?: string } }).data?.message === 'string'
   ) {
-    return String(
-      (err as { message: unknown }).message,
-    )
+    return (err as { data: { message: string } }).data.message
   }
+  if (err instanceof Error) return err.message
   return fallback
 }

@@ -2,15 +2,25 @@
   "id": "server-api-migration_20260413",
   "title": "Server API Migration",
   "type": "refactor",
-  "status": "pending",
+  "status": "complete",
   "created": "2026-04-13T00:00:00Z",
-  "updated": "2026-04-13T00:00:00Z",
+  "updated": "2026-04-14T00:00:00Z",
+  "current_phase": 7,
+  "current_task": null,
   "phases": {
     "total": 7,
-    "completed": 0
+    "completed": 7
   },
   "tasks": {
     "total": 73,
-    "completed": 0
-  }
+    "completed": 73
+  },
+  "commits": [
+    "554af01: refactor(api): server API migration phases 1-2",
+    "184c0a6: fix(perf): remove redundant supabase profile query on player page",
+    "bc96a4c: refactor(api): server API migration phase 3",
+    "d3687ad: refactor(api): server API migration phase 4",
+    "6750f31: refactor(api): server API migration phase 5",
+    "6685791: refactor(api): server API migration phase 6"
+  ]
 }
