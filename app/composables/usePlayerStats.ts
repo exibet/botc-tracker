@@ -2,6 +2,7 @@ import type {
   Alignment,
   PlayerGameHistory,
   PlayerStats,
+  Profile,
   RolePlayCount,
   RoleType,
   Script,
@@ -160,6 +161,10 @@ export function usePlayerStats(playerId: Ref<string> | string) {
     { key: FETCH_KEY.PLAYER(id.value) },
   )
 
+  const player = computed(
+    () => (data.value as { profile: Profile } | null)?.profile ?? null,
+  )
+
   const rawGames = computed<GamePlayerRow[]>(
     () => (data.value as { games: GamePlayerRow[] } | null)
       ?.games ?? [],
@@ -191,5 +196,5 @@ export function usePlayerStats(playerId: Ref<string> | string) {
     return streak
   })
 
-  return { stats, gameHistory, rolePlayCounts, winStreak, status }
+  return { player, stats, gameHistory, rolePlayCounts, winStreak, status }
 }

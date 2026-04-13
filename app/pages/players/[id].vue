@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { Profile } from '~/types'
 import { usePlayerStats } from '~/composables/usePlayerStats'
 import PlayerHeader
   from '~/components/players/PlayerHeader.vue'
@@ -14,7 +13,6 @@ import UnlinkProfileDialog
 
 const route = useRoute()
 const playerId = route.params.id as string
-const client = useSupabaseClient()
 const { isAdmin } = useAuth()
 
 const showLinkDialog = ref(false)
@@ -28,31 +26,17 @@ function onUnlinked(manualId: string) {
   navigateTo(`/players/${manualId}`)
 }
 
-const { data: player, status: profileStatus } = useAsyncData(
-  `player-profile-${playerId}`,
-  async () => {
-    const { data, error } = await client
-      .from('profiles')
-      .select('*')
-      .eq('id', playerId)
-      .single()
-
-    if (error) throw error
-    return data as Profile
-  },
-)
-
 const {
+  player,
   stats,
   gameHistory,
   rolePlayCounts,
   winStreak,
-  status: statsStatus,
+  status,
 } = usePlayerStats(playerId)
 
 const isLoading = computed(
-  () => profileStatus.value === 'pending'
-    || statsStatus.value === 'pending',
+  () => status.value === 'pending',
 )
 
 const lastGameDate = computed(() =>
@@ -167,7 +151,7 @@ const evilPct = computed(() =>
 
     <!-- Error / not found -->
     <div
-      v-else-if="profileStatus === 'error' || !player"
+      v-else-if="status === 'error' || !player"
       class="flex flex-col items-center
         justify-center py-20 text-center"
     >
