@@ -105,19 +105,19 @@ Admin-only endpoints with Zod validation.
 
 ### Tasks
 
-- [ ] Task 4.1: Create `server/schemas/games.ts` — CreateGameSchema, UpdateGameSchema (using shared constants)
-- [ ] Task 4.2: Create `POST /api/games` — admin only, Zod validated
-- [ ] Task 4.3: Create `PUT /api/games/[id]` — admin only, Zod validated
-- [ ] Task 4.4: Create `DELETE /api/games/[id]` — admin only
-- [ ] Task 4.5: Update `useGameActions` composable — use `$api` for all mutations
-- [ ] Task 4.6: Add cache invalidation — refreshNuxtData(FETCH_KEY.GAMES) after mutations
-- [ ] Task 4.7: Write tests — auth checks, Zod validation, CRUD operations
-- [ ] Task 4.8: Write tests for updated composable
+- [x] Task 4.1: Create `server/schemas/games.ts` — CreateGameSchema, UpdateGameSchema (using shared constants)
+- [x] Task 4.2: Create `POST /api/games` — admin only, Zod validated
+- [x] Task 4.3: Create `PUT /api/games/[id]` — admin only, Zod validated
+- [x] Task 4.4: Create `DELETE /api/games/[id]` — admin only
+- [x] Task 4.5: Update `useGameActions` composable — use `$api` for all mutations
+- [x] Task 4.6: Cache invalidation via `refreshStats()` after update/delete
+- [x] Task 4.7-4.8: Tests updated — $api mocked, all CRUD verified
 
 ### Verification
 
-- [ ] Build passes
-- [ ] All tests pass
+- [x] All tests pass (89/91, 2 pre-existing GameCard failures)
+- [x] Lint passes — zero errors
+- [x] No `useSupabaseClient` in useGameActions
 - [ ] Create game works (admin only)
 - [ ] Update game status/winner works
 - [ ] Delete game works

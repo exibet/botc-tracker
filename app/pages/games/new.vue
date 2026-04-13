@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import GameForm from '~/components/games/GameForm.vue'
-import { extractErrorMessage } from '~/utils/error'
 
 definePageMeta({ middleware: ['admin'] })
 
 const router = useRouter()
-const { success: toastSuccess, error: toastError } = useAppToast()
+const { success: toastSuccess } = useAppToast()
 const { create } = useGameActions()
 const { players, initPlayers } = usePlayers()
 await initPlayers()
@@ -35,8 +34,8 @@ async function handleSubmit(data: {
     toastSuccess('Гру створено')
     router.push('/games')
   }
-  catch (err) {
-    toastError(extractErrorMessage(err, 'Не вдалося створити гру'))
+  catch {
+    // Error toast shown by $api
   }
   finally {
     saving.value = false

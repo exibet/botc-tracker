@@ -4,6 +4,15 @@ export const $api: typeof $fetch = $fetch.create({
     const message = data?.message
       ?? data?.statusMessage
       ?? 'Щось пішло не так'
-    useAppToast().error(message)
+
+    if (import.meta.client) {
+      const { $toast } = useNuxtApp().vueApp.config.globalProperties
+      $toast?.add({
+        severity: 'error',
+        summary: 'Помилка',
+        detail: message,
+        life: 5000,
+      })
+    }
   },
 })

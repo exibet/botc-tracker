@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import GameForm from '~/components/games/GameForm.vue'
 import { getGameStatusInfo } from '~/composables/useGameLabels'
-import { extractErrorMessage } from '~/utils/error'
 
 definePageMeta({ middleware: ['admin'] })
 
 const route = useRoute()
 const router = useRouter()
-const { success: toastSuccess, error: toastError } = useAppToast()
+const { success: toastSuccess } = useAppToast()
 const gameId = route.params.id as string
 
 const { getById, update } = useGameActions()
@@ -46,8 +45,8 @@ async function handleRevertStatus() {
     toastSuccess(`Статус: ${info?.labelUa}`)
     router.push(`/games/${gameId}`)
   }
-  catch (err) {
-    toastError(extractErrorMessage(err, 'Не вдалося оновити гру'))
+  catch {
+    // Error toast shown by $api
   }
   finally {
     saving.value = false
@@ -69,8 +68,8 @@ async function handleSubmit(data: {
     toastSuccess('Гру оновлено')
     router.push(`/games/${gameId}`)
   }
-  catch (err) {
-    toastError(extractErrorMessage(err, 'Не вдалося оновити гру'))
+  catch {
+    // Error toast shown by $api
   }
   finally {
     saving.value = false

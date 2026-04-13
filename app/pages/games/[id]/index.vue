@@ -19,7 +19,7 @@ const gameId = route.params.id as string
 const { getById, update, remove } = useGameActions()
 const { isAdmin } = useAuth()
 const confirm = useConfirm()
-const { success: toastSuccess, error: toastError } = useAppToast()
+const { success: toastSuccess } = useAppToast()
 const router = useRouter()
 
 const { data: game, status: gameStatus, refresh: refreshGame } = useAsyncData(
@@ -71,7 +71,7 @@ async function transitionStatus(
     toastSuccess(`Статус змінено: ${getGameStatusInfo(newStatus)?.labelUa}`)
   }
   catch {
-    toastError('Не вдалося змінити статус гри')
+    // Error toast shown by $api
   }
   finally {
     transitioning.value = false
@@ -95,7 +95,7 @@ function confirmDelete() {
         router.push('/games')
       }
       catch {
-        toastError('Не вдалося видалити гру')
+        // Error toast shown by $api
       }
     },
   })

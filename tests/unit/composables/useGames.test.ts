@@ -22,33 +22,15 @@ const mockGames = [
   },
 ]
 
-// Supabase chain mock — for mutations that still use client
-let mockQueryResult: { data: unknown, error: unknown } = { data: mockGames, error: null }
-
-function createChain() {
-  const chain: Record<string, ReturnType<typeof vi.fn>> = {}
-  const returnChain = () => chain
-  chain.select = vi.fn(returnChain)
-  chain.insert = vi.fn(returnChain)
-  chain.update = vi.fn(returnChain)
-  chain.delete = vi.fn(returnChain)
-  chain.eq = vi.fn(returnChain)
-  chain.order = vi.fn(returnChain)
-  chain.single = vi.fn(() => Promise.resolve(mockQueryResult))
-  chain.then = vi.fn((resolve: (v: unknown) => void) => resolve(mockQueryResult))
-  return chain
-}
-
-const { mockFetch } = vi.hoisted(() => ({
+const { mockFetch, mockApi } = vi.hoisted(() => ({
   mockFetch: vi.fn(),
+  mockApi: vi.fn(),
 }))
 
 vi.stubGlobal('$fetch', mockFetch)
+vi.stubGlobal('$api', mockApi)
+mockNuxtImport('$api', () => mockApi)
 
-mockNuxtImport('useSupabaseUser', () => () => ref({ id: 'user-1' }))
-mockNuxtImport('useSupabaseClient', () => () => ({
-  from: () => createChain(),
-}))
 mockNuxtImport('useAuth', () => () => ({
   profile: ref({ id: 'user-1', nickname: 'Admin', role: 'admin' }),
   isAuthenticated: computed(() => true),
@@ -59,34 +41,31 @@ mockNuxtImport('useGameStats', () => () => ({
 }))
 
 const mockRefresh = vi.fn()
-mockNuxtImport('useAsyncData', () => (_key: string, fn: () => Promise<unknown>) => {
+mockNuxtImport('useAsyncData', () => (_key: string) => {
   return { data: ref(mockGames), status: ref('success'), refresh: mockRefresh }
 })
 
 describe('useGames', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockQueryResult = { data: mockGames, error: null }
   })
 
-  describe('list', () => {
-    it('returns games via useAsyncData', () => {
-      const { games, status } = useGames()
-      expect(games.value).toEqual(mockGames)
-      expect(status.value).toBe('success')
-    })
+  it('returns games via useAsyncData', () => {
+    const { games, status } = useGames()
+    expect(games.value).toEqual(mockGames)
+    expect(status.value).toBe('success')
   })
 })
 
 describe('useGameActions', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockQueryResult = { data: mockGames, error: null }
     mockFetch.mockResolvedValue(mockGames[0])
+    mockApi.mockResolvedValue(mockGames[0])
   })
 
   describe('getById', () => {
-    it('fetches game from server API', async () => {
+    it('fetches game from server API via $fetch', async () => {
       const { getById } = useGameActions()
       const result = await getById('game-1')
       expect(result).toEqual(mockGames[0])
@@ -95,14 +74,9 @@ describe('useGameActions', () => {
   })
 
   describe('create', () => {
-    it('inserts a new game via supabase client', async () => {
-      const newGame = {
-        id: 'game-3',
-        date: '2026-04-07',
-        script: 'trouble_brewing',
-        winner: 'good',
-      }
-      mockQueryResult = { data: newGame, error: null }
+    it('creates game via $api', async () => {
+      const newGame = { id: 'game-3', date: '2026-04-07', script: 'trouble_brewing' }
+      mockApi.mockResolvedValue(newGame)
 
       const { create } = useGameActions()
       const result = await create({
@@ -111,15 +85,39 @@ describe('useGameActions', () => {
       })
 
       expect(result).toEqual(newGame)
+      expect(mockApi).toHaveBeenCalledWith('/api/games', {
+        method: 'POST',
+        body: { date: '2026-04-07', script: 'trouble_brewing' },
+      })
+    })
+  })
+
+  describe('update', () => {
+    it('updates game via $api', async () => {
+      const updated = { ...mockGames[0], status: 'finished' }
+      mockApi.mockResolvedValue(updated)
+
+      const { update } = useGameActions()
+      const result = await update('game-1', { status: 'finished' })
+
+      expect(result).toEqual(updated)
+      expect(mockApi).toHaveBeenCalledWith('/api/games/game-1', {
+        method: 'PUT',
+        body: { status: 'finished' },
+      })
     })
   })
 
   describe('remove', () => {
-    it('deletes a game via supabase client', async () => {
-      mockQueryResult = { data: null, error: null }
+    it('deletes game via $api', async () => {
+      mockApi.mockResolvedValue({ success: true })
 
       const { remove } = useGameActions()
       await remove('game-1')
+
+      expect(mockApi).toHaveBeenCalledWith('/api/games/game-1', {
+        method: 'DELETE',
+      })
     })
   })
 })
