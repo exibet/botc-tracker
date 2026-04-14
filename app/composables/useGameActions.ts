@@ -2,8 +2,6 @@ import type { Game, GameWithDetails } from '#shared/types'
 import { API } from '#shared/api'
 
 export function useGameActions() {
-  const { refreshStats } = useGameStats()
-
   async function getById(id: string) {
     return $fetch<GameWithDetails>(API.GAME(id))
   }
@@ -33,13 +31,11 @@ export function useGameActions() {
       method: 'PUT',
       body: updates,
     })
-    refreshStats()
     return data
   }
 
   async function remove(id: string) {
     await $api(API.GAME(id), { method: 'DELETE' })
-    refreshStats()
   }
 
   return {

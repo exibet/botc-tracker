@@ -47,17 +47,8 @@ export default defineEventHandler(async (event) => {
     }),
   ])
 
-  if (activeRes.error) {
-    throw createError({ statusCode: 500, message: activeRes.error.message })
-  }
-  if (recentRes.error) {
-    throw createError({ statusCode: 500, message: recentRes.error.message })
-  }
-  if (leaderboardRes.error) {
-    throw createError({
-      statusCode: 500,
-      message: leaderboardRes.error.message,
-    })
+  if (activeRes.error || recentRes.error || leaderboardRes.error) {
+    throw createError({ statusCode: 500, message: 'Не вдалося завантажити дані головної сторінки' })
   }
 
   const activeGames = activeRes.data ?? []

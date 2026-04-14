@@ -1,6 +1,6 @@
 import { serverSupabaseClient } from '#supabase/server'
 
-export default defineEventHandler(async (event) => {
+export default defineCachedEventHandler(async (event) => {
   const client = await serverSupabaseClient(event)
   const query = getQuery(event)
   const limit = query.limit ? parseLimit(query.limit) : undefined
@@ -15,4 +15,7 @@ export default defineEventHandler(async (event) => {
   }
 
   return data ?? []
+}, {
+  maxAge: CACHE_TTL.PLAYERS_LEADERBOARD,
+  name: CACHE_NAMES.PLAYERS_LEADERBOARD,
 })

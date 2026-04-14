@@ -1,3 +1,4 @@
+import type { GameStatus } from '#shared/types'
 import { serverSupabaseClient } from '#supabase/server'
 import { UpdateGameSchema } from '~~/server/schemas/games'
 
@@ -18,6 +19,14 @@ export default defineEventHandler(async (event) => {
 
   if (error) {
     throw createError({ statusCode: 400, message: 'Не вдалося оновити гру' })
+  }
+
+  const leaderboardStatuses: GameStatus[] = ['finished', 'in_progress']
+  if ((body.status && leaderboardStatuses.includes(body.status)) || body.winner) {
+    await Promise.all([
+      invalidateCache(CACHE_NAMES.PLAYERS_LEADERBOARD),
+      invalidateCache(CACHE_NAMES.STATS),
+    ])
   }
 
   return data

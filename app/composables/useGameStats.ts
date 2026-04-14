@@ -1,4 +1,5 @@
 import { API } from '#shared/api'
+import { FETCH_KEY } from '#shared/fetch-keys'
 
 export interface GameStats {
   totalGames: number
@@ -8,16 +9,10 @@ export interface GameStats {
 }
 
 export function useGameStats() {
-  const stats = useState<GameStats | null>('game-stats', () => null)
-
-  async function initStats() {
-    if (stats.value) return
-    await refreshStats()
-  }
-
-  async function refreshStats() {
-    stats.value = await $fetch<GameStats>(API.STATS)
-  }
+  const { data: stats } = useAsyncData(
+    FETCH_KEY.STATS,
+    () => $fetch<GameStats>(API.STATS),
+  )
 
   const goodPct = computed(() => {
     if (!stats.value?.totalGames) return 0
@@ -33,8 +28,6 @@ export function useGameStats() {
 
   return {
     stats,
-    initStats,
-    refreshStats,
     goodPct,
     evilPct,
   }

@@ -15,6 +15,6 @@ export default defineCachedEventHandler(async (event) => {
 
   return data
 }, {
-  maxAge: 3600,
-  name: 'roles',
+  maxAge: CACHE_TTL.ROLES,
+  name: CACHE_NAMES.ROLES,
 })

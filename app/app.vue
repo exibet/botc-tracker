@@ -4,8 +4,7 @@ useHead({
 })
 
 const { initRoles } = useRoles()
-const { initStats } = useGameStats()
-await Promise.all([initRoles(), initStats()]).catch(() => {})
+await initRoles().catch(() => {})
 </script>
 
 <template>

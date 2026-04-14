@@ -11,6 +11,6 @@ export default defineCachedEventHandler(async (event) => {
 
   return data
 }, {
-  maxAge: 300,
-  name: 'stats',
+  maxAge: CACHE_TTL.STATS,
+  name: CACHE_NAMES.STATS,
 })

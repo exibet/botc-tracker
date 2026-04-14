@@ -83,11 +83,16 @@ export function useGamePlayers(
       return
     }
     status.value = 'pending'
-    const game = await $fetch<GameWithDetails>(API.GAME(id.value))
-    if (game.game_players) {
-      setFromInline(game.game_players as GamePlayerInline[])
+    try {
+      const game = await $fetch<GameWithDetails>(API.GAME(id.value))
+      if (game.game_players) {
+        setFromInline(game.game_players as GamePlayerInline[])
+      }
+      status.value = 'success'
     }
-    status.value = 'success'
+    catch {
+      status.value = 'error'
+    }
   }
 
   if (!initialData) {
