@@ -11,7 +11,7 @@ export default createConfigForNuxt({
 }).override('nuxt/rules', {
   rules: {
     'no-console': 'error',
-    'vue/max-len': ['warn', { code: 100 }],
+    'vue/max-len': ['error', { code: 120 }],
   },
 }).append({
   ignores: ['shared/types/database.types.ts'],

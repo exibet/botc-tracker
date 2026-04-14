@@ -8,7 +8,12 @@ let fetchTransform: ((rows: unknown[]) => unknown) | null = null
 const mockData = ref<unknown[]>([])
 const mockStatus = ref('success')
 
-mockNuxtImport('useFetch', () => (_url: string, opts: { transform?: (rows: unknown[]) => unknown[], default: () => unknown[] }) => {
+type FetchOpts = {
+  transform?: (rows: unknown[]) => unknown[]
+  default: () => unknown[]
+}
+
+mockNuxtImport('useFetch', () => (_url: string, opts: FetchOpts) => {
   fetchTransform = opts.transform ?? null
   return { data: mockData, status: mockStatus }
 })
@@ -37,7 +42,14 @@ describe('usePlayerRecentGames', () => {
       alignment_end: null,
       starting_role: ROLE_TOWN,
       ending_role: null,
-      game: { id: 'g1', date: '2026-01-01', script: 'trouble_brewing', status: 'finished', winner: 'good', created_at: '' },
+      game: {
+        id: 'g1',
+        date: '2026-01-01',
+        script: 'trouble_brewing',
+        status: 'finished',
+        winner: 'good',
+        created_at: '',
+      },
     }]) as { roleName: string, won: boolean, isMvp: boolean }[]
 
     expect(result[0]).toMatchObject({

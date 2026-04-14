@@ -140,16 +140,32 @@ describe('aggregatePlayerStats', () => {
 describe('computeWinStreaks', () => {
   it('returns 0 for no wins', () => {
     const streaks = computeWinStreaks([
-      row({ player_id: 'p1', alignment_start: 'evil', game: { winner: 'good', date: '2026-01-01', status: 'finished' } }),
+      row({
+        player_id: 'p1',
+        alignment_start: 'evil',
+        game: { winner: 'good', date: '2026-01-01', status: 'finished' },
+      }),
     ])
     expect(streaks.get('p1')).toBe(0)
   })
 
   it('counts consecutive wins from latest', () => {
     const streaks = computeWinStreaks([
-      row({ player_id: 'p1', alignment_start: 'good', game: { winner: 'good', date: '2026-01-03', status: 'finished' } }),
-      row({ player_id: 'p1', alignment_start: 'good', game: { winner: 'good', date: '2026-01-02', status: 'finished' } }),
-      row({ player_id: 'p1', alignment_start: 'evil', game: { winner: 'good', date: '2026-01-01', status: 'finished' } }),
+      row({
+        player_id: 'p1',
+        alignment_start: 'good',
+        game: { winner: 'good', date: '2026-01-03', status: 'finished' },
+      }),
+      row({
+        player_id: 'p1',
+        alignment_start: 'good',
+        game: { winner: 'good', date: '2026-01-02', status: 'finished' },
+      }),
+      row({
+        player_id: 'p1',
+        alignment_start: 'evil',
+        game: { winner: 'good', date: '2026-01-01', status: 'finished' },
+      }),
     ])
     expect(streaks.get('p1')).toBe(2)
   })

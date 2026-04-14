@@ -123,9 +123,18 @@ describe('usePlayerStats', () => {
       fetchData.value = {
         profile: { id: 'p1' },
         games: [
-          gameRow({ alignment_start: 'good', game: { ...gameRow().game, id: 'g3', date: '2026-03-01', winner: 'good' } }),
-          gameRow({ alignment_start: 'good', game: { ...gameRow().game, id: 'g2', date: '2026-02-01', winner: 'good' } }),
-          gameRow({ alignment_start: 'evil', game: { ...gameRow().game, id: 'g1', date: '2026-01-01', winner: 'good' } }),
+          gameRow({
+            alignment_start: 'good',
+            game: { ...gameRow().game, id: 'g3', date: '2026-03-01', winner: 'good' },
+          }),
+          gameRow({
+            alignment_start: 'good',
+            game: { ...gameRow().game, id: 'g2', date: '2026-02-01', winner: 'good' },
+          }),
+          gameRow({
+            alignment_start: 'evil',
+            game: { ...gameRow().game, id: 'g1', date: '2026-01-01', winner: 'good' },
+          }),
         ],
       }
       const { winStreak } = usePlayerStats('p1')

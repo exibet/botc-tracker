@@ -13,7 +13,6 @@ import { resolve } from 'node:path'
 import sharp from 'sharp'
 
 const SOURCE_URL
-  // eslint-disable-next-line vue/max-len
   = 'https://raw.githubusercontent.com/chizmw/json-on-the-clocktower/main/data/generated/roles-combined.json'
 
 const OUTPUT_DIR = resolve(import.meta.dirname, '../public/roles')
