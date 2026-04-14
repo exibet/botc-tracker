@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const query = getQuery(event)
-  const limit = query.limit ? Number(query.limit) : 5
+  const limit = parseLimit(query.limit, 5)
 
   const client = await serverSupabaseClient(event)
 

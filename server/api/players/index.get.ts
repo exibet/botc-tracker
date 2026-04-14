@@ -3,7 +3,7 @@ import { serverSupabaseClient } from '#supabase/server'
 export default defineEventHandler(async (event) => {
   const client = await serverSupabaseClient(event)
   const query = getQuery(event)
-  const limit = query.limit ? Number(query.limit) : undefined
+  const limit = query.limit ? parseLimit(query.limit) : undefined
 
   const { data, error } = await client.rpc(
     'get_player_leaderboard',

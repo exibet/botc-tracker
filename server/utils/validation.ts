@@ -1,6 +1,12 @@
 import type { ZodSchema } from 'zod'
 import type { H3Event } from 'h3'
 
+export function parseLimit(value: unknown, defaultVal = 10, max = 100): number {
+  const n = Number(value)
+  if (!Number.isFinite(n) || n < 1) return defaultVal
+  return Math.min(Math.floor(n), max)
+}
+
 export async function validateBody<T>(
   event: H3Event,
   schema: ZodSchema<T>,
