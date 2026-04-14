@@ -34,7 +34,8 @@ describe('gameCard', () => {
     const wrapper = await mountSuspended(GameCard, {
       props: { game: baseGame },
     })
-    expect(wrapper.text()).toContain('Добро')
+    expect(wrapper.html()).toContain('badge-good')
+    expect(wrapper.html()).toContain('pi-sun')
   })
 
   it('renders script label in Ukrainian', async () => {
@@ -51,9 +52,10 @@ describe('gameCard', () => {
     expect(wrapper.text()).toContain('8')
   })
 
-  it('renders storyteller name', async () => {
+  it('renders storyteller name as fallback when no player_count', async () => {
+    const game = { ...baseGame, player_count: null }
     const wrapper = await mountSuspended(GameCard, {
-      props: { game: baseGame },
+      props: { game },
     })
     expect(wrapper.text()).toContain('Оповідач')
   })
