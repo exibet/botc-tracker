@@ -13,7 +13,9 @@ const userMenuItems = computed(() => [
   {
     label: profile.value?.nickname ?? 'Profile',
     icon: 'pi pi-user',
-    disabled: true,
+    route: profile.value?.id
+      ? `/players/${profile.value.id}`
+      : undefined,
   },
   { separator: true },
   {
@@ -131,7 +133,18 @@ const userInitials = computed(() => {
                 :model="userMenuItems"
                 :popup="true"
                 data-testid="user-menu"
-              />
+              >
+                <template #item="{ item, props: itemProps }">
+                  <NuxtLink
+                    v-if="item.route"
+                    v-bind="itemProps.action"
+                    :to="item.route"
+                  >
+                    <span :class="item.icon" />
+                    <span class="ml-2">{{ item.label }}</span>
+                  </NuxtLink>
+                </template>
+              </Menu>
             </div>
           </div>
         </template>

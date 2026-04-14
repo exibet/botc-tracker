@@ -1,13 +1,6 @@
 import { serverSupabaseClient } from '#supabase/server'
 import { AddGamePlayerSchema } from '~~/server/schemas/game-players'
 
-const SELECT_WITH_DETAILS = `
-  *,
-  player:profiles!player_id(id, nickname, avatar_url),
-  starting_role:roles!starting_role_id(id, name_ua, name_en, image_url, type),
-  ending_role:roles!ending_role_id(id, name_ua, name_en, image_url, type)
-`
-
 export default defineEventHandler(async (event) => {
   await requireAuth(event)
   const body = await validateBody(event, AddGamePlayerSchema)
@@ -16,7 +9,7 @@ export default defineEventHandler(async (event) => {
   const { data, error } = await client
     .from('game_players')
     .insert(body)
-    .select(SELECT_WITH_DETAILS)
+    .select(GAME_PLAYER_WITH_ROLES_SELECT)
     .single()
 
   if (error) {

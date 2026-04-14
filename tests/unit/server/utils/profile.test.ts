@@ -10,6 +10,8 @@ vi.mock('#supabase/server', () => ({
   serverSupabaseClient: () => Promise.resolve(mocks.client),
 }))
 
+vi.stubGlobal('PROFILE_SELECT', 'id, nickname, avatar_url, role, is_manual, created_at')
+
 describe('getProfile', () => {
   beforeEach(() => {
     mocks.user = null

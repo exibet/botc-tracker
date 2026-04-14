@@ -1,13 +1,6 @@
 import { serverSupabaseClient } from '#supabase/server'
 import { UpdateGamePlayerSchema } from '~~/server/schemas/game-players'
 
-const SELECT_WITH_DETAILS = `
-  *,
-  player:profiles!player_id(id, nickname, avatar_url),
-  starting_role:roles!starting_role_id(id, name_ua, name_en, image_url, type),
-  ending_role:roles!ending_role_id(id, name_ua, name_en, image_url, type)
-`
-
 export default defineEventHandler(async (event) => {
   const profile = await requireAuth(event)
 
@@ -31,7 +24,7 @@ export default defineEventHandler(async (event) => {
     .from('game_players')
     .update(body)
     .eq('id', id)
-    .select(SELECT_WITH_DETAILS)
+    .select(GAME_PLAYER_WITH_ROLES_SELECT)
     .single()
 
   if (error) {

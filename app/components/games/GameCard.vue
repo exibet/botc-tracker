@@ -25,11 +25,9 @@ const sideCounts = computed(() => {
   let good = 0
   let evil = 0
   for (const p of props.game.game_players) {
-    const t = 'starting_role' in p
-      ? p.starting_role?.type
-      : null
-    if (t === 'townsfolk' || t === 'outsider') good++
-    else if (t === 'minion' || t === 'demon') evil++
+    const a = p.alignment_end ?? p.alignment_start
+    if (a === 'good') good++
+    else if (a === 'evil') evil++
   }
   return { good, evil }
 })

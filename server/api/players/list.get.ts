@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
 
   const { data, error } = await client
     .from('profiles')
-    .select('id, nickname, avatar_url, role, is_manual, created_at')
+    .select(PROFILE_SELECT)
     .order('nickname')
 
   if (error) {
