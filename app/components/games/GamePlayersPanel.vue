@@ -2,7 +2,6 @@
 import type {
   Alignment,
   GamePlayerInline,
-  GamePlayerLight,
   MvpVote,
 } from '#shared/types'
 import type { GamePlayerWithDetails }
@@ -23,7 +22,7 @@ const props = withDefaults(defineProps<{
   winner?: 'good' | 'evil' | null
   showHeader?: boolean
   gameStatus?: string
-  initialPlayers?: (GamePlayerLight | GamePlayerInline)[] | null
+  initialPlayers?: GamePlayerInline[] | null
   initialVotes?: MvpVote[] | null
 }>(), {
   winner: null,
@@ -43,15 +42,6 @@ const { createManual, refreshPlayers } = usePlayers()
 const { success: showSuccess } = useAppToast()
 const confirm = useConfirm()
 
-function isInline(
-  p: GamePlayerLight | GamePlayerInline,
-): p is GamePlayerInline {
-  return 'id' in p
-}
-
-const inlinePlayers = props.initialPlayers
-  ?.filter(isInline) ?? null
-
 const {
   players,
   status,
@@ -61,7 +51,7 @@ const {
   remove: removePlayer,
 } = useGamePlayers(
   computed(() => props.gameId),
-  inlinePlayers,
+  props.initialPlayers ?? null,
 )
 
 const mvpSectionRef = ref<InstanceType<typeof MvpVotingSection> | null>(null)

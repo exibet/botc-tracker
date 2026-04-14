@@ -135,6 +135,9 @@ function stubServerGlobals(opts: ServerStubOptions = {}) {
     if (!Number.isFinite(n) || n < 1) return def
     return Math.min(Math.floor(n), max)
   })
+  vi.stubGlobal('PROFILE_SELECT', 'id, nickname, avatar_url, role, is_manual, created_at')
+  vi.stubGlobal('GAME_WITH_DETAILS_SELECT', '*')
+  vi.stubGlobal('GAME_PLAYER_WITH_ROLES_SELECT', '*')
   vi.stubGlobal('invalidateCache', vi.fn(async () => {}))
   vi.stubGlobal('CACHE_NAMES', {
     STATS: 'stats',

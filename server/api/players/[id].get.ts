@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
   const [profileRes, gamesRes] = await Promise.all([
     client
       .from('profiles')
-      .select('id, nickname, avatar_url, role, is_manual, created_at')
+      .select(PROFILE_SELECT)
       .eq('id', id)
       .single(),
     client

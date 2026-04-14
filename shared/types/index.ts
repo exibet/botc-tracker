@@ -55,14 +55,7 @@ export interface MvpVote extends Omit<MvpVoteRow, 'created_at'> {
   created_at: string
 }
 
-// Light game_player data from GAME_LIST_SELECT (for cards)
-export interface GamePlayerLight {
-  is_mvp: boolean
-  starting_role: { type: string } | null
-  player: { id: string, nickname: string, avatar_url: string | null } | null
-}
-
-// Full game_player data from GAME_DETAIL_SELECT (for editing, role IDs resolved from global roles)
+// Full game_player data (role IDs resolved from global roles client-side)
 export interface GamePlayerInline {
   id: string
   game_id: string
@@ -82,7 +75,7 @@ export interface GameWithDetails extends Game {
   storyteller: { id: string, nickname: string } | null
   created_by_profile: { id: string, nickname: string }
   mvp_player: { id: string, nickname: string, avatar_url: string | null } | null
-  game_players?: (GamePlayerLight | GamePlayerInline)[]
+  game_players?: GamePlayerInline[]
   mvp_votes?: MvpVote[]
 }
 

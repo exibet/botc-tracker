@@ -58,6 +58,7 @@ const groupedGames = computed<MonthGroup[]>(() => {
       >
         <Button
           label="Створити гру"
+          size="small"
           variant="outlined"
           icon="pi pi-plus"
           data-testid="create-game-btn"

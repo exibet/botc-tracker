@@ -2,8 +2,8 @@
 import type { Profile } from '#shared/types'
 import { usePlayers } from '~/composables/usePlayers'
 import { extractErrorMessage } from '~/utils/error'
-import PlayerAvatar
-  from '~/components/players/PlayerAvatar.vue'
+import PlayerOptionRow
+  from '~/components/players/PlayerOptionRow.vue'
 
 const props = defineProps<{
   visible: boolean
@@ -111,14 +111,10 @@ function handleHide() {
         class="w-full"
       >
         <template #option="{ option }">
-          <div class="flex items-center gap-2">
-            <PlayerAvatar
-              :avatar-url="option.avatar_url"
-              :nickname="option.nickname"
-              size="sm"
-            />
-            <span>{{ option.nickname }}</span>
-          </div>
+          <PlayerOptionRow
+            :avatar-url="option.avatar_url"
+            :nickname="option.nickname"
+          />
         </template>
       </Select>
 

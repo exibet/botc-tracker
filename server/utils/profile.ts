@@ -8,7 +8,7 @@ export async function getProfile(event: H3Event) {
   const client = await serverSupabaseClient(event)
   const { data } = await client
     .from('profiles')
-    .select('id, nickname, avatar_url, role, is_manual')
+    .select(PROFILE_SELECT)
     .eq('id', user.sub)
     .single()
 

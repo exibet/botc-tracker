@@ -2,6 +2,7 @@
 import type { Profile } from '#shared/types'
 import { SCRIPTS } from '~/composables/useGameLabels'
 import WinnerSelector from '~/components/games/WinnerSelector.vue'
+import PlayerOptionRow from '~/components/players/PlayerOptionRow.vue'
 
 const props = defineProps<{
   initialData?: {
@@ -45,12 +46,7 @@ const scriptOptions = SCRIPTS.map(s => ({
   value: s.value,
 }))
 
-const storytellerOptions = computed(() =>
-  (props.players ?? []).map(p => ({
-    label: p.nickname,
-    value: p.id,
-  })),
-)
+const storytellerOptions = computed(() => props.players ?? [])
 
 function formatDateForDb(date: Date): string {
   const y = date.getFullYear()
@@ -158,13 +154,22 @@ function handleSubmit() {
           id="game-storyteller"
           v-model="form.storyteller_id"
           :options="storytellerOptions"
-          option-label="label"
-          option-value="value"
+          option-label="nickname"
+          option-value="id"
           placeholder="Оберіть оповідача"
+          filter
+          filter-placeholder="Пошук..."
           show-clear
           fluid
           data-testid="game-storyteller"
-        />
+        >
+          <template #option="{ option }">
+            <PlayerOptionRow
+              :avatar-url="option.avatar_url"
+              :nickname="option.nickname"
+            />
+          </template>
+        </Select>
       </div>
     </div>
 
