@@ -83,6 +83,7 @@ export default defineNuxtConfig({
         },
         { name: 'referrer', content: 'no-referrer' },
         { name: 'theme-color', content: '#ef4444' },
+        { name: 'mobile-web-app-capable', content: 'yes' },
         { name: 'apple-mobile-web-app-capable', content: 'yes' },
         { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
         { name: 'apple-mobile-web-app-title', content: 'BotC Tracker' },

@@ -162,29 +162,29 @@ const hoverShadowClass = computed(() => {
             </span>
           </template>
           <!-- MVP: mobile -->
-          <NuxtLink
+          <button
             v-if="mvpPlayer"
-            :to="`/players/${mvpPlayer.id}`"
+            type="button"
             class="inline-flex items-center gap-1
               text-accent transition-opacity
-              hover:opacity-80 lg:hidden"
-            @click.stop
+              hover:opacity-80 lg:hidden cursor-pointer"
+            @click.stop.prevent="navigateTo(`/players/${mvpPlayer.id}`)"
           >
             <i class="pi pi-star-fill" />
             {{ mvpPlayer.nickname }}
-          </NuxtLink>
+          </button>
         </div>
 
       </div>
 
       <!-- MVP: desktop -->
-      <NuxtLink
+      <button
         v-if="mvpPlayer"
         v-tooltip.top="'MVP: ' + mvpPlayer.nickname"
-        :to="`/players/${mvpPlayer.id}`"
+        type="button"
         class="hidden shrink-0 self-center
-          text-accent lg:inline-flex"
-        @click.stop
+          text-accent lg:inline-flex cursor-pointer"
+        @click.stop.prevent="navigateTo(`/players/${mvpPlayer.id}`)"
       >
         <span
           class="relative transition-transform
@@ -202,7 +202,7 @@ const hoverShadowClass = computed(() => {
               text-accent drop-shadow-sm"
           />
         </span>
-      </NuxtLink>
+      </button>
 
       <!-- Arrow -->
       <i

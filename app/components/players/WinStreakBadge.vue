@@ -17,8 +17,6 @@ defineProps<{
   >
     <i
       class="pi pi-bolt"
-      :class="size === 'sm'
-        ? 'text-[7px]' : 'text-[10px]'"
     />
     {{ streak }}W STREAK
   </span>
