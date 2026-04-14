@@ -23,9 +23,9 @@
     "test:nuxt": "vitest run --project nuxt"
   },
   "dependencies": {
-    "@nuxtjs/supabase": "^2.0.4",
+    "@nuxtjs/supabase": "^2.0.5",
     "@primeuix/themes": "^2.0.3",
-    "@primevue/nuxt-module": "^4.5.4",
+    "@primevue/nuxt-module": "^4.5.5",
     "@tailwindcss/vite": "^4.2.2",
     "nuxt": "^4.4.2",
     "primeicons": "^7.0.0",
