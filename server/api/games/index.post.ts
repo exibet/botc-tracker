@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
     .single()
 
   if (error) {
-    throw createError({ statusCode: 400, message: error.message })
+    throw createError({ statusCode: 400, message: 'Не вдалося створити гру' })
   }
 
   return data

@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
     .eq('voter_id', user.sub)
 
   if (error) {
-    throw createError({ statusCode: 400, message: error.message })
+    throw createError({ statusCode: 400, message: 'Не вдалося видалити голос' })
   }
 
   return { success: true }

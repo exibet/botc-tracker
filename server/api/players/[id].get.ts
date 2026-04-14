@@ -1,10 +1,7 @@
 import { serverSupabaseClient } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
-  const id = getRouterParam(event, 'id')
-  if (!id) {
-    throw createError({ statusCode: 400, message: 'Player ID required' })
-  }
+  const id = requireUuidParam(event, 'id')
 
   const client = await serverSupabaseClient(event)
 
@@ -39,7 +36,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, message: 'Player not found' })
   }
   if (gamesRes.error) {
-    throw createError({ statusCode: 500, message: gamesRes.error.message })
+    throw createError({ statusCode: 500, message: 'Не вдалося завантажити ігри гравця' })
   }
 
   return {

@@ -6,7 +6,7 @@ export default defineCachedEventHandler(async (event) => {
   const { data, error } = await client.rpc('get_home_stats')
 
   if (error) {
-    throw createError({ statusCode: 500, message: error.message })
+    throw createError({ statusCode: 500, message: 'Не вдалося завантажити статистику' })
   }
 
   return data

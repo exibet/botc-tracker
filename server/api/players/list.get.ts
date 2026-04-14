@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
     .order('nickname')
 
   if (error) {
-    throw createError({ statusCode: 500, message: error.message })
+    throw createError({ statusCode: 500, message: 'Не вдалося завантажити гравців' })
   }
 
   return data

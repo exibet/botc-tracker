@@ -11,10 +11,7 @@ const SELECT_WITH_DETAILS = `
 export default defineEventHandler(async (event) => {
   await requireAuth(event)
 
-  const id = getRouterParam(event, 'id')
-  if (!id) {
-    throw createError({ statusCode: 400, message: 'Entry ID required' })
-  }
+  const id = requireUuidParam(event, 'id')
 
   const body = await validateBody(event, UpdateGamePlayerSchema)
   const client = await serverSupabaseClient(event)
@@ -40,7 +37,7 @@ export default defineEventHandler(async (event) => {
     .single()
 
   if (error) {
-    throw createError({ statusCode: 400, message: error.message })
+    throw createError({ statusCode: 400, message: 'Не вдалося оновити запис гравця' })
   }
 
   return data

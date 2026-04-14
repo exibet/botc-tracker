@@ -1,10 +1,7 @@
 import { serverSupabaseClient } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
-  const id = getRouterParam(event, 'id')
-  if (!id) {
-    throw createError({ statusCode: 400, message: 'Player ID required' })
-  }
+  const id = requireUuidParam(event, 'id')
 
   const query = getQuery(event)
   const limit = parseLimit(query.limit, 5)
@@ -34,7 +31,7 @@ export default defineEventHandler(async (event) => {
     .limit(limit)
 
   if (error) {
-    throw createError({ statusCode: 500, message: error.message })
+    throw createError({ statusCode: 500, message: 'Не вдалося завантажити ігри гравця' })
   }
 
   return data

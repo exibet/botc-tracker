@@ -4,10 +4,7 @@ import { UpdateGameSchema } from '~~/server/schemas/games'
 export default defineEventHandler(async (event) => {
   await requireAdmin(event)
 
-  const id = getRouterParam(event, 'id')
-  if (!id) {
-    throw createError({ statusCode: 400, message: 'Game ID required' })
-  }
+  const id = requireUuidParam(event, 'id')
 
   const body = await validateBody(event, UpdateGameSchema)
   const client = await serverSupabaseClient(event)
@@ -20,7 +17,7 @@ export default defineEventHandler(async (event) => {
     .single()
 
   if (error) {
-    throw createError({ statusCode: 400, message: error.message })
+    throw createError({ statusCode: 400, message: 'Не вдалося оновити гру' })
   }
 
   return data

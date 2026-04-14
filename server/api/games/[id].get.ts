@@ -1,10 +1,7 @@
 import { serverSupabaseClient } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
-  const id = getRouterParam(event, 'id')
-  if (!id) {
-    throw createError({ statusCode: 400, message: 'Game ID required' })
-  }
+  const id = requireUuidParam(event, 'id')
 
   const client = await serverSupabaseClient(event)
 

@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
     .range(offset, offset + limit - 1)
 
   if (error) {
-    throw createError({ statusCode: 500, message: error.message })
+    throw createError({ statusCode: 500, message: 'Не вдалося завантажити ігри' })
   }
 
   return { data: data ?? [], total: count ?? 0 }

@@ -3,10 +3,7 @@ import { serverSupabaseClient } from '#supabase/server'
 export default defineEventHandler(async (event) => {
   await requireAuth(event)
 
-  const id = getRouterParam(event, 'id')
-  if (!id) {
-    throw createError({ statusCode: 400, message: 'Entry ID required' })
-  }
+  const id = requireUuidParam(event, 'id')
 
   const client = await serverSupabaseClient(event)
 
@@ -29,7 +26,7 @@ export default defineEventHandler(async (event) => {
     .eq('id', id)
 
   if (error) {
-    throw createError({ statusCode: 400, message: error.message })
+    throw createError({ statusCode: 400, message: 'Не вдалося видалити запис гравця' })
   }
 
   return { success: true }

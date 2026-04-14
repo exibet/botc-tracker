@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
   })
 
   if (error) {
-    throw createError({ statusCode: 400, message: error.message })
+    throw createError({ statusCode: 400, message: 'Не вдалося від\'єднати профіль' })
   }
 
   return { manualId: data }

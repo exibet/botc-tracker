@@ -10,7 +10,7 @@ export default defineCachedEventHandler(async (event) => {
     .order('name_en')
 
   if (error) {
-    throw createError({ statusCode: 500, message: error.message })
+    throw createError({ statusCode: 500, message: 'Не вдалося завантажити ролі' })
   }
 
   return data
