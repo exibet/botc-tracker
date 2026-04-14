@@ -2,7 +2,7 @@ import { serverSupabaseClient } from '#supabase/server'
 import { CreateGameSchema } from '~~/server/schemas/games'
 
 export default defineEventHandler(async (event) => {
-  const user = await requireAdmin(event)
+  const profile = await requireAdmin(event)
   const body = await validateBody(event, CreateGameSchema)
   const client = await serverSupabaseClient(event)
 
@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
     .insert({
       ...body,
       status: 'upcoming',
-      created_by: user.sub,
+      created_by: profile.id,
     })
     .select()
     .single()

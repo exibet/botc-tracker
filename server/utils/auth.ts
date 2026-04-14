@@ -1,25 +1,23 @@
 import type { H3Event } from 'h3'
-import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
+
+export async function getEventProfile(event: H3Event) {
+  const getProfile = event.context.getProfile as (() => ReturnType<typeof import('./profile').getProfile>) | undefined
+  if (!getProfile) return null
+  return getProfile()
+}
 
 export async function requireAuth(event: H3Event) {
-  const user = await serverSupabaseUser(event).catch(() => null)
-  if (!user) {
+  const profile = await getEventProfile(event)
+  if (!profile) {
     throw createError({ statusCode: 401, message: 'Unauthorized' })
   }
-  return user
+  return profile
 }
 
 export async function requireAdmin(event: H3Event) {
-  const user = await requireAuth(event)
-  const client = await serverSupabaseClient(event)
-  const { data } = await client
-    .from('profiles')
-    .select('role')
-    .eq('id', user.sub)
-    .single()
-
-  if (data?.role !== 'admin') {
+  const profile = await requireAuth(event)
+  if (profile.role !== 'admin') {
     throw createError({ statusCode: 403, message: 'Forbidden' })
   }
-  return user
+  return profile
 }

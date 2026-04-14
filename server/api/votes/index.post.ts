@@ -2,7 +2,7 @@ import { serverSupabaseClient } from '#supabase/server'
 import { CastVoteSchema } from '~~/server/schemas/votes'
 
 export default defineEventHandler(async (event) => {
-  const user = await requireAuth(event)
+  const profile = await requireAuth(event)
   const body = await validateBody(event, CastVoteSchema)
   const client = await serverSupabaseClient(event)
 
@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
     .upsert(
       {
         game_id: body.game_id,
-        voter_id: user.sub,
+        voter_id: profile.id,
         candidate_id: body.candidate_id,
       },
       { onConflict: 'game_id,voter_id' },
