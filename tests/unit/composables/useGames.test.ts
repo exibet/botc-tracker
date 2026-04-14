@@ -40,20 +40,75 @@ mockNuxtImport('useGameStats', () => () => ({
   refreshStats: vi.fn(),
 }))
 
-const mockRefresh = vi.fn()
-mockNuxtImport('useAsyncData', () => (_key: string) => {
-  return { data: ref(mockGames), status: ref('success'), refresh: mockRefresh }
+const mockPaginatedResponse = {
+  data: mockGames,
+  total: 120,
+}
+
+const stateStore = new Map<string, Ref>()
+mockNuxtImport('useState', () => (key: string, init?: () => unknown) => {
+  if (!stateStore.has(key)) {
+    stateStore.set(key, ref(init?.()))
+  }
+  return stateStore.get(key)!
+})
+
+mockNuxtImport('useAsyncData', () => (_key: string, fetcher: () => Promise<unknown>) => {
+  const status = ref('pending')
+  fetcher().then(() => {
+    status.value = 'success'
+  })
+  return { status }
 })
 
 describe('useGames', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    stateStore.clear()
+    mockFetch.mockResolvedValue(mockPaginatedResponse)
   })
 
-  it('returns games via useAsyncData', () => {
-    const { games, status } = useGames()
+  it('loads first page via useAsyncData and exposes games', async () => {
+    const { games, total, status } = useGames()
+    await vi.waitFor(() => expect(status.value).toBe('success'))
     expect(games.value).toEqual(mockGames)
-    expect(status.value).toBe('success')
+    expect(total.value).toBe(120)
+    expect(mockFetch).toHaveBeenCalledWith('/api/games', {
+      params: { page: 1, limit: 50 },
+    })
+  })
+
+  it('hasMore is true when loaded < total', async () => {
+    const { hasMore, status } = useGames()
+    await vi.waitFor(() => expect(status.value).toBe('success'))
+    expect(hasMore.value).toBe(true)
+  })
+
+  it('loadMore appends next page', async () => {
+    const nextPage = [{ id: 'game-3', date: '2026-03-20' }]
+    mockFetch
+      .mockResolvedValueOnce(mockPaginatedResponse)
+      .mockResolvedValueOnce({ data: nextPage, total: 120 })
+
+    const { games, loadMore, status } = useGames()
+    await vi.waitFor(() => expect(status.value).toBe('success'))
+
+    await loadMore()
+
+    expect(games.value).toEqual([...mockGames, ...nextPage])
+    expect(mockFetch).toHaveBeenLastCalledWith('/api/games', {
+      params: { page: 2, limit: 50 },
+    })
+  })
+
+  it('loadMore is no-op when hasMore is false', async () => {
+    mockFetch.mockResolvedValue({ data: mockGames, total: 2 })
+    const { loadMore, status } = useGames()
+    await vi.waitFor(() => expect(status.value).toBe('success'))
+
+    const callCount = mockFetch.mock.calls.length
+    await loadMore()
+    expect(mockFetch).toHaveBeenCalledTimes(callCount)
   })
 })
 

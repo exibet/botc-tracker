@@ -2,7 +2,7 @@
 import type { GameWithDetails } from '#shared/types'
 import GameCard from '~/components/games/GameCard.vue'
 
-const { games, status } = useGames()
+const { games, total, hasMore, loadMore, loadingMore, status } = useGames()
 const { isAdmin } = useAuth()
 const { stats, goodPct, evilPct } = useGameStats()
 
@@ -153,6 +153,22 @@ const groupedGames = computed<MonthGroup[]>(() => {
             />
           </div>
         </section>
+      </div>
+
+      <!-- Load more -->
+      <div class="mt-10 mb-6 flex flex-col items-center gap-3">
+        <span class="text-sm tabular-nums text-text-subtle">
+          Показано {{ games.length }} з {{ total }}
+        </span>
+        <Button
+          v-if="hasMore"
+          variant="outlined"
+          :loading="loadingMore"
+          :label="loadingMore ? 'Завантаження...' : 'Завантажити ще'"
+          icon="pi pi-arrow-down"
+          class="min-w-48"
+          @click="loadMore"
+        />
       </div>
     </template>
 

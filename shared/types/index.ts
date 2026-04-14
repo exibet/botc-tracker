@@ -155,6 +155,11 @@ export interface PlayerGameHistory {
   hasAlignmentChange: boolean
 }
 
+export interface PaginatedResponse<T> {
+  data: T[]
+  total: number
+}
+
 export interface PlayerWithStats extends Profile {
   gamesPlayed: number
   wins: number
